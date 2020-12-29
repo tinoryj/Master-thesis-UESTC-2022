@@ -23,9 +23,15 @@
 \RequirePackage{xeCJK}
 \RequirePackage{ifplatform}
 
-\setallmainfonts{Times New Roman}
-\setCJKmainfont[AutoFakeBold=true]{Songti SC}
-\newCJKfontfamily{\heiti}{STHeiti}
+\setCJKmainfont[AutoFakeBold=true]{fzsong.ttf}
+\newCJKfontfamily{\heiti}{fzhei.ttf}
+\newfontfamily{\heiti@letter}{fzhei.ttf}
+\setallmainfonts[
+  BoldFont=timesbd.ttf,
+  ItalicFont=timesi.ttf,
+  BoldItalicFont=timesbi.ttf,
+]{times.ttf}
+
 
 \RequirePackage{zhnumber}
 \RequirePackage{pifont}
