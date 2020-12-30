@@ -1,3 +1,22 @@
+%
+%  Copyright 2016-2020 Wen Wang <wwzvd@mst.edu>
+% 
+%  This work may be distributed and/or modified under the
+%  conditions of the LaTeX Project Public License, either version 1.3
+%  of this license or (at your option) any later version.
+%  The latest version of this license is in
+%    http://www.latex-project.org/lppl.txt
+%  and version 1.3 or later is part of all distributions of LaTeX
+%  version 2005/12/01 or later.
+% 
+%  This work has the LPPL maintenance status `maintained'.
+% 
+%  The Current Maintainer of this work is Wen Wang <wwzvd@mst.edu>.
+% 
+%  This work consists of the files thesis-uestc.cls, thesis-uestc.bst.
+% 
+
+
 ENTRY
 {
   author
@@ -53,7 +72,8 @@ FUNCTION{ string.length }
     pop$ l
 }
 
-FUNCTION {get.last.chr} {
+FUNCTION {get.last.chr}
+{
   duplicate$ string.length
   duplicate$ #0 = {
     pop$
@@ -62,20 +82,23 @@ FUNCTION {get.last.chr} {
   } if$
 }
 
-FUNCTION {trim.start} {
+FUNCTION {trim.start}
+{
   {duplicate$ #1 #1 substring$ " " =} {
     #2 global.max$ substring$
   } while$
 }
 
-FUNCTION {trim.end} {
+FUNCTION {trim.end}
+{
   {duplicate$ get.last.chr " " =} {
     duplicate$ string.length #1 -
     #1 swap$ substring$
   } while$
 }
 
-FUNCTION {trim} {
+FUNCTION {trim}
+{
   trim.start
   trim.end
 }
@@ -83,10 +106,12 @@ FUNCTION {trim} {
 FUNCTION {bbl.etal}
 { "et~al" }
 
+FUNCTION {bbl.deng}
+{ "等" }
 
 FUNCTION {bib.begin}
 {
-    "\begin{thebibliography}{lo}"
+    "\begin{thebibliography}{\bstlabelmark}"
     write$ newline$
     "\interlinepenalty=10000"
     write$ newline$
@@ -183,9 +208,70 @@ FUNCTION {format.names}
   } if$
 }
 
+FUNCTION {format.chinese.names}
+{ 'bibinfo :=
+  duplicate$ empty$ 'skip$ {
+  's :=
+  "" 't :=
+  #1 'nameptr :=
+  s num.names$ 'numnames :=
+  numnames 'namesleft :=
+    { namesleft #0 > }
+    { s nameptr
+      "{f.~}{vv~}{ll}{, jj}"
+      format.name$
+      % bibinfo bibinfo.check
+      't :=
+      nameptr #1 >
+        {
+          nameptr #3
+          #1 + =
+          numnames #3
+          > and
+            { "others" 't :=
+              #1 'namesleft := }
+            'skip$
+          if$
+          namesleft #1 >
+            { ", " * t * }
+            {
+              s nameptr "{ll}" format.name$ duplicate$ "others" =
+                { 't := }
+                { pop$ }
+              if$
+              "others" t =
+              'skip$
+              { "," * }
+              if$
+              t "others" =
+                {
+                  " " * bbl.deng *
+                }
+                { " " * t * }
+              if$
+            }
+          if$
+        }
+        't
+      if$
+      nameptr #1 + 'nameptr :=
+      namesleft #1 - 'namesleft :=
+    }
+  while$
+  } if$
+}
+
 FUNCTION {format.authors}
 {
-    author "author" format.names
+  language missing$
+    { author "author" format.names }
+    {
+      language "zh" =
+        { author "author" format.chinese.names }
+        { author "author" format.names }
+      if$
+    }
+  if$
 }
 
 FUNCTION {format.title}
@@ -266,6 +352,7 @@ FUNCTION{find.replace}
 FUNCTION {format.pages}
 {
     pages "--" "-" find.replace
+    " " "" find.replace
 }
 
 FUNCTION {format.institution}
@@ -360,17 +447,23 @@ FUNCTION {article}
     format.authors write$ add.period
     format.title "[J]" * write$ add.period
     format.journal write$ add.comma
-    format.year write$ add.comma
+    format.year write$
     
-    number missing$
-    {
-        volume ": " * write$
-    } {
-        volume "(" *
-        number *
-        "): " * write$
+    volume missing$ {
+      pages missing$ 'skip$
+      {
+        add.comma
+        format.pages write$
+      } if$
+    }
+    { add.comma
+      number missing$ { volume write$ }
+      {
+        volume "(" * number *
+        ")" * write$
+      } if$
+      pages missing$ 'skip$ { ": " format.pages * write$ } if$
     } if$
-    format.pages write$
     newline$
 }
 
@@ -473,21 +566,6 @@ FUNCTION {onlynote}
     note write$
     newline$
 }
-
-FUNCTION {unpublished}
-{ output.bibitem
-  format.authors "author" output.check
-  new.block
-  format.title "title" output.check
-  format.date output
-  new.block
-  format.url output
-  new.block
-  format.note "note" output.check
-  fin.entry
-}
-
-FUNCTION {default.type} { misc }
 
 READ
 
