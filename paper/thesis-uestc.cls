@@ -10,27 +10,37 @@
 \RequirePackage[font={doublespacing, small}, labelsep=space, skip=6pt]{caption}
 
 \RequirePackage{array}
+\RequirePackage{booktabs}
+\setlength{\heavyrulewidth}{0.5pt}
+\setlength{\lightrulewidth}{0.5pt}
+\setlength{\arrayrulewidth}{0.5pt}
+\setlength{\cmidrulewidth}{0.5pt}
+
 \RequirePackage{setspace}
 \RequirePackage{multirow}
 \RequirePackage[tbtags]{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage{amsthm}
 \RequirePackage{lmodern}
+\RequirePackage[nopostdot]{glossaries}
 \RequirePackage{mathspec}
-\RequirePackage{fontspec}
-\RequirePackage{bm}
-\RequirePackage{booktabs}
+
 \RequirePackage{xeCJK}
 \RequirePackage{ifplatform}
 
+\setCJKmainfont[AutoFakeBold=true]{SimSun}
+\newCJKfontfamily{\heiti}{SimHei}
+\newfontfamily{\heiti@letter}{SimHei}
 \setallmainfonts{Times New Roman}
-\setCJKmainfont[AutoFakeBold=true]{Songti SC}
-\newCJKfontfamily{\heiti}{STHeiti}
+
+\DeclareMathAlphabet{\mathbf}{\eu@enc}{\eu@mathrm}{\bfdefault}{it}
+\DeclareMathAlphabet{\mathbd}{\eu@enc}{\eu@mathrm}{\bfdefault}{n}
+\newcommand{\bm}{\mathbf}
 
 \RequirePackage{zhnumber}
 \RequirePackage{pifont}
 
-\RequirePackage[hyphens]{url}
+\RequirePackage[hyphens]{xurl}
 \RequirePackage[hyperfootnotes=false,
     bookmarksnumbered,
     bookmarksdepth=4
@@ -42,169 +52,39 @@
   urlcolor=black
 }
 
-\makeatletter % undo the wrong changes made by mathspec
-\let\RequirePackage\original@RequirePackage
-\let\usepackage\RequirePackage
-\makeatother
-\RequirePackage[nopostdot]{glossaries}
-\renewcommand*{\glossarypreamble}{\vspace{-9pt}}
-
-\newacronymstyle{acronym-uestc}{
-  \ifglshaslong{\glslabel}{\glsgenacfmt}{\glsgenentryfmt}
-}{
-  \renewcommand*{\GenericAcronymFields}{
-    first={\the\glslongtok\space\protect\paren{\the\glsshorttok}},
-    description={\the\glslongtok}}
-  \renewcommand*{\genacrfullformat}[2]{%
-    \glsentrydesc{##1}~(\glsentrylong{##1},\space%
-    \glsentryshort{##1})%
-  }
-  \renewcommand*{\acronymentry}[1]{%
-    \acronymfont{\glsentryshort{##1}}%
-  }
-}
-\setacronymstyle{acronym-uestc}
-
-\newglossarystyle{long-uestc}{
-  \renewenvironment{theglossary}%
-    {\begin{longtable}{lp{.7\textwidth}}}%
-    {\end{longtable}}%
-
-  \renewcommand*{\glossaryheader}{}%
-  \renewcommand*{\glsgroupheading}[1]{}%
-  \renewcommand{\glossentry}[2]{
-    \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
-    \ifglshaslong{##1}{\glsentrylong{##1}\ifglshasdesc{##1}{, \glsentrydesc{##1}}{}}
-    {\glsentrydesc{##1}} \\
-  }
-  \renewcommand*{\subglossentry}[3]{
-  \glossentry{##2}{##3}}
-}
-
-\defglsentryfmt{%
-  \ifglshaslong{\glslabel}{%
-    \glsgenacfmt%
-  }{%
-    \ifglsused{\glslabel}{%
-      \glsgenentryfmt%
-    }{%
-      \glsgenentryfmt%
-    }%
-  }%
-}
-
-\newcommand{\thesisglossarylist}{
-  \newpage
-  \fancyhf{}
-  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 缩略词表}
-  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
-  \setlength\glsdescwidth{.7\textwidth}
-  \pdfbookmark{缩略词表}{glossary}
-  \printglossary[style=long-uestc, title={\protect\centering 缩略词表}, nonumberlist, nogroupskip]
-}
-\makeglossaries
-
-\RequirePackage{standalone}
 \RequirePackage{indentfirst}
-\RequirePackage{calc}
+%\RequirePackage{calc}
 \RequirePackage{float}
 \RequirePackage{fancyvrb}
 \RequirePackage{fancyhdr}
 \RequirePackage{titlesec}
-\RequirePackage{setspace}
+\RequirePackage{appendix}
 \RequirePackage{cite}
 \RequirePackage[normalem]{ulem}
 \RequirePackage{enumitem}
-\RequirePackage{algorithm2e}
+
+\RequirePackage[algochapter, boxruled, linesnumbered]{algorithm2e}
+
 \RequirePackage{etoolbox}
 \RequirePackage{newfloat}
 \RequirePackage[resetlabels]{multibib}
 \RequirePackage[nottoc]{tocbibind}
 \RequirePackage{everypage}
 \RequirePackage{ifoddpage}
-
-
-\let\algorithm\relax
-\let\endalgorithm\relax
-\expandafter\let\csname algorithm*\endcsname\relax
-\expandafter\let\csname endalgorithm*\endcsname\relax
-\let\listofalgorithms\relax
-
-% Define the new algorithm environment
-\DeclareFloatingEnvironment{algorithm}
-
-\makeatletter
-\renewcommand{\@endalgoln}{\@endalgocfline\hfill\strut\par}
-\renewcommand{\;}{\ifmmode
-  \@mathsemicolon
-\else
-  \@endalgoln
-\fi
-}
-% Definition for the style ruled
-% First add the rules enclosing the captiom
-\DeclareCaptionFormat{algrule}{%
-  {\@hangfrom{#1#2}%
-     \doublespacing
-     \small
-     \advance\caption@parindent\hangindent
-     \advance\caption@hangindent\hangindent
-     \caption@@par#3\par}%
-}
-
-% Apply the new format to the algorithm environment
-\captionsetup[algorithm]{format=algrule}
-
-\makeatletter
-
-\renewcommand{\algorithmname}{算法}
-\renewcommand{\thealgorithm}{\arabic{chapter}-\arabic{algorithm}}
-\captionsetup[algorithm]{aboveskip=6pt}
-\AtBeginEnvironment{algorithm}{\vspace{6pt}}
+\RequirePackage{pdfpages}
 
 \graphicspath{{./pic/}}
 
-\RequirePackage[titles, subfigure]{tocloft}
-\RequirePackage{subfigure}
-
+\RequirePackage[titles]{tocloft}
+\RequirePackage[labelformat=simple]{subfig}
+\captionsetup[subfigure]{font=small, belowskip=6pt, width=36pt}
+\renewcommand{\thesubfigure}{(\alph{subfigure})}
+\newcommand{\floatcontinue}{\end{figure}\clearpage\begin{figure}[tb]\ContinuedFloat}
 
 \urlstyle{rm}
 \raggedbottom
 
-\renewcommand{\contentsname}{目\hspace{6pt}录}
-\renewcommand{\bibname}{参考文献}
-\renewcommand{\figurename}{图}
-\renewcommand{\tablename}{表}
-\renewcommand{\listfigurename}{图目录}
-\renewcommand{\listtablename}{表目录}
-
-% \newcommand*{\noaddvspace}{\renewcommand*{\addvspace}[1]{}}
-% \addtocontents{lof}{\protect\noaddvspace}
-% \addtocontents{lot}{\protect\noaddvspace}
-
-\pretocmd{\listoffigures}{
-    \newpage
-  \fancyhf{}
-  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 图目录}
-  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
-  \renewcommand{\cftfigpresnum}{图}
-  \addtolength{\cftfignumwidth}{12pt}
-  \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
-}{}{}
-
-\newcommand{\thesisfigurelist}{
-  \listoffigures
-}
-
-\pretocmd{\listoftables}{
-    \newpage
-  \fancyhf{}
-  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 表目录}
-  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
-  \renewcommand{\cfttabpresnum}{表}
-  \addtolength{\cfttabnumwidth}{12pt}
-  \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
-}{}{}
+% \AtBeginDocument{\pretocmd{\ref}{~}{}{}\apptocmd{\ref}{}{}{}}
 
 \newcommand{\thesistablelist}{
   \listoftables
@@ -233,28 +113,20 @@
 
 \captionsetup{format=hang}
 \captionsetup{width=\textwidth - 42pt}
-\captionsetup[figure]{aboveskip=6pt,belowskip=0pt}
-\captionsetup[table]{belowskip=6pt}
-\setlength{\extrarowheight}{5pt}
-\setlength{\subfigcapskip}{0pt}
+\captionsetup[figure]{aboveskip=6pt, belowskip=0pt}
+\captionsetup[table]{aboveskip=9pt, belowskip=0pt}
+
 \setlength{\intextsep}{9pt}
 
-\makeatletter
-\AtBeginEnvironment{figure}{
-  \def\@floatboxreset{\centering}
+\AtBeginEnvironment{figure}{%
+  \def\@floatboxreset{\centering}%
 }
-\makeatother
 
-\makeatletter
-\AtBeginEnvironment{table}{
-  \def\@floatboxreset{\centering}
+\AtBeginEnvironment{table}{%
+  \def\@floatboxreset{\centering}%
 }
-\makeatother
+
 \AtBeginEnvironment{tabular}{\small}
-
-\makeatletter
-\renewcommand{\p@subfigure}{\arabic{chapter}-\arabic{figure}}
-\makeatother
 
 \newcommand{\chinesecolon}{\char"FF1A}
 \newcommand{\chinesespace}{\char"3000}
@@ -266,22 +138,22 @@
 \newcommand{\chineseleftparenthesis}{\char"FF08}
 \newcommand{\chineserightparenthesis}{\char"FF09}
 
-\setcounter{secnumdepth}{4}
-\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
 
 \titleformat{\chapter}[block]
-  {\centering\fontsize{15pt}{15pt}\selectfont\heiti\thispagestyle{fancy}}{\thechapter}{7.5pt}{}
+  {\centering\fontsize{15pt}{15pt}\selectfont\strong\thispagestyle{fancy}}{\thechapter}{7.5pt}{}
 
 \titleformat{\section}[block]
-  {\fontsize{14pt}{14pt}\selectfont\heiti}
+  {\fontsize{14pt}{14pt}\selectfont\strong}
   {\thesection}{7pt}{}
 
 \titleformat{\subsection}[block]
-  {\fontsize{14pt}{14pt}\selectfont\heiti}
+  {\fontsize{14pt}{14pt}\selectfont\strong}
   {\thesubsection}{7pt}{}
 
 \titleformat{\subsubsection}[block]
-  {\fontsize{12pt}{12pt}\selectfont\heiti}
+  {\fontsize{12pt}{12pt}\selectfont\strong}
   {\thesubsubsection}{6pt}{}
 
 \RequirePackage[hang, perpage]{footmisc}
@@ -298,7 +170,6 @@
 
 \renewcommand{\footnoterule}{\vfill\noindent\vspace{0.9mm}\hspace{27pt}\rule{5.05cm}{0.02cm}\vspace*{2.6pt}}
 
-\makeatletter
 \def\@makefntext #1{
   \ifFN@hangfoot
       \bgroup \setbox \@tempboxa \hbox {
@@ -332,7 +203,6 @@
         \footnotelayout #1\ifFN@hangfoot \par \egroup
   \fi
 }
-\makeatother
 
 \newcounter{pseudopage}
 \setcounter{pseudopage}{0}
@@ -347,12 +217,17 @@
 }
 
 \newenvironment{chineseabstract}{
-  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
-  \pagenumbering{Roman}
+  %\pagenumbering{Roman}
+  \ifchinesebook{
     \pdfbookmark{中文摘要}{chineseabstract}
-    \chapter*{摘\chinesespace 要}
-    \thispagestyle{fancy}
-    \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 摘要}
+  }{
+    \pdfbookmark{Chinese Abstract}{chineseabstract}
+  }
+  \setcounter{pseudopage}{1}
+  \chapter*{\heiti 摘\chinesespace 要}
+  \fancyhf{}
+  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 摘要}
+  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
 }{
   \checkoddpage
   \ifoddpage
@@ -365,19 +240,20 @@
 \newcommand{\chinesekeyword}[1]{
   \vspace{\baselineskip}
   \noindent
-    \begin{minipage}[t]{48pt}
-      \noindent\textbf{关键词\chinesecolon}
-    \end{minipage}
-    \begin{minipage}[t]{\linewidth - 48pt}
-      #1
-    \end{minipage}
+  \@hangfrom{\makebox[48pt][l]{\textbf{关键词\chinesecolon}}}#1
 }
 
 \newenvironment{englishabstract}{
-  \pdfbookmark{英文摘要}{englishabstract}
+  %\pagenumbering{Roman}
+  \ifchinesebook{
+    \pdfbookmark{英文摘要}{englishabstract}
+  }{
+    \pdfbookmark{English Abstract}{englishabstract}
+  }
   \chapter*{\bfseries ABSTRACT}
-    \thispagestyle{fancy}
+    \fancyhf{}
     \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont ABSTRACT}
+    \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
 }{
   \checkoddpage
   \ifoddpage
@@ -389,13 +265,8 @@
 
 \newcommand{\englishkeyword}[1]{
   \vspace{\baselineskip}
-  \noindent\begin{minipage}[t]{2.1cm}
-      \noindent\textbf{Keywords:}
-    \end{minipage}
-    \begin{minipage}[t]{
-      \linewidth - 2.1cm}
-        #1
-    \end{minipage}
+  \noindent
+  \@hangfrom{\makebox[2.1cm][l]{\textbf{Keywords:}}}#1
 }
 
 \AddEverypageHook{\addtocontents{toc}{
@@ -426,178 +297,399 @@
 \cftsetindents{subsection}{44pt}{31pt}
 \cftsetindents{subsubsection}{76pt}{41pt}
 
-\renewcommand{\cfttoctitlefont}{\fontsize{15pt}{15pt}\selectfont\heiti}
-\renewcommand\cftchapfont{\heiti}
+\renewcommand{\cfttoctitlefont}{\fontsize{15pt}{15pt}\selectfont\strong}
+\renewcommand\cftchapfont{\strong}
 
-\newcommand{\chinesedegreename}{硕士}
-\newcommand{\chinesebooktitle}{硕士学位论文}
-\newcommand{\englishbooktitle}{Master Thesis}
-\newcommand{\thetitle}{}
-\newcommand{\theauthor}{}
-\newcommand{\thedate}{}
-\newcommand{\theschool}{}
-\newcommand{\themajor}{}
-\newcommand{\theadvisor}{}
-\newcommand{\thestudentid}{}
+\newcommand{\zh@thetitle}{\chinesespace}
+\newcommand{\zh@theauthor}{\chinesespace}
+\newcommand{\zh@thedate}{\chinesespace}
+\newcommand{\zh@theschool}{\chinesespace}
+\newcommand{\zh@themajor}{\chinesespace}
+\newcommand{\zh@theadvisor}{\chinesespace}
 
-\renewcommand{\title}[1]{
-  \renewcommand{\thetitle}{#1}
+\newcommand{\en@thetitle}{\chinesespace}
+\newcommand{\en@theauthor}{\chinesespace}
+\newcommand{\en@thedate}{\chinesespace}
+\newcommand{\en@theschool}{\chinesespace}
+\newcommand{\en@themajor}{\chinesespace}
+\newcommand{\en@theadvisor}{\chinesespace}
+
+\newcommand{\thestudentnumber}{\chinesespace}
+
+\renewcommand{\title}[2]{
+  \renewcommand{\zh@thetitle}{#1}
+  \renewcommand{\en@thetitle}{#2}
 }
 
-\renewcommand{\author}[1]{
-  \renewcommand{\theauthor}{#1}
+\renewcommand{\author}[2]{
+  \renewcommand{\zh@theauthor}{#1}
+  \renewcommand{\en@theauthor}{#2}
 }
 
-\renewcommand{\date}[1]{
-  \renewcommand{\thedate}{#1}
+\renewcommand{\date}[2]{
+  \renewcommand{\zh@thedate}{#1}
+  \renewcommand{\en@thedate}{#2}
 }
 
-\newcommand{\major}[1]{
-  \renewcommand{\themajor}{#1}
+\newcommand{\major}[2]{
+  \renewcommand{\zh@themajor}{#1}
+  \renewcommand{\en@themajor}{#2}
 }
 
-\newcommand{\school}[1]{
-  \renewcommand{\theschool}{#1}
+\newcommand{\school}[2]{
+  \renewcommand{\zh@theschool}{#1}
+  \renewcommand{\en@theschool}{#2}
 }
 
-\newcommand{\advisor}[1]{
-  \renewcommand{\theadvisor}{#1}
+\newcommand{\advisor}[2]{
+  \renewcommand{\zh@theadvisor}{#1}
+  \renewcommand{\en@theadvisor}{#2}
 }
 
-\newcommand{\studentid}[1]{
-  \renewcommand{\thestudentid}{#1}
+\newcommand{\studentnumber}[1]{
+  \renewcommand{\thestudentnumber}{#1}
 }
 
+\newcommand{\thedateoral}{}
+\newcommand{\thedatesubmit}{}
+\newcommand{\thedateconfer}{年\chinesespace 月}
 
+\newcommand{\setdate}[2][]{ 
+\ifthenelse{\equal{#1}{oral}}{
+  \renewcommand{\thedateoral}{#2}
+}{}
+\ifthenelse{\equal{#1}{submit}}{
+  \renewcommand{\thedatesubmit}{#2}
+}{}
+\ifthenelse{\equal{#1}{confer}}{
+  \renewcommand{\thedateconfer}{#2}
+}{}
+}
 
+\renewcommand{\strong}{\heiti}
+\DeclareOption{english} {
+  \newcommand{\englishbook}{}
+  \renewcommand{\thechapter}{Chapter \arabic{chapter}}
+  \addtolength{\cftchapnumwidth}{12pt}
+  \renewcommand{\strong}{\bfseries}
+}
+
+\newcommand{\ifchinesebook}[2]{
+  \ifthenelse{\isundefined{\englishbook}}{#1}{#2}
+}
 
 \DeclareOption{bachelor}{
-  \renewcommand{\chinesedegreename}{本科}
-  \renewcommand{\chinesebooktitle}{本科学位论文}
-  \renewcommand{\englishbooktitle}{Bachelor Thesis}
+  \def\chinesedegreename{本科}
+  \def\englishdegreename{Bachelor}
+  \def\chinesebooktitle{学士学位论文}
+  \def\englishbooktitle{Bachelor Thesis}
+  \def\display@chineseheader{电子科技大学学士学位论文}
+  \def\display@englishheader{Bachelor Thesis of University of
+    Electronic Science and Technology of China}
+}
+
+\newcommand{\ifbachelor}[2]{
+  \ifthenelse{\equal{\englishdegreename}{Bachelor}}{#1}{#2}
 }
 
 \DeclareOption{master}{
-  \renewcommand{\chinesedegreename}{硕士}
-  \renewcommand{\chinesebooktitle}{硕士学位论文}
-  \renewcommand{\englishbooktitle}{Master Thesis}
+  \def\chinesedegreename{硕士}
+  \def\englishdegreename{Master}
+  \def\chinesebooktitle{硕士学位论文}
+  \def\englishbooktitle{Master Thesis}
+  \def\display@chineseheader{电子科技大学硕士学位论文}
+  \def\display@englishheader{Master Thesis of University of
+    Electronic Science and Technology of China}
 }
 
 \DeclareOption{promaster}{
-  \renewcommand{\chinesedegreename}{硕士}
-  \renewcommand{\chinesebooktitle}{专业学位硕士学位论文}
-  \renewcommand{\englishbooktitle}{Master Thesis for Professional Degree}
+  \def\chinesedegreename{专业硕士}
+  \def\englishdegreename{Professional Master}
+  \def\chinesebooktitle{专业学位硕士学位论文}
+  \def\englishbooktitle{Master Thesis for Professional Degree}
+  \def\display@chineseheader{电子科技大学硕士学位论文}
+  \def\display@englishheader{Professional Master Thesis of University 
+    of Electronic Science and Technology of China}
 }
 
 \DeclareOption{doctor}{
-  \renewcommand{\chinesedegreename}{博士}
-  \renewcommand{\chinesebooktitle}{博士学位论文}
-  \renewcommand{\englishbooktitle}{Doctoral Dissertation}
+  \def\chinesedegreename{博士}
+  \def\englishdegreename{Doctor}
+  \def\chinesebooktitle{博士学位论文}
+  \def\englishbooktitle{Doctoral Dissertation}
+  \def\display@chineseheader{电子科技大学博士学位论文}
+  \def\display@englishheader{Doctoral Dissertation of University of
+    Electronic Science and Technology of China}
 }
 
+\DeclareOption{engdoctor}{
+  \def\chinesedegreename{工程博士}
+  \def\englishdegreename{Engineering Doctor}
+  \def\chinesebooktitle{工程博士学位论文}
+  \def\englishbooktitle{Engineering Doctoral Dissertation}
+  \def\display@chineseheader{电子科技大学博士学位论文}
+  \def\display@englishheader{Engineering Doctoral Dissertation of
+    University of Electronic Science and Technology of China}
+}
+
+\ExecuteOptions{master}
+
+\ProcessOptions\relax
+
+\ifchinesebook{
+  \renewcommand{\contentsname}{目\hspace{6pt}录}
+  \renewcommand{\bibname}{参考文献}
+  \renewcommand{\figurename}{图}
+  \renewcommand{\tablename}{表}
+  \renewcommand{\listfigurename}{图目录}
+  \renewcommand{\listtablename}{表目录}
+}{}
+
+\pretocmd{\listoffigures}{
+    \newpage
+  \fancyhf{}
+  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont\listfigurename}
+  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
+  \ifchinesebook{
+    \addtolength{\cftfignumwidth}{12pt}
+    \renewcommand{\cftfigpresnum}{\figurename}
+  }{
+    \addtolength{\cftfignumwidth}{32pt}
+    \renewcommand{\cftfigpresnum}{\figurename~}
+  }
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+}{}{}
+
+\newcommand{\thesisfigurelist}{
+  \listoffigures
+}
+
+\pretocmd{\listoftables}{
+    \newpage
+  \fancyhf{}
+  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont\listtablename}
+  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
+  
+  \ifchinesebook{
+    \addtolength{\cfttabnumwidth}{12pt}
+    \renewcommand{\cfttabpresnum}{\tablename}
+  }{
+    \addtolength{\cfttabnumwidth}{32pt}
+    \renewcommand{\cfttabpresnum}{\tablename~}
+  }
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+}{}{}
+
+\ifchinesebook{
+  \SetAlgorithmName{算法}{算法}{算法列表}
+}{
+  \SetAlgorithmName{Algorithm}{Algorithm}{List of Algorithms}
+}
+\renewcommand\thealgocf{\arabic{chapter}-\arabic{algocf}}
+\SetAlgoCaptionSeparator{\null}
+\AtBeginEnvironment{algorithm}{\vspace{9pt}}
+\AfterEndEnvironment{algorithm}{\vspace{9pt}}
+
+%\renewcommand*{\glossarypreamble}{\vspace{-9pt}}
+\newacronymstyle{acronym-uestc}{
+  \ifglshaslong{\glslabel}{\glsgenacfmt}{\glsgenentryfmt}
+}{
+  \renewcommand*{\GenericAcronymFields}{
+    first={\the\glslongtok\space\protect\paren{\the\glsshorttok}},
+    description={\the\glslongtok}}
+  \renewcommand*{\genacrfullformat}[2]{%
+    \glsentrydesc{##1}~(\glsentrylong{##1},\space%
+    \glsentryshort{##1})%
+  }
+  \renewcommand*{\acronymentry}[1]{%
+    \acronymfont{\glsentryshort{##1}}%
+  }
+}
+\setacronymstyle{acronym-uestc}
+
+\newglossarystyle{uestc-chinese}{
+  \setlength{\glsdescwidth}{.3\textwidth}
+  \setlength{\glspagelistwidth}{.3\textwidth}
+  \renewenvironment{theglossary}%
+  {\begin{longtable}{lp{\glsdescwidth}p{\glspagelistwidth}}}%
+    {\end{longtable}}%
+  \renewcommand*{\glossaryheader}{%
+    \heiti 缩略词 &\heiti 英文全称 &
+    \heiti 中文全称 \tabularnewline\endhead}%
+  \renewcommand*{\glsgroupheading}[1]{}%
+  \renewcommand{\glossentry}[2]{
+    \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+    \glsentrylong{##1} & \glsentrydesc{##1}\tabularnewline
+  }
+  \renewcommand*{\subglossentry}[3]{
+    \glossentry{##2}{##3}}
+}
+
+
+\newglossarystyle{uestc-english}{
+  \setlength\glsdescwidth{.7\textwidth}
+  \renewenvironment{theglossary}%
+    {\begin{longtable}{lp{\glsdescwidth}}}%
+    {\end{longtable}}%
+
+  \renewcommand*{\glossaryheader}{}%
+  \renewcommand*{\glsgroupheading}[1]{}%
+  \renewcommand{\glossentry}[2]{
+    \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+    \ifglshaslong{##1}{\glsentrylong{##1}\ifglshasdesc{##1}{, \glsentrydesc{##1}}{}}
+    {\glsentrydesc{##1}} \\
+  }
+  \renewcommand*{\subglossentry}[3]{
+  \glossentry{##2}{##3}}
+}
+
+\defglsentryfmt{%
+  \ifglshaslong{\glslabel}{%
+    \glsgenacfmt%
+  }{%
+    \ifglsused{\glslabel}{%
+      \glsgenentryfmt%
+    }{%
+      \glsgenentryfmt%
+    }%
+  }%
+}
+
+\newcommand{\thesisglossarylist}{
+  \newpage 
+  \fancyhf{}
+  \ifchinesebook{
+    \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 缩略词表}
+    \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
+    \pdfbookmark{缩略词表}{glossary}
+    \printglossary[style=uestc-chinese, title={\protect\centering 缩略词表}, nonumberlist, nogroupskip]
+  }{
+    \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont Glossary}
+    \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
+    \pdfbookmark{Glossary}{glossary}
+    \printglossary[style=uestc-english, title={\protect\centering Glossary}, nonumberlist, nogroupskip]
+  }
+  \newpage
+}
 
 \newcommand{\makecover}{
 \thispagestyle{empty}
 \setlength{\extrarowheight}{9pt}
+\ifchinesebook{\pdfbookmark{封面}{cover}}{\pdfbookmark{Cover}{cover}}
 \begin{center}
-  \fontsize{22pt}{22pt}\selectfont 电子科技大学 \\[7bp]
+  \ifbachelor{\includegraphics{bachelor_font.pdf} \\}{
+    \fontsize{22pt}{22pt}\selectfont 电\hspace{0.5em}子\hspace{0.5em}科\hspace{0.5em}技%
+    \hspace{0.5em}大\hspace{0.5em}学 \\[7bp]}
   \fontsize{12pt}{12pt}\selectfont UNIVERSITY OF ELECTRONIC SCIENCE
     AND TECHNOLOGY OF CHINA \\[36bp]
-  \fontsize{42pt}{42pt}\selectfont\chinesebooktitle \\[24bp]
+  \ifbachelor{\fontsize{42pt}{42pt}\selectfont{\bfseries\chinesebooktitle} \\[24bp]}{
+    \fontsize{42pt}{42pt}\selectfont\chinesebooktitle \\[24bp]}
   \fontsize{16pt}{16pt}\selectfont
     \textbf{\MakeUppercase{\englishbooktitle}} \\[48bp]
-  \includegraphics[width=221bp]{logo.png} \\[48bp]
-  \begin{tabular}{lp{4in}}
-    \fontsize{16pt}{16pt}\selectfont 论文题目 & \multirow[t]{2}{4in}{
+  \ifbachelor{
+    \vspace{0.5cm}
+    \includegraphics[width=5cm]{logo.pdf} \\[66bp]
+  }{\includegraphics[width=221bp]{logo.pdf} \\[48bp]}
+  \begin{tabular}{lp{4.6in}}
+    \heiti\fontsize{16pt}{16pt}\selectfont 论文题目 & \multirow[t]{2}{4.6in}{
         \centering
-          \fontsize{16pt}{16pt}\selectfont
-          \thetitle
+          \heiti\fontsize{16pt}{19pt}\selectfont
+          \zh@thetitle
     } \\
     \cline{2-2}
-%            & \\
-%    \cline{2-2}
-  \end{tabular} \\[\baselineskip]
-  \begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
-      p{3.77in}}
-    学科专业 & \themajor \\
+            & \\
     \cline{2-2}
-    学\chinesespace\chinesespace 号 & \thestudentid \\
+  \end{tabular}\hspace*{\fill} \\[\baselineskip]
+  \begin{tabular}{>{\heiti\fontsize{16pt}{16pt}\selectfont}l
+      >{\centering\arraybackslash\heiti\fontsize{16pt}{16pt}\selectfont}
+      p{3.77in}p{15pt}}
+    学科专业 & \zh@themajor &\\
     \cline{2-2}
-    作者姓名 & \theauthor \\
+    学\chinesespace\chinesespace 号 & \thestudentnumber & \\
     \cline{2-2}
-    指导老师 & \theadvisor \\
+    作者姓名 & \zh@theauthor &\\
+    \cline{2-2}
+    指导老师 & \zh@theadvisor &\\
     \cline{2-2}
   \end{tabular}
 \end{center}
 
-\newpage
-\thispagestyle{empty}
+\ifbachelor{}{\thetitlepage}
 
-\noindent
-分类号 \uline{\hspace{2.5in}} 密级 \uline{\hspace{2.5in}} \\[12bp]
-UDC\textsuperscript{ 注1} \uline{\hspace{2.5in}} \\[12bp]
+\newpage
+\setcounter{page}{1}
+\setlength{\extrarowheight}{2pt}
+}
+
+\newcommand{\thetitlepage}{
+  \newpage
+  \thispagestyle{empty}
+
+\noindent 分类号 \rule[-3pt]{2.5in}{0.5pt} 密级 \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
+UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
 
 \begin{center}
   \fontsize{36pt}{36pt}\selectfont{\heiti
     学\chinesespace 位\chinesespace 论\chinesespace 文
   } \\[48bp]
 
-  \fontsize{16pt}{16pt}\selectfont\thetitle \\
+  \fontsize{16pt}{16pt}\selectfont{\heiti\zh@thetitle} \\
   \vspace{-15pt}
-  \rule{5.9in}{.4pt} \\
-  \fontsize{12pt}{12pt}\selectfont（题名和副题名）\\[48bp]
-  \fontsize{16pt}{16pt}\selectfont\theauthor \\
+  \rule{5.9in}{.5pt} \\
+  \fontsize{12pt}{12pt}\selectfont（题名和副题名）\\[36bp]
+  \fontsize{16pt}{16pt}\selectfont{\heiti\zh@theauthor} \\
   \vspace{-15pt}
-  \rule{1.63in}{.4pt} \\
-  \fontsize{12pt}{12pt}\selectfont（作者姓名） \\[48bp]
+  \rule{1.63in}{.5pt} \\
+  \fontsize{12pt}{12pt}\selectfont（作者姓名） \\[36bp]
 
-  \begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}l
+  \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
       p{4.45in}}
-      指导老师 & \theadvisor \\
+      指导老师 & {\heiti\zh@theadvisor} \\
+    \cline{2-2}
+      & {\heiti 电子科技大学\chinesespace 成都} \\
     \cline{2-2}
     & \fontsize{12pt}{12pt}\selectfont（姓名、职称、单位名称）
-  \end{tabular}  \\[48bp]
+  \end{tabular}  \\[36bp]
 \end{center}
 
   \noindent
-  \begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
-      p{0.96in}
-      >{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
-      p{2.48in}}
-      申请学位级别 & \chinesedegreename{} &
-      学科专业 & \themajor \\
-    \cline{2-2}
-    \cline{4-4}
-  \end{tabular} \\
-  \begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
+  \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
+      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
       p{1.0in}
-      >{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
-      p{2.0in}}
-      提交论文日期 &  &
-      论文答辩日期 & \\
+      >{\fontsize{12pt}{12pt}\selectfont}l
+      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
+      p{2.48in}}
+      申请学位级别 & \chinesedegreename &
+      学科专业 & \zh@themajor \\
     \cline{2-2}
     \cline{4-4}
   \end{tabular} \\
-  \begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
+  \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
+      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
+      p{1.0in}
+      >{\fontsize{12pt}{12pt}\selectfont}l
+      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
+      p{2.0in}}
+      提交论文日期 & \thedatesubmit &
+      论文答辩日期 & \thedateoral \\
+    \cline{2-2}
+    \cline{4-4}
+  \end{tabular} \\
+  \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
+      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
       p{3.97in}}
-      学位授予单位和日期 & 电子科技大学 \\
+      学位授予单位和日期 & 电子科技大学\chinesespace{} \thedateconfer \\
     \cline{2-2}
   \end{tabular} \\
-  \begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
+  \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
+      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
       p{2.26in}}
       答辩委员会主席 & \\
     \cline{2-2}
   \end{tabular} \\
-  \begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
+  \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
+      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
       p{4.89in}}
       评阅人 & \\
     \cline{2-2}
@@ -605,80 +697,260 @@ UDC\textsuperscript{ 注1} \uline{\hspace{2.5in}} \\[12bp]
 
 \vspace{0.54in}
 \noindent
-注1：注明《国际十进分类法UDC》的类号。
-
+\hspace{12pt}注1：注明《国际十进分类法UDC》的类号。
 
 \newpage
-\setcounter{page}{0}
-\setcounter{pseudopage}{0}
-\setlength{\extrarowheight}{5pt}
+\thispagestyle{empty}\null
+\par{\vspace{2.3cm}}
+\noindent
+\begin{minipage}[t][1.52cm][t]{\textwidth}
+  \fontsize{18pt}{20pt}\selectfont
+  \bfseries\centering\en@thetitle
+\end{minipage}
+\par{\vspace{7.3cm}}
+\noindent
+\begin{minipage}[t][1.52cm][t]{\textwidth}
+  \fontsize{15pt}{17pt}\selectfont
+  \bfseries\centering\noindent
+  A \englishbooktitle{} Submitted to \\
+  University of Electronic Science and Technology of China
+\end{minipage}
+\par{\vspace{2.2cm}}
+\noindent
+\begin{tabular}{>{\bfseries\fontsize{16pt}{16pt}\selectfont}r
+  >{\centering\arraybackslash\bfseries\fontsize{16pt}{16pt}\selectfont}
+  p{10.6cm}}
+  Discipline: & \multirow[t]{2}{*}{\en@themajor} \\
+\cline{2-2}
+& \\
+\cline{2-2}
+Author: & \en@theauthor \\
+\cline{2-2}
+Supervisor: & \en@theadvisor \\
+\cline{2-2}
+School: & \en@theschool \\
+\cline{2-2}
+\end{tabular}
 }
 
-\ProcessOptions\relax
+\newcommand{\bindpdfcover}[1]{
+  \ifchinesebook{\pdfbookmark{封面}{cover}}{\pdfbookmark{Cover}{cover}}
+  \includepdf[pages=-]{#1}
+  \newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
+}
 
-\newcommand{\standardhead}{
+\newcommand{\originalitydeclaration}{
+\newpage
+\thispagestyle{empty}
+\begin{spacing}{2.142}
+  \ifchinesebook{\pdfbookmark{独创性声明}{originalitydeclaration}}
+    {\pdfbookmark{Originality Declaration}{originalitydeclaration}}
+  \noindent\begin{center}
+  \fontsize{18pt}{20pt}\selectfont\heiti 独创性声明
+  \end{center}
+    \par{\fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{28pt}%
+    本人声明所呈交的学位论文是本人在导师指导下进行的研究工作及取得的研究成果。%
+    据我所知，除了文中特别加以标注和致谢的地方外，论文中不包含其他人已经发表或撰写过的研究成果，%
+    也不包含为获得电子科技大学或其它教育机构的学位或证书而使用过的材料。%
+    与我一同工作的同志对本研究所做的任何贡献均已在论文中作了明确的说明并表示谢意。}
+  \\[14pt]
+  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名：\rule[-3pt]{4.1cm}{0.5pt}\hspace{42pt}%
+  日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日 \\
+  \noindent\begin{center}
+    \fontsize{18pt}{20pt}\selectfont\heiti 论文使用授权
+  \end{center}
+  \par{\fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{28pt}%
+    本学位论文作者完全了解电子科技大学有关保留、使用学位论文的规定，%
+    有权保留并向国家有关部门或机构送交论文的复印件和磁盘，允许论文被查阅和借阅。%
+    本人授权电子科技大学可以将学位论文的全部或部分内容编入有关数据库进行检索，%
+    可以采用影印、缩印或扫描等复制手段保存、汇编学位论文。}
+  \par{\fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{28pt}
+  \chineseleftparenthesis%
+  保密的学位论文在解密后应遵守此规定%
+  \chineserightparenthesis} \\[14pt]
+  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名：\rule[-3pt]{4.1cm}{0.5pt}\hspace{12pt}%
+  导师签名：\rule[-3pt]{4.1cm}{0.5pt} \\
+  \null\hspace{259pt} 日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日
+\end{spacing}
+\newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
+}
+
+\setlength{\extrarowheight}{2pt}
+
+\newcommand{\standardheader}{
   \fancyhf{}
-  \fancyhead[CO]{\fontsize{10.5pt}{12.6pt}\selectfont\leftmark}
-  \fancyhead[CE]{\fontsize{10.5pt}{12.6pt}\selectfont 电子科技大学\chinesedegreename{}学位论文}
+  \ifchinesebook{
+    \fancyhead[CE]{\fontsize{10.5pt}{12.6pt}\selectfont\display@chineseheader}
+    \fancyhead[CO]{\fontsize{10.5pt}{12.6pt}\selectfont\leftmark}
+  }{
+    \fancyhead[CE]{\fontsize{10.5pt}{12.6pt}\selectfont\nouppercase\display@englishheader}
+    \fancyhead[CO]{\fontsize{10.5pt}{12.6pt}\selectfont\nouppercase\leftmark}
+  }
   \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\thepage}
 }
 
 \pretocmd{\tableofcontents}{
+  \newpage
+  \checkoddpage
+  \ifoddpage
+      \newpage
+    \else
+      \blankpage
+    \fi
   \fancyhf{}
-  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 目录}
-  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
-  \pdfbookmark{目录}{toc}
+  \ifchinesebook{
+    \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 目录}
+    \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
+    \pdfbookmark{目录}{toc}
+  }{
+    \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont Contents}
+    \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
+    \pdfbookmark{Contents}{toc}
+  }
 }{}{}
 
 \newcommand{\thesistableofcontents}{
   \tableofcontents
 }
 
-\renewcommand{\chaptermark}[1]{\markboth{第\zhnumber{\arabic{chapter}}章 \hspace{5.25pt}#1}{}}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter\hspace{5.25pt}#1}{}}
 
 \newcommand{\thesisacknowledgement}{
-  \renewcommand\thesection{\arabic{section}}
   \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
   \setcounter{section}{0}
-  \chapter*{致\hspace{12pt}谢}
-  \addcontentsline{toc}{chapter}{致\hspace{12pt}谢}
-  \markboth{致谢}{致谢}
+  \ifchinesebook{
+    \chapter*{致\hspace{12pt}谢}
+    \addcontentsline{toc}{chapter}{致\hspace{12pt}谢}
+    \markboth{致谢}{致谢}
+  }{
+    \chapter*{Acknowledgements}
+    \addcontentsline{toc}{chapter}{Acknowledgements}
+    \markboth{Acknowledgements}{Acknowledgements}
+  }
   \thispagestyle{fancy}
 }
 
-\newcommand{\thesischapterexordium}{
-  \checkoddpage
-  \ifoddpage
-      \blankpage
-    \else
-      \newpage
-  \fi
-    \newpage
-  \addtocontents{toc}{\protect\setcounter{tocdepth}{4}}
-  \standardhead
+\newcommand{\thesiscontent}{
+  \newpage
+  \clearpage{\thispagestyle{empty}\cleardoublepage}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+  \standardheader
   \pagenumbering{arabic}
-  \setcounter{page}{1}
-%  \chapter{绪\hspace{6pt}论}
-%    \chaptermark{绪论}
 }
 
+\pretocmd{\@chapter}{
+  \ifdefined\@BODY
+  \else
+  \ifnum\value{chapter}=0
+      \thesiscontent
+    \fi
+  \fi
+}{}{}
+
+\apptocmd{\@chapter}{
+  \ifdefined\@BODY
+  \else
+    \ifnum\value{chapter}=1
+      \ifchinesebook{\chaptermark{绪论}}{\chaptermark{Introduction}}
+      \setcounter{page}{1}
+    \fi
+  \fi
+  \def\@BODY{\null}
+}{}{}
+
+\newcommand{\thesischapterexordium}{
+  \ifchinesebook{
+    \chapter{绪\hspace{6pt}论}
+  }{
+    \chapter{Introduction}
+  }
+}
+
+%\renewcommand*{\l@chapter}{\@dottedtocline{1}{1.5em}{2.3em}}
+
 \newcommand{\thesisappendix}{
-  \chapter*{附\chinesespace 录}
-    \setcounter{section}{0}
+  \newpage
+  \appendix
+  \interlinepenalty=0
+  \ifchinesebook{}{\addtocontents{toc}{\protect\addtolength{\cftchapnumwidth}{12pt}}}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+  \titleformat{\chapter}[block]
+    {\centering\fontsize{15pt}{15pt}\selectfont\strong\thispagestyle{fancy}}{\thechapter}{7.5pt}{}
+  \ifchinesebook{
+    \renewcommand{\thechapter}{附录\Alph{chapter}}
+    \renewcommand{\appendixname}{附录}
+  }{
+    \renewcommand{\thechapter}{Appendix \Alph{chapter}}
+    \renewcommand{\appendixname}{Appendix}
+  }
+
+  \renewcommand{\thesection}{\Alph{chapter}.\arabic{section}}
+  \renewcommand{\theequation}{\alph{chapter}-\arabic{equation}}
+  \renewcommand{\thetable}{\alph{chapter}-\arabic{table}}
+  \renewcommand{\thefigure}{\alph{chapter}-\arabic{figure}}
+  \renewcommand{\thetheorem}{\alph{chapter}.\arabic{theorem}}
+  \renewcommand{\theaxiom}{\alph{chapter}.\arabic{axiom}}
+  \renewcommand{\thecorollary}{\alph{chapter}.\arabic{corollary}}
+  \renewcommand{\thelemma}{\alph{chapter}.\arabic{lemma}}
+  \renewcommand{\thedefinition}{\alph{chapter}.\arabic{definition}}
+  \renewcommand{\theexample}{\alph{chapter}.\arabic{example}}
+}
+
+\newcommand{\thesissingleappendix}{
+  \newpage
+  \appendix
+  \interlinepenalty=0
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+  \titleformat{\chapter}[block]
+    {\centering\fontsize{15pt}{15pt}\selectfont\strong\thispagestyle{fancy}}{附\hspace{12pt}录}{7.5pt}{}
+  %\renewcommand{\thechapter}{附\hspace{12pt}录}
+  \ifchinesebook{
+    \renewcommand{\appendixname}{附录}
+  }{
+    \renewcommand{\appendixname}{Appendix}
+  }
+  
+  \renewcommand{\thesection}{A.\arabic{section}}
+  
+  \renewcommand{\theequation}{a-\arabic{equation}}
+  \renewcommand{\thetable}{a-\arabic{table}}
+  \renewcommand{\thefigure}{a-\arabic{figure}}
+  \renewcommand{\thetheorem}{a.\arabic{theorem}}
+  \renewcommand{\theaxiom}{a.\arabic{axiom}}
+  \renewcommand{\thecorollary}{a.\arabic{corollary}}
+  \renewcommand{\thelemma}{a.\arabic{lemma}}
+  \renewcommand{\thedefinition}{a.\arabic{definition}}
+  \renewcommand{\theexample}{a.\arabic{example}}
+  
+  \ifchinesebook{
+    \chapter*{附\hspace{12pt}录}
     \addcontentsline{toc}{chapter}{附录}
     \markboth{附录}{附录}
-    \thispagestyle{fancy}
-    \renewcommand{\theequation}{a-\arabic{equation}}
-    \renewcommand{\thetable}{a-\arabic{table}}
-    \renewcommand{\thefigure}{a-\arabic{figure}}
+  }{
+    \chapter*{Appendix}
+    \addcontentsline{toc}{chapter}{Appendix}
+    \markboth{Appendix}{Appendix}
+  }
+}
+
+\ifchinesebook{
+  \newcommand{\translation@originaltitle}{外文资料原文}
+  \newcommand{\translation@chinesetitle}{外文资料译文}
+}{
+  \newcommand{\translation@originaltitle}{Original Text for Translation}
+  \newcommand{\translation@chinesetitle}{Translated Text in Chinese}
 }
 
 \newcommand{\thesistranslationoriginal}{
-  \chapter*{外文资料原文}
+  \interlinepenalty=0
+  \chapter*{\translation@originaltitle}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+  \renewcommand\thesection{\arabic{section}}
     \setcounter{section}{0}
-    \addcontentsline{toc}{chapter}{外文资料原文}
-    \markboth{外文资料原文}{外文资料原文}
+    \addcontentsline{toc}{chapter}{\translation@originaltitle}
+    \markboth{\translation@originaltitle}{\translation@originaltitle}
     \thispagestyle{fancy}
+    \hypersetup{bookmarksdepth=0} 
     \renewcommand{\theequation}{\arabic{equation}}
     \renewcommand{\thetable}{\arabic{table}}
     \renewcommand{\thefigure}{\arabic{figure}}
@@ -687,11 +959,15 @@ UDC\textsuperscript{ 注1} \uline{\hspace{2.5in}} \\[12bp]
 }
 
 \newcommand{\thesistranslationchinese}{
-  \chapter*{外文资料译文}
+  \interlinepenalty=0
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+  \chapter*{\translation@chinesetitle}
+  \renewcommand\thesection{\arabic{section}}
     \setcounter{section}{0}
-    \addcontentsline{toc}{chapter}{外文资料译文}
-    \markboth{外文资料译文}{外文资料译文}
+    \addcontentsline{toc}{chapter}{\translation@chinesetitle}
+    \markboth{\translation@chinesetitle}{\translation@chinesetitle}
     \thispagestyle{fancy}
+    \hypersetup{bookmarksdepth=0} 
     \renewcommand{\theequation}{\arabic{equation}}
     \renewcommand{\thetable}{\arabic{table}}
     \renewcommand{\thefigure}{\arabic{figure}}
@@ -699,17 +975,18 @@ UDC\textsuperscript{ 注1} \uline{\hspace{2.5in}} \\[12bp]
     \renewcommand{\tablename}{表}
 }
 
-\makeatletter
+\ifchinesebook{
+  \newcommand{\thesisaccomplishtitle}{攻读\chinesedegreename{}学位期间取得的成果}
+  \newcommand{\thesisbibname}{参考文献}
+}{
+  \newcommand{\thesisaccomplishtitle}{Research Results Obtained During the Study for \englishdegreename{} Degree}
+  \newcommand{\thesisbibname}{References}
+}
+
+\renewcommand{\bibname}{\thesisbibname}
 \renewcommand{\@biblabel}[1]{[#1]\hfill}
-\makeatother
 
-\patchcmd\thebibliography
-    {\labelsep}
-    {\labelsep\itemsep=0pt\parsep=0pt\relax}
-    {}
-    {\typeout{Couldn't patch the command}}
-
-\newenvironment{thesisbibliography}{
+\newenvironment{thesisthebibliography}{
   \begin{thebibliography}{lo}
     \interlinepenalty=10000
     \begin{spacing}{1.667}
@@ -730,52 +1007,79 @@ UDC\textsuperscript{ 注1} \uline{\hspace{2.5in}} \\[12bp]
   \end{spacing}
 }{}{}
 
+\newcommand{\bstlabelmark}{lo}
 \newcommand{\thesisloadbibliography}[2][]{
   \ifthenelse{
-      \equal{#1}{nocite}
-    }{
-      \nocite{*}
-    }{}
-  \bibliographystyle{thesis-uestc}
-  \bibliography{#2}
+    \equal{#1}{large}
+  }{
+    \setlength{\labelsep}{3pt}
+    \renewcommand{\bstlabelmark}{loo}
+    \bibliographystyle{thesis-uestc}
+    \bibliography{#2}
+    \setlength{\labelsep}{6pt}
+  }{
+    \bibliographystyle{thesis-uestc}
+    \bibliography{#2}
+  }
 }
 
-\newcites{achievement}{攻读\chinesedegreename{}学位期间取得的成果}
+\newcommand{\thesisbibliography}{\thesisloadbibliography}
 
-\newenvironment{thesisachievement}{
-  \renewcommand{\bibname}{攻读\chinesedegreename{}学位期间取得的成果}
+\newcites{accomplish}{\thesisaccomplishtitle}
+
+\newenvironment{thesistheaccomplish}{
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+  \renewcommand\thesection{\arabic{section}}
+  \setcounter{section}{0}
+  \nociteaccomplish{*}
+  \renewcommand{\bibname}{\thesisaccomplishtitle}
   \begin{thebibliography}{lo}
   \interlinepenalty=10000
+  \setlength{\itemsep}{0bp}\setlength{\parskip}{0pt}
   \begin{spacing}{1.667}
   \thispagestyle{fancy}
   \small
 }{
-  \end{spacing}\end{thebibliography}
-  \renewcommand{\bibname}{参考文献}
+  \end{spacing}
+  \end{thebibliography}
+  \renewcommand{\bibname}{\thesisbibname}
 }
 
-\newcommand{\thesisloadachievement}[1]{
-  \nociteachievement{*}
-  \renewcommand{\bibname}{攻读\chinesedegreename{}学位期间取得的成果}
+\newcommand{\thesisloadaccomplish}[1]{
+  \nociteaccomplish{*}
+  \renewcommand{\bibname}{\thesisaccomplishtitle}
+  \renewcommand{\bstlabelmark}{lo}
   \thispagestyle{fancy}
   \begin{spacing}{1.667}
-  \bibliographystyleachievement{thesis-uestc}
-  \bibliographyachievement{#1}
+  \bibliographystyleaccomplish{thesis-uestc}
+  \bibliographyaccomplish{#1}
   \end{spacing}
-  \renewcommand{\bibname}{参考文献}
+  \renewcommand{\bibname}{\thesisbibname}
 }
 
+\newcommand{\thesisaccomplish}{\thesisloadaccomplish}
 
-
-\newtheoremstyle{dotless}{0pt}{0pt}{\normalfont}{24pt}{\heiti}{}{ }{}
+\newtheoremstyle{dotless}{0pt}{0pt}{\normalfont}{24pt}{\strong}{}{ }{}
 \theoremstyle{dotless}
-\newtheorem{theorem}{定理}[chapter]
-\newtheorem{axiom}[theorem]{公理}
-\newtheorem{corollary}[theorem]{推论}
-\newtheorem{lemma}[theorem]{引理}
-\newtheorem{definition}[theorem]{定义}
-\newtheorem{example}[theorem]{例子}
-\newtheorem{proposition}[theorem]{命题}
+%\renewcommand\@upn{\selectfont\heiti@letter}
+
+\ifchinesebook{
+  \newtheorem{theorem}{定理}[chapter]
+  \newtheorem{axiom}[theorem]{公理}
+  \newtheorem{corollary}[theorem]{推论}
+  \newtheorem{lemma}[theorem]{引理}
+  \newtheorem{definition}[theorem]{定义}
+  \newtheorem{example}[theorem]{例子}
+  \newtheorem{proposition}[theorem]{命题}
+}{
+  \newtheorem{theorem}{Theorem}[chapter]
+  \newtheorem{axiom}[theorem]{Axiom}
+  \newtheorem{corollary}[theorem]{Corollary}
+  \newtheorem{lemma}[theorem]{Lemma}
+  \newtheorem{definition}[theorem]{Definition}
+  \newtheorem{example}[theorem]{Example}
+  \newtheorem{proposition}[theorem]{Proposition}
+}
 
 
 \renewcommand{\thetheorem}{\arabic{chapter}.\arabic{theorem}}
@@ -785,21 +1089,21 @@ UDC\textsuperscript{ 注1} \uline{\hspace{2.5in}} \\[12bp]
 \renewcommand{\thedefinition}{\arabic{chapter}.\arabic{definition}}
 \renewcommand{\theexample}{\arabic{chapter}.\arabic{example}}
 \renewcommand{\qedsymbol}{$\blacksquare$}
-\renewcommand{\proofname}{证明}
+\ifchinesebook{
+  \renewcommand{\proofname}{证明}
+}{}
 
-\makeatletter
 \renewenvironment{proof}[1][\proofname]{\par
   \pushQED{\qed}
   \normalfont
   \topsep0pt \partopsep0pt
   \trivlist
   \item[\hskip5\labelsep
-        \heiti
-    #1\@addpunct{:}]\ignorespaces
+    \strong
+  #1\@addpunct{:}]\ignorespaces
 }{
   \popQED\endtrivlist\@endpefalse
 }
-\makeatother
 
 \newcommand{\citing}[1]{\textsuperscript{\cite{#1}}}
 \setlist{noitemsep}
@@ -811,6 +1115,5 @@ UDC\textsuperscript{ 注1} \uline{\hspace{2.5in}} \\[12bp]
   \setlength{\belowdisplayshortskip}{8pt}
   \setlength{\abovedisplayshortskip}{8pt}
 }
-
 
 \endinput
