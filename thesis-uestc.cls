@@ -303,6 +303,9 @@
 \newcommand{\zh@thetitle}{\chinesespace}
 \newcommand{\zh@theauthor}{\chinesespace}
 \newcommand{\zh@thedate}{\chinesespace}
+\newcommand{\zh@thedateoral}{\chinesespace}
+\newcommand{\zh@thedatesubmit}{\chinesespace}
+\newcommand{\zh@thedateconfer}{\chinesespace}
 \newcommand{\zh@theschool}{\chinesespace}
 \newcommand{\zh@themajor}{\chinesespace}
 \newcommand{\zh@theadvisor}{\chinesespace}
@@ -310,6 +313,9 @@
 \newcommand{\en@thetitle}{\chinesespace}
 \newcommand{\en@theauthor}{\chinesespace}
 \newcommand{\en@thedate}{\chinesespace}
+\newcommand{\en@thedateoral}{\chinesespace}
+\newcommand{\en@thedatesubmit}{\chinesespace}
+\newcommand{\en@thedateconfer}{\chinesespace}
 \newcommand{\en@theschool}{\chinesespace}
 \newcommand{\en@themajor}{\chinesespace}
 \newcommand{\en@theadvisor}{\chinesespace}
@@ -329,6 +335,27 @@
 \renewcommand{\date}[2]{
   \renewcommand{\zh@thedate}{#1}
   \renewcommand{\en@thedate}{#2}
+  \renewcommand{\zh@thedateoral}{#1}
+  \renewcommand{\en@thedateoral}{#2}
+  \renewcommand{\zh@thedatesubmit}{#1}
+  \renewcommand{\en@thedatesubmit}{#2}
+  \renewcommand{\zh@thedateconfer}{#1}
+  \renewcommand{\en@thedateconfer}{#2}
+}
+
+\newcommand{\dateoral}[2]{
+  \renewcommand{\zh@thedateoral}{#1}
+  \renewcommand{\en@thedateoral}{#2}
+}
+
+\newcommand{\datesubmit}[2]{
+  \renewcommand{\zh@thedatesubmit}{#1}
+  \renewcommand{\en@thedatesubmit}{#2}
+}
+
+\newcommand{\dateconfer}[2]{
+  \renewcommand{\zh@thedateconfer}{#1}
+  \renewcommand{\en@thedateconfer}{#2}
 }
 
 \newcommand{\major}[2]{
@@ -348,22 +375,6 @@
 
 \newcommand{\studentnumber}[1]{
   \renewcommand{\thestudentnumber}{#1}
-}
-
-\newcommand{\thedateoral}{}
-\newcommand{\thedatesubmit}{}
-\newcommand{\thedateconfer}{年\chinesespace 月}
-
-\newcommand{\setdate}[2][]{ 
-\ifthenelse{\equal{#1}{oral}}{
-  \renewcommand{\thedateoral}{#2}
-}{}
-\ifthenelse{\equal{#1}{submit}}{
-  \renewcommand{\thedatesubmit}{#2}
-}{}
-\ifthenelse{\equal{#1}{confer}}{
-  \renewcommand{\thedateconfer}{#2}
-}{}
 }
 
 \renewcommand{\strong}{\heiti}
@@ -671,15 +682,15 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
       >{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
       p{2.0in}}
-      提交论文日期 & \thedatesubmit &
-      论文答辩日期 & \thedateoral \\
+      提交论文日期 & \zh@thedatesubmit &
+      论文答辩日期 & \zh@thedateoral \\
     \cline{2-2}
     \cline{4-4}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
       p{3.97in}}
-      学位授予单位和日期 & 电子科技大学\chinesespace{} \thedateconfer \\
+      学位授予单位和日期 & 电子科技大学\chinesespace{} \zh@thedateconfer \\
     \cline{2-2}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
