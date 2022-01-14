@@ -427,7 +427,11 @@ FUNCTION {conference}
         format.address write$ add.comma
     } if$
     format.year write$ add.comma
-    format.pages write$
+    pages missing$
+    'skip$
+    {
+        format.pages write$
+    } if$
     newline$
 }
 
@@ -552,11 +556,40 @@ FUNCTION {standard}
 FUNCTION {digital}
 {
     bibitem.begin
-    format.authors write$ add.period
+    format.authors missing$
+    'skip$
+    {
+        format.authors write$ add.period
+    } if$
     format.title write$
     "[" format.type * "]" * write$ add.period
     format.url write$ add.comma
-    format.date write$
+    format.date missing$
+    'skip$
+    {
+        add.comma
+        format.date write$
+    } if$
+    newline$
+}
+
+FUNCTION {misc}
+{
+    bibitem.begin
+    format.authors missing$
+    'skip$
+    {
+        format.authors write$ add.period
+    } if$
+    format.title write$
+    "[" format.type * "]" * write$ add.period
+    format.url write$ add.comma
+    format.date missing$
+    'skip$
+    {
+        add.comma
+        format.date write$
+    } if$
     newline$
 }
 

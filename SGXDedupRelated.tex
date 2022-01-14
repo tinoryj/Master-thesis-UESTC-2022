@@ -1,0 +1,12 @@
+\section{Related Work}
+\label{sec:related_work}
+
+\noindent {\bf MLE 密钥管理。} 基于 MLE 的传统 \cite{bellare13a} 加密重复数据删除系统（例如 \cite{adya02,cox02,shah15}）容易受到离线暴力攻击 \cite{bellare13b}。 DupLESS \cite{bellare13b} 建议服务器辅助 MLE 在专用密钥服务器中执行 MLE 密钥生成。服务器辅助 MLE 的后续研究集中在重复数据删除模式证明 \cite{armknecht15}、跨用户重复数据删除 \cite{zhou15} 和 MLE 密钥更新 \cite{qin17}。
+
+一些研究以降低重复数据删除效率 \cite{zhou15,qin17} 或削弱安全性 \cite{li20a} 为代价来减轻基于块的 MLE 密钥生成的开销。 \sysname 在性能上优于这些方法，同时保留了重复数据删除的有效性和安全性 (\S\ref{subsec:synthetic})。其他一些 MLE 密钥生成方法包括基于阈值的密钥管理 \cite{duan14} 和分散式密钥管理 \cite{liu15}，但它们建立在密码原语（例如，阈值签名 \cite{duan14} 和密码认证密钥交换\cite{liu15}) 理论证明但不容易实现。
+
+\paragraph{防御侧信道攻击。} 基于源的重复数据删除具有带宽效率，但容易受到侧信道攻击 \cite{harnik10}。先前的研究 \cite{harnik10, li15} 结合了基于源的重复数据删除和基于目标的重复数据删除来防御侧信道攻击，而 \sysname 通过纯粹执行基于源的重复数据删除（\S\ref{subsec: real-world}）并使用 PoW 来防止侧信道攻击。此外，\sysname 比基于 Merkle 树的 PoW (\S\ref{subsec:synthetic}) 更有效。其他一些研究通过放松安全性来提高 PoW 的效率（例如，\cite{pietro12,xu13}），而 \sysname 使用客户端 SGX 来保护 PoW 的安全性。
+
+\paragraph{SGX-based storage.} SGX \cite{sgx} 已被广泛用于保护存储系统。 PESOS \cite{krahn18} 使用 SGX 强制执行对象存储的访问策略。 OBLIVIATE \cite{ahmad18} 增强了基于 SGX 的文件系统对特权侧信道攻击的安全性。 EnclaveDB \cite{priebe18} 和 ObliDB \cite{eskandarian19} 保护外包数据库免受 SGX 信息泄露。 NEXUS \cite{djoko19} 通过 SGX 对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik {\em et al.} \cite{harnik18} 提出了减轻 SGX 实现的性能开销的指南。 ShieldStore \cite{kim19} 实现特定于应用程序的数据管理以限制 enclave 内存使用。 SPEICHER \cite{bailleu19} 是一个基于 SGX 的基于 LSM 的键值存储，具有高效的 I/O 操作。
+
+以上所有研究均未考虑重复数据删除。 Dang {\em et al.} \cite{dang17} 提出了基于代理的协议，用于带宽高效的加密重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现。 SPEED \cite{cui19} 利用重复数据删除来提高 SGX 计算的效率，但 \sysname 使用 SGX 提高了加密重复数据删除的性能。其他研究使用云端 enclave 进行 PoW 验证 \cite{you20} 和安全的基于文件的重复数据删除 \cite{fuhry20}，而 \sysname 使用客户端 enclave 进行有效的 PoW 证明生成并支持更细粒度的块-基于重复数据删除。
