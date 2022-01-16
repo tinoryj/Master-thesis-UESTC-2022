@@ -73,7 +73,7 @@
   \label{fig:multiClientThroughput}
 \end{figure}
 
-\paragraph{Exp\#4 (Single-client uploads and downloads).} 我们考虑单个客户端，并将 \sysnameS 的上传和下载性能与两个基线系统进行比较:(i) \textit{ PlainDedup}，禁用 \sysnameS 的密钥生成、加密和PoW操作，从而实现基于源的去重，无需任何安全保护； (ii) \textit{ DupLESS} \cite{bellare13b}，它通过 OPRF-RSA 生成每块 消息锁加密（MLE） 密钥，执行加密并将所有密文块上传到云以进行重复数据删除。由于 DupLESS 的原始实现不提供去重存储后端（假设使用了 Dropbox），我们根据 \cite{bellare13b} 中描述的设计在 C++ 中实现 DupLESS。请注意，PlainDedup 基于未加密的文件元数据检索文件，并且不同于加密重复数据删除系统中的两轮下载（即 \sysnameS 和 DupLESS）；在后者中，客户端首先下载并解密文件元数据，然后下载块以重建文件 (\S\ref{subsec:encrypted-dedup})。
+\paragraph{Exp\#4 (Single-client uploads and downloads).} 我们考虑单个客户端，并将 \sysnameS 的上传和下载性能与两个基线系统进行比较:(i) \textit{ PlainDedup}，禁用 \sysnameS 的密钥生成、加密和PoW操作，从而实现基于源的重复数据删除，无需任何安全保护； (ii) \textit{ DupLESS} \cite{bellare13b}，它通过 OPRF-RSA 生成每块 消息锁加密（MLE） 密钥，执行加密并将所有密文块上传到云以进行重复数据删除。由于 DupLESS 的原始实现不提供重复数据删除存储后端（假设使用了 Dropbox），我们根据 \cite{bellare13b} 中描述的设计在 C++ 中实现 DupLESS。请注意，PlainDedup 基于未加密的文件元数据检索文件，并且不同于加密重复数据删除系统中的两轮下载（即 \sysnameS 和 DupLESS）；在后者中，客户端首先下载并解密文件元数据，然后下载块以重建文件 (\S\ref{subsec:encrypted-dedup})。
 
 我们分三个步骤评估上传和下载速度: (i) 客户端首先上传 2\,GB 文件； (ii) 客户端重新启动，然后上传另一个与前一个相同的 2\,GB 文件； (iii) 客户端下载文件。请注意，第二次上传执行基于源的重复数据删除（对于 PlainDedup 和 \sysnameS），并利用预先计算的掩码来加速密钥生成（仅适用于 \sysnameS）。
 

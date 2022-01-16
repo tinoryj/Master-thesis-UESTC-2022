@@ -8,6 +8,6 @@
 
 \paragraph{Key generation.} 每个客户端都实现了 Rabin 指纹识别 \cite{rabin81} 用于内容定义的分块。我们将 Rabin 指纹识别中的最小、平均和最大块大小分别固定为 4\,KB, 8\,KB 和 16\,KB。为了实现基于 SGX 的推测加密 (\S\ref{subsec:encryption})，我们将 nonce 和计数器分别固定为 12 字节和 4 字节，并使用 HMAC-SHA256 实现 MAC。密钥安全区通过 SHA256 生成每个明文块的 消息锁加密（MLE） 密钥。
 
-\paragraph{Deduplication.} \sysnameS 实现了基于源的去重与 PoW 相结合。 PoW enclave 实现了一个 \textit{ proof generation ECall} 来计算密文块的指纹，并使用 AES-CMAC 基于生成的指纹生成签名。云将指纹索引 (\S\ref{subsec:encrypted-dedup}) 实现为基于 LevelDB \cite{leveldb} 的键值存储。为了降低网络和磁盘 I/O 成本，我们将（非重复）密文块存储在 8MB 的容器中，作为传输和存储单位 \cite{lillibridge13}。
+\paragraph{Deduplication.} \sysnameS 实现了基于源的重复数据删除与 PoW 相结合。 PoW enclave 实现了一个 \textit{ proof generation ECall} 来计算密文块的指纹，并使用 AES-CMAC 基于生成的指纹生成签名。云将指纹索引 (\S\ref{subsec:encrypted-dedup}) 实现为基于 LevelDB \cite{leveldb} 的键值存储。为了降低网络和磁盘 I/O 成本，我们将（非重复）密文块存储在 8MB 的容器中，作为传输和存储单位 \cite{lillibridge13}。
 
 \paragraph{优化。} 为了减少上下文切换和 SGX 内存加密/解密开销，每个客户端批量处理多个指纹（默认为 4,096 个）以在具有密钥安全区 (\S\ref{subsec:encryption}) 的安全通信通道中传输.密钥安全区处理每批接收到的指纹。它通过指针访问批处理，而不将内容复制到 enclave \cite{harnik18}。类似地，PoW enclave 按批次（默认为 4,096）处理密文块，无需内容复制。我们还使用多线程来提高性能。每个客户端通过多线程并行处理分块、明文块指纹识别、加密、PoW 和上传，而密钥安全区和云服务于不同线程中的多个连接。

@@ -1,46 +1,22 @@
 \section{Introduction}
 \label{sec:intro}
 
-
-Cloud providers can reduce maintenance costs by eliminating the transfer/storage of duplicate contents via {\em deduplication} \cite{harnik10}. Specifically, a client (e.g., enterprise or individual) first sends the cryptographic hash (known as {\em fingerprint}) of some data to the cloud, which checks by fingerprint if the data has been stored. If the cloud already has a copy of the data (e.g., uploaded by other clients), the client does not need to upload the data again, thereby saving bandwidth as well as storage space (known as {\em source-based deduplication}). Field studies show that deduplication achieves
-substantial savings in real-world workloads \cite{jin09, meyer11, wallace12}, and the savings can be passed back directly  to clients \cite{bellare13b, armknecht15}.
+云提供商可以通过 {\em deduplication} \cite{harnik10} 消除重复内容的传输/存储来降低维护成本。具体来说，客户端（例如，企业或个人）首先将某些数据的加密哈希（称为 {\em 指纹}）发送到云端，云端通过指纹检查数据是否已存储。如果云端已经有数据的副本（例如，其他客户端上传的），客户端不需要再次上传数据，从而节省带宽和存储空间（称为{\em source-based deduplication}） .现场研究表明，重复数据删除在实际工作负载 \cite{jin09, meyer11, wallace12} 中实现了大量节省，并且节省的成本可以直接回馈给客户 \cite{bellare13b, armknecht15}。
 
 
+{\em Encrypted deduplication} 通过加密保护 \cite{bellare13a, halevi11} 增强了重复数据删除，从而保护外包数据免受受损云和恶意客户端的侵害。具体来说，为了防止受感染的云窃听信息，它在客户端执行 {\em 消息锁定加密 (MLE)} \cite{bellare13a}，将重复的原始数据（来自相同或不同的客户端）映射为重复的加密通过从要加密的内容派生的对称密钥（称为 {\em MLE key}）获取数据。例如，MLE 密钥可以是目标数据 \cite{douceur02} 的加密哈希，这样重复数据删除对加密数据仍然有效。
 
-{\em Encrypted deduplication} augments deduplication with cryptographic protection \cite{bellare13a, halevi11}, so as to protect outsourced data against a compromised cloud and malicious clients. Specifically, to prevent a compromised cloud from eavesdropping information, it performs {\em message-locked encryption (MLE)} \cite{bellare13a} in the client side, which maps duplicate original data (from the same or different clients) into duplicate encrypted data via a symmetric key (called {\em MLE key}) derived from the content to be encrypted. For example, the MLE key can be the cryptographic hash of the target data \cite{douceur02}, such that deduplication remains effective on the encrypted data.
-
-In addition, a malicious client in source-based deduplication can send the fingerprint of any target encrypted data (whose contents are unauthorized to be accessed yet) to convince that it is the owner of the target data, thereby gaining authorized data access \cite{halevi11, mulazzani11}. To prevent the malicious client from convincing a fake ownership,
-encrypted deduplication couples source-based deduplication with {\em proof-of-ownership (PoW)} \cite{halevi11}, and forces each client to (additionally) prove to the cloud that it is indeed the owner of the target encrypted data (i.e., have full access to  contents) and is authorized to perform deduplication on them.
-
-
-However, encrypted deduplication, in particular PoW, is insufficient to fully defeat against the malicious client, which enumerates data contents to launch the {\em learning-content attack} \cite{harnik10, zuo18}. Specifically, an adversary knows the majority content (e.g., an offer template) of a data file as priori, and aims to identify the private part (e.g., actual salaries and bonuses in the offer) of the file that is owned by some other client. It fakes many files by enumerating the possible values of the private content, performs source-based deduplication on each fake file, and deduces the private information if it does not need to upload some file.
-We extend previous studies \cite{harnik10, zuo18} to justify the severity of the learning-content attack in practice. Specifically, through a case study, we show that it can infer low-entropy (e.g., thousands of enumerations) private contents in no more than two minutes in a local networked environment, and eight minutes in a real cloud environment. We argue that PoW cannot prevent the learning-content attack, since the adversary has access to the whole contents and is capable of convincing its ownerships on these files.
+此外，基于源的重复数据删除中的恶意客户端可以发送任何目标加密数据的指纹（其内容尚未授权访问），以说服它是目标数据的所有者，从而获得授权的数据访问 \cite{ halevi11，mulazzani11}。为了防止恶意客户端说服虚假所有权，加密重复数据删除将基于源的重复数据删除与 {\em 所有权证明 (PoW)} \cite{halevi11} 相结合，并强制每个客户端（另外）向云证明它确实是目标加密数据的所有者（即，可以完全访问内容）并被授权对其执行重复数据删除。
+然而，加密重复数据删除，尤其是 PoW 不足以完全击败恶意客户端，恶意客户端枚举数据内容以发起 {\em learning-content 攻击} \cite{harnik10, zuo18}。具体来说，攻击者先验地知道数据文件的大部分内容（例如，报价模板），并旨在识别其他客户拥有的文件的私有部分（例如，报价中的实际工资和奖金） .它通过枚举私有内容的可能值来伪造许多文件，对每个伪造文件执行基于源的重复数据删除，并在不需要上传某些文件时推断出私有信息。我们扩展了以前的研究 \cite{harnik10, zuo18} 以证明实践中学习内容攻击的严重性。具体来说，通过一个案例研究，我们表明它可以在本地网络环境中不超过两分钟的时间内推断出低熵（例如，数千个枚举）的私有内容，而在真实的云环境中则为八分钟。我们认为 PoW 无法阻止学习内容攻击，因为对手可以访问全部内容并且能够说服其对这些文件的所有权。
 
 
-This paper presents \sysnameF, which augments encrypted deduplication by proactively detecting the learning-content attack in each client. \sysnameF builds on the insight that the malicious client (that launches the learning-content attack) performs source-based deduplication on many enumerated {\em similar} contents, among which the information changes are limited in a few data regions.
-On the other hand, our studies show that the consecutive contents (that are likely to be processed together) in real-world untampered workloads differ from each other significantly. Thus, \sysnameF examines the similarity of processing contents in a client-side {\em trusted execution environment (TEE)} \cite{sgx}, which allows to honestly run the detection process  against the malicious client. It reports an attack  if many similar data are processed in a short time.
+本文介绍了 \sysnameF，它通过主动检测每个客户端中的学习内容攻击来增强加密重复数据删除。 \sysnameF 建立在恶意客户端（发起学习内容攻击）对许多枚举的 {\em 相似} 内容执行基于源的重复数据删除的洞察之上，其中信息更改仅限于少数数据区域。另一方面，我们的研究表明，实际未篡改工作负载中的连续内容（可能一起处理）彼此之间存在显着差异。因此，\sysnameF 检查客户端 {\em 可信执行环境 (TEE)} \cite{sgx} 中处理内容的相似性，这允许诚实地针对恶意客户端运行检测过程。如果在短时间内处理了许多类似的数据，它就会报告攻击。
 
 
-% However,  the malicious client may tamper with the process workflow to bypass the detection procedure in the TEE, such that it can submit its self-constructed data to perform source-based  deduplication, directly. This still allows it to launch the learning-content attack.
+但是，恶意客户端可能会篡改流程工作流以绕过 TEE 中的检测程序。具体来说，它可以提交自己构建的数据来执行基于源的重复数据删除，从而发起学习内容攻击。
+
+\sysnameF 建立在最近基于 TEE 的 PoW 方法 \cite{ren21} 的基础上，它确保只能对 TEE 处理的加密内容执行重复数据删除。它基于加密数据检测相似性，并将检测过程与 TEE 中的 PoW 耦合，以防止恶意客户端绕过检测过程。具体来说，\sysnameF 提出了 {\em 相似性保留加密 (SPE)}，它扩展了具有相似性保留的 MLE。除了 MLE 密钥，SPE 还根据原始数据的内容特征推导出一个 {\em 特征密钥}，这样相似的原始数据很可能具有相同的特征密钥。它使用特征密钥加密一小部分原始内容以保持相似性，而剩余的大部分仍受 MLE 密钥保护以确保安全。由于相似数据仅在少数区域不同，\sysnameF 通过比较加密的小部分来检测相似的原始数据。
 
 
-However, the malicious client may tamper with the process workflow to bypass the detection procedure in the TEE. Specifically, it can submit its self-constructed data to perform source-based deduplication to launch the learning-content attack.
-
-\sysnameF builds on a recent TEE-based PoW approach \cite{ren21}, which ensures that deduplication can only be performed on the encrypted contents that are processed by TEE. It detects similarity based on encrypted data, and couples the detection procedure with PoW in the TEE, so as to prevent the malicious client from bypassing the detection procedure. Specifically, \sysnameF proposes {\em similarity-preserving encryption (SPE)}, which extends MLE with similarity preservation.
-In addition to the MLE key, SPE derives a {\em feature key} based on the content features of original data, such that similar original data are likely to have the same feature key.
-It encrypts a small part of original content with the feature key to preserve similarity, while the remaining large part is still protected by the MLE key for security.
-Since similar data only differ in a few regions, \sysnameF detects similar original data by comparing the encrypted small parts.
-
-
-We extensively show that \sysnameF can effectively detect the learning-content attack (e.g., with the probability of at least 98.6\% in our case study), while the number of misjudgements is low (e.g., zero in the default configuration of \sysnameF). Also, we deploy \sysnameF into an existing performance-oriented system SGXDedup \cite{ren21}, in order to improve its security against the learning-content attack. Note that SGXDedup builds on TEE to accelerate the previous encrypted deduplication system \cite{bellare13b} by over eight times, while our \sysnameF-deployed system, namely \prototype incurs as low as 8.8\% and 0.8\% performance overhead over SGXDedup for the uploads and downloads of large-scale real-world data, respectively.
-In the final paper, we will publish the source code of \prototype for public validation.
-
-
-% , and show that the new system only incurs limited performance overhead over the base system \cite{ren21} without \sysnameF. In the final paper, we will publish the source code of \sysnameF-deployed system for public validation. In summary, this paper makes the following contributions.
-
-% \begin{itemize}[leftmargin=*]
-% \item We justify the existence of the learning-content attack in practice.
-% \item We present \sysnameF to augment encrypted deduplication by proactively detecting the learning-content attack.
-% \item We integrate \sysnameF into an existing encrypted deduplication system to improve security.
-% \item We extensively evaluate the detection effectiveness of \sysnameF and the performance of \sysnameF-deployed system.
-% \end{itemize}
+我们广泛表明 \sysnameF 可以有效地检测学习内容攻击（例如，在我们的案例研究中，概率至少为 98.6\%），而误判的数量很低（例如，\sysnameF 的默认配置中为零）。此外，我们将 \sysnameF 部署到现有的面向性能的系统 SGXDedup \cite{ren21} 中，以提高其对学习内容攻击的安全性。请注意，SGXDedup 基于 TEE 构建，可将之前的加密重复数据删除系统 \cite{bellare13b} 加速八倍以上，而我们的 \sysnameF 部署系统，即 \prototype 相比 SGXDedup 的性能开销低至 8.8\% 和 0.8\%分别是大规模真实世界数据的上传和下载。
+在最后的论文中，我们将发布 \prototype 的源代码以供公众验证。

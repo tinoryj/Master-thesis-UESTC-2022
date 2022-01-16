@@ -3,37 +3,36 @@
 
 
 
-\paragraph{Exp\#1 (Similarity detection on plaintext chunks).}
-We first justify that we can effectively find similar plaintext chunks by comparing content features. We consider multiple SYNChunk$(x, y)$, each of which includes 10\,K similar chunks (i.e., ground truth) modified from a base chunk (recall that $x$ defines the number of modified locations, and $y$ defines the number of modified bytes in each location, see \S\ref{sub:datasets}). We extract four content features for each plaintext chunk in SYNChunk$(x, y)$, and identify similar chunks if they share one to four identical features, respectively. We evaluate the fraction of the similar chunks that are successfully identified over all (similar) chunks in the ground truth.
+\paragraph{Exp\#1（明文块的相似性检测）。}
+我们首先证明我们可以通过比较内容特征来有效地找到相似的明文块。 我们考虑多个 SYNChunk$(x, y)$，每个 SYNChunk$(x, y)$ 包括 10\,K 个从基本块修改的相似块（即 ground truth）（回想一下，$x$ 定义了修改位置的数量，$y$ 定义每个位置的修改字节数，参见\S\ref{sub:datasets}）。 我们为 SYNChunk$(x, y)$ 中的每个明文块提取四个内容特征，如果它们分别共享一到四个相同的特征，则识别相似的块。 我们评估在基本事实中的所有（相似）块中成功识别的相似块的比例。
 
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=.3\textwidth]{pic/featurespy/plot/detection/syn/fixed_pq_legend.pdf}
+    \includegraphics[width=0.4\textwidth]{pic/featurespy/plot/detection/syn/fixed_pq_legend.pdf}
     \vspace{5pt}\\
     \begin{tabular}{@{\ }c@{\ }c}
-        \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/syn/fixed_p_4.pdf} &
-        \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/syn/fixed_q_16.pdf}\\
+        \includegraphics[width=0.45\textwidth]{pic/featurespy/plot/detection/syn/fixed_p_4.pdf} &
+        \includegraphics[width=0.45\textwidth]{pic/featurespy/plot/detection/syn/fixed_q_16.pdf}\\
         \mbox{\small (a) Fix $x=4$ and vary $y$}&
         \mbox{\small (b) Fix $y=16$ and vary $x$}\\
     \end{tabular}
     \vspace{-6pt}
-    \caption{(Exp\#1) Similarity detection on plaintext chunks. We evaluate the fraction of the chunks that have some identical features over all similar chunks in each synthetic dataset SYNChunk$(x, y)$.}
+    \caption{(Exp\#1) 明文块的相似性检测。 我们评估每个合成数据集 SYNChunk$(x, y)$ 中所有相似块中具有某些相同特征的块的比例。}
     \vspace{-6pt}
     \label{fig:expDetectionSynSim}
 \end{figure}
 
-
-Figure~\ref{fig:expDetectionSynSim} shows the results when we use the SYNChunk$(x, y)$ that has a fixed $x$ = 4 and a varying $y$ (Figure~\ref{fig:expDetectionSynSim}(a)), as well as that has a fixed $y$ = 16 and a varying $x$ (Figure~\ref{fig:expDetectionSynSim}(b)). In general, the fraction of identified similar chunks degrades with $x$ and $y$, since significant modifications are likely to modify the content features of chunks. Specifically, the fraction is more affected by $x$ (than $y$), since increasing $x$ will change the Rabin fingerprints of a larger number of sliding windows (\S\ref{sub:basic}). On the other hand, we can effectively detect a large fraction (e.g., at least 78.9\%) of similar chunks by examining if they share one or two identical features.
-
+图~\ref{fig:expDetectionSynSim} 显示了当我们使用具有固定 $x$ = 4 和变化 $y$ 的 SYNChunk$(x, y)$ 时的结果（图~\ref{fig:expDetectionSynSim}( a))，以及具有固定的 $y$ = 16 和变化的 $x$（图~\ref{fig:expDetectionSynSim}(b)）。一般来说，识别出的相似块的比例会随着 $x$ 和 $y$ 而降低，因为重大修改可能会修改块的内容特征。具体来说，该分数受 $x$（比 $y$）的影响更大，因为增加 $x$ 将改变大量滑动窗口（\S\ref{sub:basic}）的拉宾指纹。另一方面，我们可以通过检查它们是否共享一个或两个相同的特征来有效地检测大部分（例如，至少 78.9\%）的相似块。
 
 
-\paragraph{Exp\#2 (Similarity detection on ciphertext chunks).}
-We extend Exp\#1 to study the similarity detection of \sysnameF based on ciphertext chunks. We apply our design techniques and study the effectiveness of similarity preservation after the corresponding operations. Specifically, we perform feature key generation (via the proposed instances in \S\ref{sub:spe}) on each plaintext chunk, and evaluate the fraction of the similar chunks (in each synthetic dataset SYNChunk$(x, y)$) that are assigned with the same feature key. Then, we perform SPE, and further evaluate the fraction of the similar chunks that can be identified based on corresponding (encrypted) similarity indicators. Here, we focus on three SPE instances SPE$(1)$, SPE$(2)$ and SPE$(4)$, which partition the first one, two and four blocks (taking 16, 32 and 64 bytes, respectively) of each plaintext chunk as the similarity indicator, respectively.
+
+\paragraph{Exp\#2（密文块的相似性检测）。}
+我们扩展 Exp\#1 来研究基于密文块的 \sysnameF 的相似性检测。我们应用我们的设计技术并研究相应操作后相似性保留的有效性。具体来说，我们对每个明文块执行特征密钥生成（通过 \S\ref{sub:spe} 中的建议实例），并评估相似块的比例（在每个合成数据集 SYNChunk$(x, y)$ 中）分配有相同的功能键。然后，我们执行 SPE，并进一步评估可以基于相应（加密）相似性指标识别的相似块的比例。在这里，我们关注三个 SPE 实例 SPE$(1)$、SPE$(2)$ 和 SPE$(4)$，它们划分了第一个、第二个和四个块（分别占用 16、32 和 64 个字节）每个明文块分别作为相似度指标。
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[height=0.1in]{pic/featurespy/plot/detection/syn/synBarPlotDetect_legend.pdf}\\
+    \includegraphics[width=0.4\textwidth]{pic/featurespy/plot/detection/syn/synBarPlotDetect_legend.pdf}\\
     \begin{tabular}{@{\ }c@{\ }c@{\ }c}
         \includegraphics[width=0.33\textwidth]{pic/featurespy/plot/detection/syn/syn-p1-q4-detect.pdf} &
         \includegraphics[width=0.33\textwidth]{pic/featurespy/plot/detection/syn/syn-p4-q16-detect.pdf} &
@@ -43,88 +42,17 @@ We extend Exp\#1 to study the similarity detection of \sysnameF based on ciphert
         \mbox{\small (c) $\textrm{SYNChunk}(8, 32)$}\\
     \end{tabular}
     \vspace{-6pt}
-    \caption{(Exp\#2) Similarity detection on ciphertext chunks. We evaluate the fraction of similar chunks that are assigned with the same feature key (for KeyGen), as well as that can be detected by examining similarity indicators (for each SPE$(i)$ that configures the first $i$ data blocks of each plaintext chunk as the corresponding similarity indicator).}
+    \caption{(Exp\#2) 密文块的相似性检测。 我们评估分配有相同特征键（对于 KeyGen）的相似块的比例，以及可以通过检查相似性指标来检测（对于配置第一个 $i$ 数据块的每个 SPE$(i)$ 每个明文块作为相应的相似性指标）。}
     \vspace{-6pt}
     \label{fig:expDetectionSynDetect}
 \end{figure*}
 
-Figure~\ref{fig:expDetectionSynDetect} collectively presents the results for the synthetic datasets that have small (SYNChunk$(1, 4)$), medium (SYNChunk$(4, 16)$) and large (SYNChunk$(8, 32)$) modifications among similar chunks, respectively. Compared to {\tt allFeature}, the instances {\tt firstFeature} and {\tt minFeature} generate identical feature keys for more similar chunks, especially when the modifications are large (e.g., 45.7\% for {\tt firstFeature} and 59.3\% for {\tt minFeature} vs. 8.1\% for {\tt allFeature}).
-Also, {\tt minFeature} outperforms {\tt firstFeature}, possibly due to the fact that the minimum content feature is more robust against random changes on chunk contents. In addition, we observe that SPE preserves similarity after encryption. Specifically, by examining the similarity indicators in ciphertext chunks, we detect up to 95.2\%, 80.2\% and 58.3\% similar chunks in SYNChunk$(1, 4)$, SYNChunk$(4, 16)$ and SYNChunk$(8, 32)$, respectively.
+图~\ref{fig:expDetectionSynDetect} 共同展示了具有小 (SYNChunk$(1, 4)$)、中 (SYNChunk$(4, 16)$) 和大 (SYNChunk$(8, 32)$) 修改相似的块，分别。与 {\tt allFeature} 相比，实例 {\tt firstFeature} 和 {\tt minFeature} 为更相似的块生成相同的特征键，尤其是当修改量很大时（例如，{\tt firstFeature} 和 59.3 的 45.7\% {\tt minFeature} 的 \% 与 {\tt allFeature} 的 8.1\%）。此外，{\tt minFeature} 优于 {\tt firstFeature}，这可能是因为最小内容特征对块内容的随机变化更加稳健。此外，我们观察到 SPE 在加密后保留了相似性。具体来说，通过检查密文块中的相似性指标，我们在 SYNChunk$(1, 4)$、SYNChunk$(4, 16)$ 和 SYNChunk$( 8, 32)$，分别。
 
 
-% For example, in SYNChunk$(8, 32)$, both instances assign a half (e.g., ) of similar chunks with the same feature key, while {\tt allFeature} only generates an identical key for 8.1\% similar chunks.
+\paragraph{Exp\#3（攻击检测案例研究）。}
+我们扩展了 \S\ref{sub:attack} 中的案例研究，以研究 \sysnameF 如何检测推断工资和签约奖金的学习内容攻击。我们用一个固定比率阈值 $T$ = 3\% 和一个大小为两个块（或等效 32 字节）的相似性指标配置 \sysnameF。回想一下 \S\ref{sub:attack}，对手需要伪造 101 个 $\times$ 31 = 3131 个对抗性提议，其中年薪和签约奖金分别有 101 和 31 个可能值。为了模拟在普通快照中上传对抗提议的对手（否则更容易检测到），我们将所有对抗提议随机插入到每个 Linux/CouchDB 快照中，对 {\em 攻击快照} 的每个单独文件执行分块（即包括对抗性提议）作为现有的基于块的重复数据删除方法 \cite{fsl, meyer11}，并进一步在块上应用 SPE。我们评估 {\em 检测率}，它是 \sysnameF 成功检测到的此类攻击快照的数量与攻击快照总数的比率。此外，我们让 \sysnameF 处理每个原始快照（没有对抗性注入），并评估 {\em false rate}，即 \sysnameF 误判的快照数量与原始快照总数的比率。我们展示了 \sysnameF 如何检测学习内容攻击，然后是整体检测结果。 在这里，我们不考虑 FSL 和 MS 进行评估，因为它们没有实际的数据内容。
 
-
-
-% \paragraph{Exp\#3 (Similarity detection on ciphertext chunks in real-world workloads).}
-% We build on Linux and CouchDB to study the similarity detection of \sysnameF in real-world workloads. Informed by Exp\#1, we consider three similarity measurements that two plaintext chunks are similar if they have one (low similarity), two (medium similarity), and three (high similarity) identical features, respectively. We aim to detect the pairs of similar plaintext chunks based on the corresponding ciphertext chunks that are processed in a batch of a window of chunks. We evaluate the {\em detection coverage} as the ratio of the number of similar chunk pairs that are successfully detected over that in entirety in each window. Here, we focus on {\tt fistFeature} and {\tt minFeature}, since {\tt allFeature}  only detects a small fraction of similar chunks (Exp\#2), and consider each instance FeatureSpy$(i)$, which builds on SPE$(i)$ to configure the first $i$ blocks of each plaintext chunk as the corresponding indicator.
-
-% \begin{figure}[t]
-%     \centering
-%     \includegraphics[height=0.1in]{pic/featurespy/plot/detection/real/realBarPlot_legend.pdf}\\
-%     \begin{tabular}{cc}
-%       \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/linux-5K-1F.pdf} &
-%       \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/couch-5K-1F.pdf} \\
-%       \multicolumn{1}{c}{\small (a) One common feature (Linux)} & \multicolumn{1}{c}{\small (b) One common feature (CouchDB)} \\
-%       \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/linux-5K-2F.pdf} &
-%                                                                                     \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/couch-5K-2F.pdf} \\
-%             \multicolumn{1}{c}{\small (a) One common feature in Linux} & \multicolumn{1}{c}{\small (b) One common feature in CouchDB} \\
-
-%       \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/linux-5K-3F.pdf} &
-%                                                                                     \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/couch-5K-3F.pdf} \\
-%                   \multicolumn{1}{c}{\small (a) One common feature in Linux} & \multicolumn{1}{c}{\small (b) One common feature in CouchDB} \\
-
-%     \end{tabular}
-%     \vspace{-5pt}
-%     \caption{(Exp\#3) Similarity detection on ciphertext chunks in real-world workloads. FeatureSpy$(i)$ denotes the instance that uses SPE$(i)$ as the underlying primitive.}
-%     \vspace{-5pt}
-%     \label{fig:expDetectionReal}
-% \end{figure}
-
-% Figure~\ref{fig:expDetectionReal} presents the average results (from all available windows) when we fix the window size at 5\,K chunks. In general, a relaxed similarity measurement leads to a low detection coverage, since each window includes many similar chunks that have significantly distinct contents under the relaxed measurement. For example, when we increase the number of common features (to measure similarity) from one to three, the detection coverage in Linux increases from about 24\% to up to 75\% (in FeatureSpy(1)). The similarity measurement does not affect CouchDB too much, since it only has a few similar chunk pairs (e.g., 6.3 in CouchDB vs. 155.9 in Linux measured by a single common feature) in each window.
-
-
-
-
-% the average number of similar chunk pairs reduces from 155.9 to 10.4 in each Linux window, and.
-
-% Recall from \S\ref{sub:attack}, we consider that chunks modified in a small range are similar (that is, our detection goal is to find chunks with minor modification in a small range). We perform random modifications based on an 8 KiB random chunk to analyze the effectiveness of feature-based similarity detection. Specifically, we first generate an 8 KiB random chunk as base chunk $M$, and then randomly select $p=1 \sim 4$ locations with $q=1 \sim 4$ bytes at each location to modify the chunk $M$ to generate a similar chunk $M'$. Note that, for each $(p,q)$ configuration, we generate $10K$ distinct similar chunks $\{M'\}$. We calculate the frequency of at most $i (i=1,2,3,4)$ features in the set of similar chunks $\{M'\}$ that is the same as the original chunk $M$ as the effectiveness of similarity detection based on feature extraction.
-
-% Figure~\ref{fig:expDetectionSynSim} shows the result, in the case of $p=2,4$ and $q=1,2,4$. As the modification position increases, the probability that multiple features match is significantly reduced. For example, when $p=4$, the probability that all 4 features are matching is only about $40\%$, which is about $2/3$ of that when $p=2$. But the impact of increasing modified bytes number is relatively small. For example, when $p=4$, the change of $q$ from 1 to 4 only reduces the effectiveness of the similarity check based on 4 features from $42.19\%$ to $41.32\%$. At the same time, the effectiveness of the similarity check based on 1 feature is maintained at a level close to $100\%$, and it is minimally affected by the modification position and bytes number. Based on this observation, we decided to use any 1 feature that is the same as the basis for subsequent experiments to determine whether the chunks are similar.
-
-
-% pic/featurespy/plot each (p,q): 1-2-3-4 feature match ratio + min-first-all feature match + prefix L=1-16-32 block match under min-first-all feature key.
-
-
-
-
-
-% \begin{figure}[t]
-%     \centering
-%     \includegraphics[height=0.1in]{pic/featurespy/plot/detection/real/realBarPlotSimilar_legend.pdf}\\
-%     \begin{tabular}{@{\ }c@{\ }c}
-%         \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/similarChunkCouch.pdf} &
-%         \includegraphics[width=0.23\textwidth]{pic/featurespy/plot/detection/real/similarChunkLinux.pdf}\\
-%         \mbox{\makecell[c]{\small (a) CouchDB}}&
-%         \mbox{\makecell[c]{\small (b) Linux Kernel}}\\
-%     \end{tabular}
-%     \vspace{-5pt}
-%     \caption{(Exp\#3) Average number of similar chunks per window under three different window size (1K,5K, and 10K).}
-%     \vspace{-5pt}
-%     \label{fig:expDetectionRealSimilarChuks}
-% \end{figure}
-
-% 2 figures : couchdb + linux
-% 1 feature match: min-first-all feature match + false positive + prefix L=1-16-32 block match under min-first-all feature key + false positive.
-
-% We also analyze the effectiveness of \sysnameF based on real-world datasets. Here we use {\em CouchDB Docker image} and {\em Linux Kernel source code} datasets which contains original content. After chunking the original content into chunks with an average size of 8 KiB, we group the chunks into similar groups based on each distinct feature. Subsequently, we calculate the probability that the chunks in each similar group will generate the same key under the three key generation mechanisms and the probability of generating the same indicator as the effectiveness of \sysnameF. According to Figure~\ref{fig:expDetectionReal}, we found that unlike in the case of random data, the effect of first-feature-based key generation is better than that of the min-feature-based scheme, and the similarity check ability for the indicators decreases more than that in synthetic data when increasing the indicator length. We believe that is because the similarity of the chunks in the real-world dataset is far inferior to the similarity between the generated similar chunks. This led us to decide to use $L=2$ blocks as the indicator length for attack detection in \sysnameF. By using this length, we can achieve effective detection of attack behavior (generating a large number of very similar chunks) while reducing the information leakage of indicators.
-% {\em Limitations}. We have not analyzed the false-positive of the schemes here. This is because we are unable to define the degree of similarity of the chunks, which makes us unable to delineate the scope of the false-positive. And it does not affect the detection of the {\em Learning-content Attack}. This will be our feature work.
-
-\paragraph{Exp\#3 (Case study of attack detection).}
-We expand the case study in \S\ref{sub:attack} to study how \sysnameF detects the learning-content attack of inferring salaries and sign-on bonuses.
-We configure \sysnameF with a fixed ratio threshold $T$ = 3\% and a similarity indicator that has a size of two blocks (or equivalently 32 bytes).
-Recall from \S\ref{sub:attack} that the adversary needs to fake 101 $\times$ 31 = 3131 adversarial offers, where the annual salary and the sign-on bonus have 101 and 31 possible values, respectively. To simulate the adversary that uploads adversarial offers in ordinary snapshots (otherwise it can be  detected more easily), we randomly insert all adversarial offers into each Linux/CouchDB snapshot, perform chunking on each individual file of the {\em attack snapshot} (that includes adversarial offers) as existing chunk-based deduplication approaches \cite{fsl, meyer11}, and further apply SPE on the chunks. We evaluate the {\em detection rate}, which is the ratio of the number of such attack snapshots that \sysnameF successfully detects by the total number of attack snapshots. Also, we let \sysnameF process each raw snapshot (without adversarial injections), and evaluate the {\em false rate}, which is the ratio of the number of snapshots that \sysnameF misjudges by the total number of raw snapshots. We show how \sysnameF detects the learning-content attack, followed by the overall detection results.
-Here, we do not consider FSL and MS for evaluation, since they have no actual data contents.
 
 \begin{figure*}[t]
     \centering
@@ -138,60 +66,48 @@ Here, we do not consider FSL and MS for evaluation, since they have no actual da
         \mbox{\makecell[c]{\small (c) {\tt allFeature}}}\\
     \end{tabular}
     \vspace{-5pt}
-    \caption{(Exp\#3) An attack detection example to show that {\tt firstFeature}, {\tt minFeature} and {\tt allFeature} process the same Linux snapshot that are with (i.e., attack) and without (i.e., raw) adversarial injections. We present the fraction of the most number of chunks that have an identical similarity indicator over the total number of chunks (fixed at $W$ = 1\,K) in each window. }
+    \caption{(Exp\#3) 一个攻击检测示例，显示 {\tt firstFeature}、{\tt minFeature} 和 {\tt allFeature} 处理具有（即攻击）和不具有（即原始）的相同 Linux 快照 对抗性注射。 我们展示了在每个窗口中具有相同相似性指标的最多块数占块总数（固定为 $W$ = 1\,K）的比例。}
     \label{fig:expDetectionOverall}
   \end{figure*}
 
-Figure~\ref{fig:expDetectionOverall} compares \sysnameF instances in detecting the learning-content attack in the same Linux snapshots (i.e., v5.13) that are injected with (i.e., attack) or without (i.e., raw) adversarial offers. Specifically, the x-axis indexes the processing window (whose size is fixed at 1\,K here), while the y-axis shows the fraction of the {\em most} number of ciphertext chunks that have the same similarity indicator over the total number of all chunks (i.e., 1\,K) in the corresponding window. We observe that all three instances can effectively detect the learning-content attack, since they have {\em at least} one window in the attack snapshot, such that the fraction of the ciphertext chunks that have the same similarity indicator  is greater than $T$ (i.e., 3\%). On the other hand, {\tt minFeature} suffers from a {\em false positive}, since it even has a normal window (e.g., the 65-th window in raw), in which the fraction (e.g., 3.5\%) of the chunks that are detected similar is greater than $T$.
+  图~\ref{fig:expDetectionOverall} 比较 \sysnameF 实例在检测相同 Linux 快照（即 v5.13）中注入（即攻击）或没有（即原始）对抗性提议的学习内容攻击.具体来说，x 轴索引处理窗口（其大小在此处固定为 1\,K），而 y 轴显示 {\em most} 数量的密文块中具有相同相似性指示符的部分相应窗口中所有块的总数（即 1\,K）。我们观察到所有三个实例都可以有效地检测到学习内容攻击，因为它们在攻击快照中至少有一个窗口，因此具有相同相似性指标的密文块的比例大于 $T $（即 3\%）。另一方面，{\tt minFeature} 遭受 {\em false positive}，因为它甚至有一个正常的窗口（例如，原始的第 65 个窗口），其中分数（例如，3.5\%）检测到相似的块中大于$T$。
+
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.25\textwidth]{pic/featurespy/plot/detection/overall/effectiveness-falsePositive_legend.pdf}
+    \includegraphics[width=0.5\textwidth]{pic/featurespy/plot/detection/overall/effectiveness-falsePositive_legend.pdf}
     \vspace{5pt}\\
     \begin{tabular}{@{\ }c@{\ }c}
-        \includegraphics[width=0.286\textwidth]{pic/featurespy/plot/detection/overall/effectivenessLinux.pdf} &
-        \includegraphics[width=0.16\textwidth]{pic/featurespy/plot/detection/overall/falsePositiveLinux.pdf}\\
+        \includegraphics[width=0.6\textwidth]{pic/featurespy/plot/detection/overall/effectivenessLinux.pdf} &
+        \includegraphics[width=0.3\textwidth]{pic/featurespy/plot/detection/overall/falsePositiveLinux.pdf}\\
         \mbox{\small (a) Detection rate} &
         \mbox{\small (b) False rate}\\
     \end{tabular}
     \vspace{-6pt}
-    \caption{(Exp\#3) Overall detection and false rates in each Linux snapshot. Note that {\tt allFeature} does not have any false positives.}
+    \caption{(Exp\#3) 每个 Linux 快照中的总体检测率和错误率。 请注意，{\tt allFeature} 没有任何误报。}
     \vspace{-6pt}
     \label{fig:expDetectionOverallFalsePositive}
 \end{figure}
 
-
-Figure~\ref{fig:expDetectionOverallFalsePositive} presents the overall detection and false rates in Linux when we configure the window sizes at 1\,K, 5\,K, and 10\,K, respectively. In general, \sysnameF achieves a high detection rate (e.g., at least 98.6\%) in Linux snapshots. However, a large window slightly degrades the detection rate, since a relatively small fraction of ciphertext chunks have an identical similarity indicator.
-In addition, \sysnameF incurs false positives only when the window size is 1\,K (Figure~\ref{fig:featureDistribution}(b)), since the raw snapshots originally have significant fractions of similar chunks. Even in this case, {\tt allFeature} does not have any false positive, since it only detects a small number of similar chunks. On the other hand, {\tt minFeature} that detects more similar chunks (Exp\#2) incurs 28.6\% false positives.
-
-%Furthermore, {\tt minFeature} incurs more false positives (e.g., 28.6\%) than the other two instances, since it can detect more similar chunks (Exp\#2).
-
-In addition to Linux, we evaluate \sysnameF in CouchDB and find that all \sysnameF instances successfully detect the learning-content attack in all CouchDB snapshots (i.e., 100\% of detection rate)  without introducing any false positives. The possible reason is that each CouchDB snapshot has many unsimilar chunks and \sysnameF can immediately detect the distribution changes (of similar chunks) when many adversarial similar chunks are injected.
-
-%a small size (e.g., 282.5\,MiB on average), and it is insufficient to obfuscate the distribution of the similar chunks in the faked offers.
+图~\ref{fig:expDetectionOverallFalsePositive} 展示了我们将窗口大小分别配置为 1\,K, 5\,K 和 10\,K 时 Linux 中的总体检测率和误报率。通常，\sysnameF 在 Linux 快照中实现了很高的检测率（例如，至少 98.6\%）。然而，较大的窗口会略微降低检测率，因为相对较小部分的密文块具有相同的相似性指标。
+此外，\sysnameF 仅在窗口大小为 1\,K 时才会产生误报（图~\ref{fig:featureDistribution}(b)），因为原始快照最初具有相当大的部分相似块。即使在这种情况下，{\tt allFeature} 也没有任何误报，因为它只检测到少量相似的块。另一方面，检测到更多相似块 (Exp\#2) 的 {\tt minFeature} 会产生 28.6\% 的误报。
 
 
-
-% We use the latest and oldest versions of both Linux (v2.6.11 and v5.13) and CouchDB (v2.5.2 and v6.6.2) datasets as raw backup streams, which \sysnameF will store each file in each stream in turn. At the same time, We consider that the attacker randomly inserts the faked offer files into the raw backup stream to launch the attack and try to escape \sysnameF's detection. Then, we analyze the top frequency of indicators in each window under different window sizes to verify whether \sysnameF can distinguish mixed fake file stream from the raw backup stream. Here, we use the min-feature-based key generation scheme along with indicator length $L=2$ blocks as our default configuration of \sysnameF.
-
-% Figure~\ref{fig:expDetectionOverall} shows the most frequently indicator's frequency in each window of both raw backup stream and mixed fake file stream. Note that, in some cases, the window number of mixed fake file streams is more than the raw backup stream due to the added chunks. In all cases, the mixed fake file stram has the highest frequency in some windows which is higher than the highest frequency in all windows of the raw backup stream. This allows us to set an appropriate threshold $T$ according to the window size to stop the attacker's potential offensive behavior. For example, when the window size is 1K, we could set threshold $T = 0.03$ to detect malicious behavior.
-
-\paragraph{Exp\#4 (Impact of different target files).}
-We now study the effectiveness of \sysnameF when it is used to detect the learning-content attack against each synthetic file SYNFile$(x, y)$ (recall that $x$ is the number of unknown variables in the file, and $y$ is the number of possible values for each variable). To attack SYNFile$(x, y)$, we enumerate $x \times y$ adversarial files, randomly insert them into the last Linux snapshot (that has the maximum size of 985.9\,MiB among other snapshots), and evaluate the detection rate of \sysnameF  (configured with a fixed $T$ = 3\%) over 100 runs.
+除了 Linux，我们在 CouchDB 中评估 \sysnameF 并发现所有 \sysnameF 实例成功检测到所有 CouchDB 快照中的学习内容攻击（即 100\% 的检测率），而没有引入任何误报。可能的原因是每个 CouchDB 快照都有许多不相似的块，当注入许多对抗性的相似块时，\sysnameF 可以立即检测到（相似块的）分布变化。
 
 
+\paragraph{Exp\#4（不同目标文件的影响）。}
+我们现在研究 \sysnameF 在用于检测针对每个合成文件 SYNFile$(x, y)$ 的学习内容攻击时的有效性（回想一下，$x$ 是文件中未知变量的数量，$y $ 是每个变量的可能值的数量）。为了攻击 SYNFile$(x, y)$，我们枚举了 $x\times y$ 对抗文件，将它们随机插入到最后一个 Linux 快照（最大大小为 985.9\,MiB 以及其他快照）中，并评估检测运行 100 次后 \sysnameF 的速率（配置为固定的 $T$ = 3\%）。
 
-% attack detection. We focus on each synthetic file
-% use the synthetic dataset SYNFile$(x, y)$ to explore the impact of various parameter changes in the attack detection. Specifically, we first randomly generate a 4\,KiB base file, and then select $x=3,6,9$ variables among the file for random modification. The message space of each variable is $y=2^{9},2^{10},2^{11}$. In this way, we get the files in the dataset SYNFile$(x, y)$ which will be used for the attack. The file number is $x\times y$ (for example, if the random variable $x=3$ and the message space are $2^{10}$, the total number of files is $3072$). We insert SYNFile$(x, y)$ into the last snapshot of the Linux dataset as in Exp\#3, and then check the detection of \sysnameF under different parameters through 100 random tests.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.25\textwidth]{pic/featurespy/plot/detection/trade-off/trade_off_legend.pdf}
+    \includegraphics[width=0.5\textwidth]{pic/featurespy/plot/detection/trade-off/trade_off_legend.pdf}
     \vspace{5pt}\\
     \begin{tabular}{@{\ }c@{\ }c@{\ }c}
-        \includegraphics[width=0.15\textwidth]{pic/featurespy/plot/detection/trade-off/varyWindow_linux.pdf} &
-        \includegraphics[width=0.15\textwidth]{pic/featurespy/plot/detection/trade-off/varyModifyPos_linux.pdf}&
-        \includegraphics[width=0.15\textwidth]{pic/featurespy/plot/detection/trade-off/varyFileNumber_linux.pdf} \\
+        \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/trade-off/varyWindow_linux.pdf} &
+        \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/trade-off/varyModifyPos_linux.pdf}&
+        \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/trade-off/varyFileNumber_linux.pdf} \\
         \makecell[c]{\small (a) Vary $W$ \\ \small against SYNFile$(6, 2048)$} &
         \makecell[c]{\small (b) Fix W = 5\,K \\ \small against SYNFile$(\cdot, 2048)$} &
         \makecell[c]{\small (c) Fix W = 5\,K \\ \small against SYNFile$(6, \cdot)$} \\
@@ -202,17 +118,7 @@ We now study the effectiveness of \sysnameF when it is used to detect the learni
     \label{fig:expDetectionTradeOff}
 \end{figure}
 
-Figure~\ref{fig:expDetectionTradeOff}(a) presents the results when we vary the window size $W$ to attack SYNFile$(6, 2048)$. The detection rates of {\tt firstFeature} and {\tt minFeature} are robust against the increase of $W$ (e.g., always stay above 93\%), but that of {\tt allFeature} drops to 34\%. The reason is that {\tt allFeature} can only detect a small number of similar chunks (Exp\#2), which take a low fraction when $W$ is large. Figure~\ref{fig:expDetectionTradeOff}(b) presents the results when we vary the number of unknown variables $x$ in the target file. We observe that the detection rate of {\tt allFeature} again drops dramatically to 21\% when $x$ = 9, since it fails to detect the similar chunks that have more different regions.
+图~\ref{fig:expDetectionTradeOff}(a) 展示了当我们改变窗口大小 $W$ 来攻击 SYNFile$(6, 2048)$ 时的结果。 {\tt firstFeature} 和 {\tt minFeature} 的检测率对 $W$ 的增加是稳健的（例如，始终保持在 93\% 以上），但 {\tt allFeature} 的检测率下降到 34\%。原因是 {\tt allFeature} 只能检测到少量相似的块（Exp\#2），当 $W$ 很大时，这些块的比例很低。图~\ref{fig:expDetectionTradeOff}(b) 展示了我们改变目标文件中未知变量 $x$ 的数量时的结果。我们观察到，当 $x$ = 9 时，{\tt allFeature} 的检测率再次急剧下降到 21\%，因为它无法检测到具有更多不同区域的相似块。
 
 
-Figure~\ref{fig:expDetectionTradeOff}(c) presents the results when we vary the number $y$ of possible values for each variable in the target file. All three instances achieve a low detection rate (e.g., up to 13\%) when $y$ is 512. The reason is that the target file has a low entropy, and the adversary only needs to construct a small number of similar contents.  \sysnameF is ineffective to detect the learning-content attack in this case.
-One possible solution is to configure a small $T$ or $W$ to report an attack case when a few similar chunks are detected, yet it increases the possibility of misjudgements in different workloads.
-We pose a future work for how to automatically balance the trade-off between detecting attack on low-entropy files and minimizing misjudgements when working on different workloads.
-
-
-
-%has the highest detection rate  (98\%) when $x$ = 3, since the chunks in faked files now have high similarity and {\tt minFeature}
-% gives the effect of different window sizes on the three schemes under SYNFile$(6,2^{11})$. It is obvious that with the increase of window size, the detection of minFeature and firstFeature schemes are maintained at a high level (not lower than $93\%$), but the detection of allFeature schemes decreases with the increase of window size. This is because allFeature has the lowest ability to find similar chunks (refer to Exp\#1,\#2), and a larger window size will not significantly increase the number of similar chunks that can be found.
-
-% Figure~\ref{fig:expDetectionTradeOff}(b) shows the result of the fixed window size at $W=5K$, and the message space of each random variable at $y=2^{11}$, then varying the number of random variables $x$. As the number of random variables increases, the detection of minFeature and firstFeature schemes decrease/increase slightly (from $97\%$ to $91\%$ and $91\%$ to $93$, respectively). However, the detection of the allFeature scheme has dropped significantly. This is due to the poor ability of allFeaure scheme to check chunks with low similarity, which coincides with the result of Exp\#2.
-% Figure~\ref{fig:expDetectionTradeOff}(c) is the result of fixing the number of random variables $x=6$, and the window size $W=5K$, changing the message space of each random variable. With the increase of the message space, the detection of the three schemes has been significantly improved. This is because the increase of the message space will directly lead to an increase in the number of files in SYNFile$(x, y)$, which will generate a large number of similar chunks. The allFeature scheme finally reaches $41\%$, while the minFeature and firstFeature schemes finally reach $93\%$ and $94\%$. Combining with Exp\#3, we believe that the minFeature scheme has a higher detection but also brings a lot of false positives. The allFeature scheme has no false positives but the detection is low. However, the firstFeature scheme achieves both low false-positive and high detection.
+图~\ref{fig:expDetectionTradeOff}(c) 展示了当我们改变目标文件中每个变量的可能值的数量 $y$ 时的结果。当 $y$ 为 512 时，所有三个实例的检测率都较低（例如，高达 13\%）。原因是目标文件的熵较低，攻击者只需要构建少量相似的内容。 \sysnameF 在这种情况下检测学习内容攻击是无效的。 一种可能的解决方案是配置一个小的 $T$ 或 $W$ 以在检测到几个类似的块时报告攻击案例，但这会增加在不同工作负载中误判的可能性。 我们提出了一项未来的工作，即如何自动平衡检测对低熵文件的攻击和在处理不同工作负载时最大限度地减少误判之间的权衡。
