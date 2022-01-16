@@ -1,0 +1,21 @@
+\section{Related Work}
+\label{sec:related-work}
+
+\paragraph{Secure deduplication approaches.}
+In \S\ref{sub:basics}, we reviewed two orthogonal threats against deduplication. MLE (and its variants \cite{bellare13a, bellare13b, douceur02, li15}) preserves data confidentiality against a compromised cloud, and is extensively studied from security theory \cite{bellare15, abadi13}, and evaluated in storage systems \cite{cox02, adya02, bellare13b, armknecht15, shah15, li15, li19, qin17, li20a, ren21}. \sysnameF proposes SPE (\S\ref{sub:spe}), which augments MLE with similarity preservation, so as  to  detect the learning-content attack based on ciphertext chunks.
+
+
+PoW prevents a malicious  client from compromising data ownerships in source-based deduplication, but it cannot address the learning-content attack (\S\ref{sub:attack}). \sysnameF complements encrypted deduplication \cite{ren21} by proactively detecting the learning-content attack. Although previous studies can defeat against the learning-content attack by applying deduplication in different ways \cite{harnik10, li15}, they inject network traffic for transferring duplicate contents. \sysnameF performs  pure source-based deduplication and achieves bandwidth efficiency (Exp\#10).
+
+
+
+
+
+\paragraph{SGX-based secure applications.}
+SGX has been widely used to strengthen the security of different application systems, such as Bitcoin \cite{matetic19}, file systems \cite{ahmad18, shinde20}, outsourced databases \cite{eskandarian17, priebe18, sun21}, key-value stores \cite{mishra18, bailleu19, kim19, bailleu21}, and data analytic platforms \cite{schuster15, zheng17, bowe20}. This paper focuses on deduplicated storage systems. S2Dedup \cite{miranda21} manages a cloud-side enclave to perform secure deduplication, yet it relies on the assumption that the client is fully trusted. This paper extends SGXDedup \cite{ren21} to prevent a malicious client from launching the learning-content attack.
+
+%SGXDedup \cite{ren21} implements SGX-based PoW to prevent a compromised client from , yet it is vulnerable to the learning-content attack.
+
+
+% BITE , while protects the privacy of light client in Bitcoin.
+% . PESOS implements policy-based object storage against an untrusted third-party commodity platform. EnclaveDB manages sensitive database states in a server-side enclave, and preserves confidentiality, integrity and freshness of data records.

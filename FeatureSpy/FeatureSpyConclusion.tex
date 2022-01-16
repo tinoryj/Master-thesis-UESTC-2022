@@ -1,0 +1,5 @@
+\section{Conclusion}
+\label{sec:conclusion}
+This paper addresses the learning-content attack in encrypted deduplication. We present \sysnameF, which augments  encrypted deduplication by proactively detecting the learning-content attack in a client-side TEE. It
+builds on the insight that a malicious client enumerates many similar data for attack, and reports an attack by detecting similar chunks among the processing contents. Also, it proposes SPE, and allows detection  to be directly performed on ciphertext chunks.
+Evaluation shows that \sysnameF not only effectively detects the learning-content attack, but also incurs limited performance overhead when being deployed in SGXDedup \cite{ren21}.

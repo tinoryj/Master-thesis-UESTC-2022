@@ -26,6 +26,10 @@
 \RequirePackage{mathspec}
 \RequirePackage{enumerate}
 \RequirePackage{xeCJK}
+\RequirePackage{xspace}
+\RequirePackage{algpseudocode}
+\RequirePackage{makecell}
+
 
 \setCJKmainfont[AutoFakeBold=true]{SimSun}
 \newCJKfontfamily{\heiti}{SimHei}

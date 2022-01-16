@@ -1,0 +1,10 @@
+groupType   type   ratio
+prefix-1    FirstF  0.896958305		
+prefix-1    MinF    0.894774718		
+prefix-1    AllF    0.817760267
+prefix-2    FirstF  0.896580405		
+prefix-2    MinF    0.894547977		
+prefix-2    AllF    0.817684687
+prefix-3    FirstF  0.893679626		
+prefix-3    MinF    0.891966954		
+prefix-3    AllF    0.815103679

@@ -1,0 +1,10 @@
+ID   type            ratio
+1   firstFeature   0.94		
+1   minFeature     0.95		
+1   allFeature     0.62		
+2   firstFeature   0.94		
+2   minFeature     0.93		
+2   allFeature     0.41		
+3   firstFeature   0.94	
+3   minFeature     0.93	
+3   allFeature     0.34

@@ -1,0 +1,46 @@
+\section{Introduction}
+\label{sec:intro}
+
+
+Cloud providers can reduce maintenance costs by eliminating the transfer/storage of duplicate contents via {\em deduplication} \cite{harnik10}. Specifically, a client (e.g., enterprise or individual) first sends the cryptographic hash (known as {\em fingerprint}) of some data to the cloud, which checks by fingerprint if the data has been stored. If the cloud already has a copy of the data (e.g., uploaded by other clients), the client does not need to upload the data again, thereby saving bandwidth as well as storage space (known as {\em source-based deduplication}). Field studies show that deduplication achieves
+substantial savings in real-world workloads \cite{jin09, meyer11, wallace12}, and the savings can be passed back directly  to clients \cite{bellare13b, armknecht15}.
+
+
+
+{\em Encrypted deduplication} augments deduplication with cryptographic protection \cite{bellare13a, halevi11}, so as to protect outsourced data against a compromised cloud and malicious clients. Specifically, to prevent a compromised cloud from eavesdropping information, it performs {\em message-locked encryption (MLE)} \cite{bellare13a} in the client side, which maps duplicate original data (from the same or different clients) into duplicate encrypted data via a symmetric key (called {\em MLE key}) derived from the content to be encrypted. For example, the MLE key can be the cryptographic hash of the target data \cite{douceur02}, such that deduplication remains effective on the encrypted data.
+
+In addition, a malicious client in source-based deduplication can send the fingerprint of any target encrypted data (whose contents are unauthorized to be accessed yet) to convince that it is the owner of the target data, thereby gaining authorized data access \cite{halevi11, mulazzani11}. To prevent the malicious client from convincing a fake ownership,
+encrypted deduplication couples source-based deduplication with {\em proof-of-ownership (PoW)} \cite{halevi11}, and forces each client to (additionally) prove to the cloud that it is indeed the owner of the target encrypted data (i.e., have full access to  contents) and is authorized to perform deduplication on them.
+
+
+However, encrypted deduplication, in particular PoW, is insufficient to fully defeat against the malicious client, which enumerates data contents to launch the {\em learning-content attack} \cite{harnik10, zuo18}. Specifically, an adversary knows the majority content (e.g., an offer template) of a data file as priori, and aims to identify the private part (e.g., actual salaries and bonuses in the offer) of the file that is owned by some other client. It fakes many files by enumerating the possible values of the private content, performs source-based deduplication on each fake file, and deduces the private information if it does not need to upload some file.
+We extend previous studies \cite{harnik10, zuo18} to justify the severity of the learning-content attack in practice. Specifically, through a case study, we show that it can infer low-entropy (e.g., thousands of enumerations) private contents in no more than two minutes in a local networked environment, and eight minutes in a real cloud environment. We argue that PoW cannot prevent the learning-content attack, since the adversary has access to the whole contents and is capable of convincing its ownerships on these files.
+
+
+This paper presents \sysnameF, which augments encrypted deduplication by proactively detecting the learning-content attack in each client. \sysnameF builds on the insight that the malicious client (that launches the learning-content attack) performs source-based deduplication on many enumerated {\em similar} contents, among which the information changes are limited in a few data regions.
+On the other hand, our studies show that the consecutive contents (that are likely to be processed together) in real-world untampered workloads differ from each other significantly. Thus, \sysnameF examines the similarity of processing contents in a client-side {\em trusted execution environment (TEE)} \cite{sgx}, which allows to honestly run the detection process  against the malicious client. It reports an attack  if many similar data are processed in a short time.
+
+
+% However,  the malicious client may tamper with the process workflow to bypass the detection procedure in the TEE, such that it can submit its self-constructed data to perform source-based  deduplication, directly. This still allows it to launch the learning-content attack.
+
+
+However, the malicious client may tamper with the process workflow to bypass the detection procedure in the TEE. Specifically, it can submit its self-constructed data to perform source-based deduplication to launch the learning-content attack.
+
+\sysnameF builds on a recent TEE-based PoW approach \cite{ren21}, which ensures that deduplication can only be performed on the encrypted contents that are processed by TEE. It detects similarity based on encrypted data, and couples the detection procedure with PoW in the TEE, so as to prevent the malicious client from bypassing the detection procedure. Specifically, \sysnameF proposes {\em similarity-preserving encryption (SPE)}, which extends MLE with similarity preservation.
+In addition to the MLE key, SPE derives a {\em feature key} based on the content features of original data, such that similar original data are likely to have the same feature key.
+It encrypts a small part of original content with the feature key to preserve similarity, while the remaining large part is still protected by the MLE key for security.
+Since similar data only differ in a few regions, \sysnameF detects similar original data by comparing the encrypted small parts.
+
+
+We extensively show that \sysnameF can effectively detect the learning-content attack (e.g., with the probability of at least 98.6\% in our case study), while the number of misjudgements is low (e.g., zero in the default configuration of \sysnameF). Also, we deploy \sysnameF into an existing performance-oriented system SGXDedup \cite{ren21}, in order to improve its security against the learning-content attack. Note that SGXDedup builds on TEE to accelerate the previous encrypted deduplication system \cite{bellare13b} by over eight times, while our \sysnameF-deployed system, namely \prototype incurs as low as 8.8\% and 0.8\% performance overhead over SGXDedup for the uploads and downloads of large-scale real-world data, respectively.
+In the final paper, we will publish the source code of \prototype for public validation.
+
+
+% , and show that the new system only incurs limited performance overhead over the base system \cite{ren21} without \sysnameF. In the final paper, we will publish the source code of \sysnameF-deployed system for public validation. In summary, this paper makes the following contributions.
+
+% \begin{itemize}[leftmargin=*]
+% \item We justify the existence of the learning-content attack in practice.
+% \item We present \sysnameF to augment encrypted deduplication by proactively detecting the learning-content attack.
+% \item We integrate \sysnameF into an existing encrypted deduplication system to improve security.
+% \item We extensively evaluate the detection effectiveness of \sysnameF and the performance of \sysnameF-deployed system.
+% \end{itemize}

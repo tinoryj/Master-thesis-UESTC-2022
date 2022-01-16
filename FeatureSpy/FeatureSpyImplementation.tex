@@ -1,0 +1,69 @@
+\section{Implementation}
+\label{sec:implementation}
+
+We implement \sysnameF using OpenSSL 1.1.1l \cite{openssl}, SGX SDK 2.15 \cite{sgxsdk} and SGX SSL \cite{sgxssl}, and deploy it into an existing SGX-based encrypted deduplication system {\em SGXDedup} \cite{ren21} to improve its security against the learning-content attack. Specifically, in addition to each client and the cloud, SGXDedup maintains a {\em key server} to manage a global secret, and generates the MLE key of each plaintext chunk based on both the chunk fingerprint and the global secret, so as to be robust against {\em offline brute-force attacks} (i.e., the unpredictable assumption is addressed) \cite{bellare13b}. To speed up source-based encrypted deduplication, it deploys an SGX enclave in the key server, and performs {\em speculative encryption} \cite{eduardo19} to offload the online computational overhead of (server-aided) key generation. Also, it deploys a client-side enclave to perform efficient SGX-based PoW (\S\ref{sub:secure_design}).
+Note that SGXDedup does not defeat against the learning-content attack (\S\ref{sub:attack}), and our new prototype (called \prototype) is to augment SGXDedup with security against the learning-content attack.
+Currently, \prototype (including the underlying SGXDedup) consists of 16\,K LoC in C++.
+In the following, we highlight the implementation details related to \prototype.
+
+
+%in order to perform efficient (server-aided) key generation without leaking chunk fingerprints to the key server.
+
+
+%, in order to prevent a compromised client from convincing its ownership of chunks via only fingerprints \cite{halevi11} (\S\ref{sub:basics}).
+
+
+
+
+\paragraph{Setup.}
+After initialization, \prototype follows SGXDedup to share a {\em proof key} between the cloud and each client-side enclave via the {\em Diffie-Hellman key exchange (DHKE)} in NIST P-256 elliptic curve. The proof key is used in the SGX-based PoW to generate and verify signatures (see below).
+
+%of each ciphertext chunk (\S\ref{sub:overview}, see below), in order to accept source-based deduplication on the chunks that are examined by the enclave.
+
+
+
+\paragraph{Key generation.}
+\prototype works on variable-size plaintext chunks that are generated via Rabin fingerprinting \cite{rabin81} with the minimum, average and maximum sizes of 4\,KiB, 8\,KiB and 16\,KiB, respectively. To provide sufficient entropies on feature keys (\S\ref{sub:spe}), it configures the sliding window size and the modulo in N-transform as 64 bytes and $2^{64}$, respectively.
+It generates 12 sub-features (eight bytes each), and hashes the concatenation of four sub-features to form each feature (32 bytes). It requests the MLE key based on the fingerprint of each plaintext chunk from the key server like SGXDedup \cite{ren21}, as well as the feature key based on the sampled feature(s) (according to {\tt firstFeature}, {\tt minFeature} or {\tt allFeature}).
+
+
+\paragraph{Enclave operations.}
+After encryption (implemented via AES-CFB-256), \prototype batches 4,096 ciphertext chunks into the enclave for processing, so as to mitigate SGX context-switching overhead \cite{arnautov16}. It tracks the occurrences of similarity indicators in a hash table, and
+configures the default values of the window size $W$ and the ratio threshold $T$ at 5\,K and 3\%, respectively.
+
+\prototype follows SGXDedup to couple source-based deduplication with SGX-based PoW. It generates a signature  (implemented via AES-CMAC) based on the concatenation of 4,096 fingerprints (of ciphertext chunks) via the proof key, such that the cloud verifies the authenticity of these fingerprints with the same key.  The cloud implements the  fingerprint index (\S\ref{sub:basics}) via LevelDB \cite{leveldb}, and informs the client to only transfer non-duplicate ciphertext chunks.
+
+% In the enclave, it counts the occurrences of the indicators in a batch of $W$ (e.g., 5\,K by default) ciphertext chunks, and reports an attack event if the ratio of the occurrence of some indicator over $W$ exceeds a pre-defined threshold $T$ (e.g., 3\% by default).
+% \prototype implements the  encryption function via AES-CFB-256, and
+
+
+\paragraph{Storage management.}
+The cloud manages non-duplicate ciphertext chunks in the units of 8\,MiB {\em containers}, so as to mitigate disk I/O overhead. For each file, it manages a {\em file recipe}, which lists the fingerprints of ciphertext chunks, as well as the corresponding MLE keys and feature keys. To preserve confidentiality, each client encrypts the file recipe with an individual master key before outsourcing it to the cloud.
+
+To download a file, the client first retrieves the file recipe from the cloud, and decrypts it with the corresponding master key. The client then retrieves the ciphertext chunks based on the file recipe, and decrypts them based on the MLE keys and feature keys.
+
+\paragraph{Optimization.}
+We apply standard approaches to boost the performance of \prototype. Each client  extracts the content features of multiple plaintext chunks in different threads, as well as parallelizes the processing of chunking, key generation, encryption, PoW, and uploads in pipeline. Also,
+to improve the download performance, the cloud maintains an in-memory least-recently-used cache (1\,GiB) to hold the most recently restored containers. For each download request, it first searches for the containers in the cache, and retrieves the
+containers from disk only if they are not in the cache.
+
+% SGXDedup builds on {\em server-aided MLE} architecture \cite{bellare13b} to prevent , which enumerate the content-derived secret keys (\S\ref{sub:basics}) of all possible chunks to infer the original plaintext of a target chunk.
+% It . It preserves confidentiality for all chunks if the key server is secure.
+
+%  Since SGXDedup replaces expensive cryptographic operations by SGX-based hardware protection, it achieves significantly higher performance than the software-based encrypted deduplication systems \cite{li20a, bellare13b}.
+
+
+
+% However, SGXDedup is vulnerable to the learning-remaining-content attack.
+
+% SGXDedup is the high-performance encrypted deduplication system
+
+
+
+
+
+
+% prevent an adversary from enumerating all possible chunks to and launching .
+
+
+% , in which a {\em key server} manages a system-wide secret, such the secret key of each chunk is generated based on both the fingerprint of the chunk and the system-wide secret.

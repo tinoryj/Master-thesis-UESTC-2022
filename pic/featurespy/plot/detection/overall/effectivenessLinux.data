@@ -1,0 +1,16 @@
+groupType    type            ratio
+1K      FirstFS         1
+1K      MinFS           1
+1K      AllFS           1
+5K      FirstFS         1
+5K      MinFS           1
+5K      AllFS           1
+10K     FirstFS         0.988095238
+10K     MinFS           0.988095238
+10K     AllFS           0.988095238
+
+
+
+	
+
+

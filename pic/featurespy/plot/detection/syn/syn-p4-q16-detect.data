@@ -1,0 +1,13 @@
+groupType    type            ratio
+feature      FirstF      0.7287
+feature      MinF        0.8096
+feature      AllF        0.3524
+prefix-1      FirstF      0.722
+prefix-1      MinF        0.802
+prefix-1      AllF        0.3483
+prefix-2      FirstF      0.7157
+prefix-2      MinF        0.7949
+prefix-2      AllF        0.3444
+prefix-3      FirstF      0.7037
+prefix-3      MinF        0.7812
+prefix-3      AllF        0.3377

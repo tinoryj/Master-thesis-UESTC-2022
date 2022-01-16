@@ -1,0 +1,178 @@
+\section{Background and Motivation}
+\label{sec:background}
+
+\subsection{Basics}
+\label{sub:basics}
+
+
+\paragraph{Deduplication.}
+Deduplication is a redundancy elimination technique that is known to effectively save storage space \cite{wallace12, meyer11}. It partitions each input file into either fixed-size or variable-size {\em chunks}. Each chunk is identified by a cryptographic hash (known as {\em fingerprint}) of corresponding content, and the probability that different chunks are mapped to the same fingerprint is assumed to be negligible \cite{black06}. The deduplicated storage system stores the chunks only when their fingerprints are unique to those of existing stored ones, in order to achieve storage efficiency. This paper focuses on deduplication in an {\em outsourcing environment} (e.g., cloud storage), in which many clients outsource data to the cloud. The cloud performs deduplication on the data from the same or different clients, in order to save maintenance costs \cite{harnik10}.
+
+
+\paragraph{Encrypted deduplication.}
+Encrypted deduplication augments deduplication with security in the outsourcing environment. Specifically, One  threat is that a compromised cloud can eavesdrop outsourced data and learn sensitive information.
+To defeat against a compromised cloud, encrypted deduplication performs {\em message-locked encryption (MLE)} \cite{bellare13a, bellare13b} on the pre-deduplicated chunks (called {\em plaintext chunks}) before outsourcing them to the cloud. Specifically, each plaintext chunk is  encrypted with a symmetric key (called {\em MLE key}) derived from the content of the plaintext chunk, such that identical plaintext chunks across different clients are always mapped to identical encrypted chunks (called {\em ciphertext chunks}) that can be removed by deduplication. One instantiation of MLE is {\em convergent encryption (CE)}, which uses the cryptographic hash of each plaintext chunk as the MLE key \cite{douceur02}.
+
+Another threat is that a malicious client  can launch {\em side-channel attacks} \cite{harnik10, halevi11} to gain unauthorized access to the data from other clients. Specifically, to perform {\em source-based deduplication} \cite{harnik10}, a client submits the fingerprint of each ciphertext chunk to the cloud, which  maintains a {\em fingerprint index} to track existing stored ciphertext chunks. If the fingerprint of a target ciphertext chunk has been stored in the fingerprint index (i.e., duplicate), the client does not need to transfer the ciphertext chunk.
+Otherwise (i.e., non-duplicate),
+the cloud informs the client to transfer the ciphertext chunk.
+One side-channel attack \cite{mulazzani11, halevi11} is that
+a malicious client can use the fingerprint of any target ciphertext chunk to cheat the cloud that it is the {\em owner} (i.e., have full access to the chunk) of the corresponding chunk, thereby gaining full rights for future download of the chunk \cite{mulazzani11}.
+
+% , which checks (by fingerprint) if any copy of the ciphertext chunk has been stored. The cloud informs the client to either transfer (i.e., non-duplicate) or not transfer (i.e., duplicate) the chunk.
+
+
+
+Encrypted deduplication couples source-based deduplication with {\em proof-of-ownership (PoW)} \cite{halevi11}, in order to prevent the above side-channel attack. Specifically, in addition to a chunk fingerprint, the client is required to upload a {\em proof}, based on which the cloud verifies if the client exactly {\em holds the corresponding ciphertext chunk in entirety} (rather than just a fingerprint). The cloud responds only when the ownerships of the corresponding ciphertext chunks are successfully verified, such that a malicious client cannot identify the ciphertext chunks owned by other clients.
+
+% \paragraph{Message-locked encryption.}
+% Encrypted deduplication seamlessly combines encryption and deduplication  to achieve data confidentiality and storage efficiency. It targets an {\em outsourcing environment} (e.g., cloud storage), in which many {\em clients} in an organization outsource backup workloads to the {\em cloud} for deduplication and storage. This paper focuses on {\em chunk-based encrypted deduplication}, which removes redundancies, as well as preserves confidentiality in the units of chunks. Specifically, each client partitions an input backup file into variable-size  chunks, and symmetrically encrypts the originally pre-deduplicated chunks , which may be compromised to eavesdrop outsourced data. The primary goal is to preserve data confidentiality (against the compromised cloud) by encryption, while ensuring that deduplication remains effective on the encrypted chunks (called {\em ciphertext chunks}) across different clients for storage efficiency.
+
+
+% Encrypted deduplication adopts {\em message-locked encryption (MLE)} \cite{bellare13a, bellare13b}, which encrypts each plaintext chunk with a symmetric key (called {\em MLE key}) derived from the chunk content (e.g., using the cryptographic hash of each plaintext chunk as the MLE key \cite{douceur02}). Thus, identical plaintext chunks from the same or different clients are mapped to identical ciphertext chunks, such that the cloud can identify each ciphertext chunk by a cryptographic hash (known as {\em fingerprint}) of the corresponding (encrypted) content. Assuming that the probability that different ciphertext chunks are mapped to the same fingerprint is negligible \cite{black06}, it stores the ciphertext chunks only when their fingerprints are unique to those of existing stored (ciphertext) chunks.
+
+
+
+% Deduplication is a redundancy elimination technique that saves storage space for primary and backup workloads \cite{wallace12, meyer11}. It partitions the input file into either fixed-size or variable-size {\em chunks}, and identifies each chunk by a cryptographic hash (known as {\em fingerprint}) of the corresponding content. Assuming that the probability that different chunks are mapped to the same fingerprint is negligible \cite{black06}, it stores the chunks only when their fingerprints are unique to those of existing stored chunks. This paper focuses on {\em backup deduplication} \cite{wallace12} in an {\em outsourcing environment} (e.g., cloud storage), in which many clients outsource backup workloads to the cloud. The cloud performs deduplication on the data from the same or different clients, in order to save maintenance costs \cite{harnik10}.
+
+% \paragraph{Encrypted deduplication.}
+% One security threat in the outsourcing environment is that a compromised cloud can eavesdrop outsourced data and learn sensitive information \cite{huang15, ardagna15}. {\em Encrypted deduplication} \cite{bellare13a, bellare13b} augments deduplication by symmetrically encrypting the originally pre-deduplicated chunks (called {\em plaintext chunks}) before outsourcing them to the cloud for deduplication.
+
+
+% Encrypted deduplication builds on
+
+
+% The  storage system
+% manages a {\em fingerprint index} to track the fingerprints of existing stored chunks, and stores chunks only when their fingerprints are unique to those in the index.
+% To allow the reconsturction of each file, it manages a {\em file recipe} \cite{Meister13}, which keeps the mappings from the chunks (identified by their fingerprints) in the backup to the references of the corresponding physical copies.
+% To restore the backup, it sequentially reads the fingerprints in the file recipe, and loads and concatenates the corresponding chunks.
+
+
+
+
+
+% \paragraph{Proof-of-ownership.}
+% In addition to the cloud, encrypted deduplication is vulnerable to a compromised client \cite{harnik10, halevi11}, which launches {\em side-channel attacks} to gain unauthorized access to the data from other clients. Specifically, to perform {\em source-based deduplication} \cite{harnik10}, a client submits the fingerprint of each chunk to the cloud, which checks (by fingerprint) if any copy of the chunk has been stored. The cloud informs the client to either transfer (i.e., non-duplicate) or not transfer (i.e., duplicate) the chunk. One side-channel attack \cite{mulazzani11, halevi11} is that
+% a compromised client can use the fingerprint of any target chunk to cheat the cloud that it is the {\em owner} (i.e., have full access to the chunk) of the corresponding chunk, thereby gaining full rights for future download of the chunk \cite{mulazzani11}.
+
+
+% {\em Proof-of-ownership (PoW)} \cite{halevi11} augments source-based deduplication with data ownership verification, so as to prevent the above side-channel attack. Specifically, in addition to a chunk fingerprint, the client is required to upload a {\em proof}, based on which the cloud verifies if the client exactly {\em holds the corresponding chunk in entirety} (rather than just a fingerprint). Deduplication is performed only on the chunks, whose ownerships are successfully verified, such that a compromised client cannot  identify the chunks owned by other clients.
+
+
+\subsection{Learning-content Attack}
+\label{sub:attack}
+
+In addition to fake ownerships, encrypted deduplication faces another side-channel attack (still launched by a malicious client), known as {\em learning-content attack} \cite{harnik10, zuo18}, which exploits the leakage of {\em deduplication patterns} (i.e., whether chunks are uploaded by any other client). The learning-content attack assumes that an adversary knows as priori that some victim client owns an individual file, whose content follows a publicly known content pattern (i.e., the known part). Its goal is to identify the private part of the file. Specifically, the adversary enumerates all possible values of the private part, and generates many fake files. It  uploads each fake file, and deduces the target file if it is informed  to not transfer any chunk of some file (i.e., the fake file is duplicate in entirety).
+
+We argue that PoW \cite{halevi11}  is insufficient to prevent the learning-content attack, since the adversary enumerates the whole contents of chunks and is capable of convincing its ownership on them. In other words, PoW cannot detect if the chunks are exactly owned by a client or just some forgeries.
+
+%Other defense approaches \cite{harnik10, li15} necessitate injecting network traffic and incurs bandwidth overhead (see Exp\#9 for analysis of bandwidth overhead).
+
+% This motivates \sysnameF, which strengthens the security of source-based encrypted deduplication by  augmenting PoW with {\em proactively detecting the learning-content attack}.
+
+
+
+% In addition to vulnerable to fraud ownerships, source-based deduplication incurs information leakage about the {\em deduplication patterns} of chunks. Specifically,
+% The response from the cloud (in the source-based deduplication) for whether transferring a chunk actually leaks the information that {\em if the chunk has been uploaded by any other client}. By abusing deduplication patterns, a compromised client can launch another side-channel attack, called the {\em learning-content attack} \cite{harnik10, zuo18}, to infer the private contents of other clients.
+
+
+
+
+
+\paragraph{Case study.}
+We highlight the severity of the learning-content attack via a case study. We consider that Alice and Bob are the senior students in a university that rents a cloud (that enables cross-user deduplication) to backup the computers of enrolled students. After job hunting, both Alice and Bob receive a company's offers, which are initially stored in their individual computers and then automatically backed up to the cloud.
+We suppose that Alice is the adversary that aims to infer Bob's offer information. %salary and sign-on bonus via learning-content attack.
+
+
+
+
+Here, we simulate offers via Google's offer letter \cite{google_offer}, and change the {\em Name}, {\em annual salary} (that is assumed to be a multiple of 6\,K \cite{harnik10} and between 204\,K and 804\,K) and {\em sign-on bonus} (that is assumed to be a multiple of 10\,K and between 300\,K and 600\,K) to generate Alice's and Bob's offers, each taking about 18.5\,KiB.
+Also, we implement an encrypted deduplication storage system to store offers in the cloud. Specifically, the client takes an offer letter as input, performs chunking, encryption and source-based deduplication, and only transfers non-duplicate ciphertext chunks to the cloud  (\S\ref{sub:basics}). Initially, we store Bob's offer in the cloud, such that Alice can infer Bob's actual salary and sign-on bonus via the learning-content attack. Specifically, Alice builds on its own offer to enumerate all possible annual salaries and sign-on bonuses for Bob, and deduces Bob's offer if no chunk is transferred when storing some fake offer.
+
+
+
+
+
+We randomly generate Bob's salary and sign-on bonus, and evaluate the learning-content attack in both LAN (that deploys both the client and the cloud in our local testbed, see \S\ref{sub:evaluation-performance} for testbed configuration) and cloud (that deploys the client in our local testbed and the cloud in Alibaba Cloud \cite{alibaba}, see \S\ref{sub:evaluation-performance} for cloud configuration) testbeds. Table~\ref{tab:attack} presents the average costs for identifying the correct offer. Alice needs to upload about 841 fake offers, which are translated to the consumption of 7.4\,MiB network traffic (that includes the transfer of non-duplicate ciphertext chunks and the metadata). In other words, it takes only 105.0\,s and 475.5\,s for inferring Bob's private information in the LAN and cloud testbeds, respectively.
+
+
+\begin{table}
+  \centering
+    \small
+  \begin{tabular}{|c|c@{\hspace{.2em}}|@{\hspace{.2em}}c@{\hspace{.2em}}|@{\hspace{.2em}}c@{\hspace{.2em}}|}
+    \hline
+    {\bf Testbeds} & {\bf Upload Attempts} & {\bf Network Traffic} & {\bf Time}\\
+    \hline
+    \hline
+    LAN & \multirow{2}{*}{841.0 $\pm$ 608.3} & \multirow{2}{*}{7.4 $\pm$ 5.4\,MiB} & 105.0 $\pm$ 76.1\,s \\
+    \cline{1-1}\cline{4-4}
+    Cloud & & & 475.5 $\pm$ 339.8\,s   \\
+    \hline
+  \end{tabular}
+  \caption{Average costs of learning-content attack. We evaluate the results in 10 runs, and include the 95\% confidence intervals from {\em Student's t-Distribution}.}
+  \label{tab:attack}
+  \vspace{-6pt}
+\end{table}
+
+
+%monitoring the behaviors of each client. It  if a (malicious) behavior is detected for launching the learning-content attack.
+
+
+
+%malicious behaviors of a compromised client in launching the learning-content attack.
+
+%It aborts the corresponding client if malicious behaviors are found, while preserving source-based (encrypted) deduplication to achieve bandwidth/storage efficiency (and data confidentiality).
+
+
+
+% \subsection{Limitations of Protection Approaches}
+% \label{sub:limitations}
+% In the state-of-the-art, several approaches can defend against  the learning-remaining-content attack. We review these approaches, all of which focus on protecting deduplication patterns in source-based deduplication.
+
+% \begin{itemize}[leftmargin=*]
+% \item {\bf Target-based deduplication \cite{harnik10}.} It forces each client to transfer all ciphertext chunks, whatever they are duplicate or not, such that the deduplication process in the cloud is fully hidden to the client.
+
+
+% \item {\bf Random-threshold approach \cite{harnik10}.} It manages a random threshold for each chunk, and performs target-based deduplication  if the number of uploads of the chunk is smaller than the threshold; or source-based deduplication (\S\ref{sub:basics}) otherwise. Since the threshold of each chunk is confidential, a compromised client cannot identify how many times the chunk has been uploaded.
+
+%   % or target-based deduplication on the chunk. Specifically,
+%   % upon receiving an upload request of a chunk, the cloud informs the client to transfer the chunk for deduplication in the cloud (i.e., target-based deduplication), if the number of its uploads is smaller than the corresponding threshold. Otherwise, the cloud lets the client not transfer the chunk (i.e., source-based deduplication).
+
+% \item {\bf Two-stage deduplication \cite{li15}.} It performs source-based
+%   deduplication on the ciphertext chunks for the same client, followed by target-based deduplication on those across different clients. The defense rationality is that no client has incentive to infer the deduplication patterns of its own chunks.
+
+
+% \item {\bf Randomized redundant chunk scheme (RRCS) \cite{zuo18}.} It works on file level, and informs each client to transfer multiple duplicate chunks of the uploading file, in addition to the corresponding non-duplicate chunks, such that the number of transferred chunks is indistinguishable across duplicate and non-duplicate files.
+% \end{itemize}
+
+% However, we argue that the above approaches either trade system-wide performance for security protection, or suffer from a practical limitation.
+
+% \begin{itemize}[leftmargin=*]
+% \item {\bf Bandwidth overhead.} All existing approaches realize protection by injecting network traffics. They require to transfer all (in target-based deduplication) or some (in the other three approaches) duplicate chunks, which will be removed by deduplication yet.
+
+% \item {\bf Management overhead.} The random-threshold approach generates one threshold per chunk, and incurs huge overhead for managing all
+%   chunk-based thresholds. Also, two-stage deduplication needs to manage the ownerships of all chunk, and the management overhead increases proportionally with the number of chunks and clients.
+
+% \item {\bf Unrealistic assumption.}
+%   RRCS inherently assumes that the maximum number of non-duplicates chunks included in a file is known as priori, so as to decide how many chunks to be transferred for each file; Otherwise, the files that include many or just a few non-duplicate chunks can be distinguished based on the volume of transferred data. The assumption is impractical, since it is impossible to identify the number of non-duplicate chunks for future files.
+% %  Otherwise, a compromised client can distinguish the files that include many or just a few non-duplicate chunks based on transferred data.
+
+% \end{itemize}
+
+
+% Informed by above limitations, we are motivated to switch from passive protection to {\em active detection}. We present \sysnameF, which proactively detects the learning-remaining-content attack {\em online} and aborts the corresponding client if a malicious action is found, while preserving source-based (encrypted) deduplication to achieve bandwidth/storage efficiency (and data confidentiality).
+
+
+% We present \sysnameF to detect the learning-remaining-attack online and
+% Specifically, the protection approaches \cite{harnik10, li15, zuo18} modify the source-based deduplication protocols  to trade system-wide resources (e.g., bandwidth and/or management) for security, such that any client suffers from the bandwidth overhead even it is benign in nature.
+
+
+
+
+
+
+% without modifying the protocols of source-based deduplication, thereby preserving bandwidth efficiency and achieving low management overhead. Once an attack action is detected, we abort all following requests/operations of the compromised client.
+
+% Random threshold and random response  defend the pattern-based attack, since the client cannot reliably deduce the existence of a faked chunk even it is informed to upoad the chunk. Also, rate limiting  increases the time cost of inferring the deduplication patterns of faked chunks, so as to make the attack impossible in a reasonable time period. For two-stage deduplication, the defense rationale is that the target-based deduplication does not leak any information about other clients' chunks.%, while a client has no incentive to infer the deduplication patterns of the chunks that it has already uploaded.
+
+% However, the above approaches still face several practical limitations.
