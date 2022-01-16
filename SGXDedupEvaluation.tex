@@ -1,7 +1,7 @@
 \section{实验分析}
 \label{sec:evaluation}
 
-我们为多个客户端、密钥服务器和云配置了一个 LAN 机器集群。每台机器都有一个四核 3.0\,GHz Intel Core i5-7400 CPU，一个 1\,TB 7200 RPM SATA 硬盘和 8\,GB RAM。所有机器都运行 Ubuntu 18.04 并通过 10\,GbE 连接。我们使用合成 (\S\ref{subsec:synthetic}) 和真实世界 (\S\ref{subsec:real-world}) 工作负载来评估 \sysname。我们将主要结果总结如下。
+我们为多个客户端、密钥管理器和云配置了一个 LAN 机器集群。每台机器都有一个四核 3.0\,GHz Intel Core i5-7400 CPU，一个 1\,TB 7200 RPM SATA 硬盘和 8\,GB RAM。所有机器都运行 Ubuntu 18.04 并通过 10\,GbE 连接。我们使用合成 (\S\ref{subsec:synthetic}) 和真实世界 (\S\ref{subsec:real-world}) 工作负载来评估 \sysname。我们将主要结果总结如下。
 
 \begin{itemize}[leftmargin=*]
 \item \sysname 在单客户端 (Exp\#1) 和多客户端 (Exp\#2) 情况下均实现了高 MLE 密钥生成性能。例如，在单客户端情况下，它比 DupLESS 的 MLE 密钥生成 \cite{bellare13b} 采用的 OPRF-RSA 实现了 131.9$\times$ 的加速。

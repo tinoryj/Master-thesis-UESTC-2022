@@ -24,9 +24,8 @@
 \RequirePackage{lmodern}
 \RequirePackage[nopostdot]{glossaries}
 \RequirePackage{mathspec}
-
+\RequirePackage{enumerate}
 \RequirePackage{xeCJK}
-\RequirePackage{ifplatform}
 
 \setCJKmainfont[AutoFakeBold=true]{SimSun}
 \newCJKfontfamily{\heiti}{SimHei}
@@ -708,7 +707,7 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
 
 \vspace{0.54in}
 \noindent
-\hspace{12pt}注1：注明《国际十进分类法UDC》的类号。
+\hspace{12pt}注1:注明《国际十进分类法UDC》的类号。
 
 \newpage
 \thispagestyle{empty}\null
@@ -765,8 +764,8 @@ School: & \en@theschool \\
     也不包含为获得电子科技大学或其它教育机构的学位或证书而使用过的材料。%
     与我一同工作的同志对本研究所做的任何贡献均已在论文中作了明确的说明并表示谢意。}
   \\[14pt]
-  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名：\rule[-3pt]{4.1cm}{0.5pt}\hspace{42pt}%
-  日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日 \\
+  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名:\rule[-3pt]{4.1cm}{0.5pt}\hspace{42pt}%
+  日期:\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日 \\
   \noindent\begin{center}
     \fontsize{18pt}{20pt}\selectfont\heiti 论文使用授权
   \end{center}
@@ -779,9 +778,9 @@ School: & \en@theschool \\
   \chineseleftparenthesis%
   保密的学位论文在解密后应遵守此规定%
   \chineserightparenthesis} \\[14pt]
-  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名：\rule[-3pt]{4.1cm}{0.5pt}\hspace{12pt}%
-  导师签名：\rule[-3pt]{4.1cm}{0.5pt} \\
-  \null\hspace{259pt} 日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日
+  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名:\rule[-3pt]{4.1cm}{0.5pt}\hspace{12pt}%
+  导师签名:\rule[-3pt]{4.1cm}{0.5pt} \\
+  \null\hspace{259pt} 日期:\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日
 \end{spacing}
 \newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
 }
