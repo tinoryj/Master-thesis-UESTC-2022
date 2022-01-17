@@ -5,7 +5,7 @@
 \paragraph*{Setup.} 我们为性能评估配置了两个测试平台。
 
 \begin{itemize}[leftmargin=*]
-\item {\bf LAN.} 它包括三台机器，每台机器配备一个八核 2.9\,GHz Intel Core i7-10700 CPU，一个 4\,TB 7200 RPM Seagate Exos SATA 硬盘驱动器和 32\ ,GB 内存。所有机器都通过 10\,Gbps 交换机连接，并运行 Ubuntu 20.04.3。
+\item {\bf LAN.} 它包括三台机器，每台机器配备一个八核 2.9\,GHz Intel Core i7-10700 CPU，一个 4\,TB 7200 RPM Seagate Exos SATA 硬盘驱动器和 32\,GB 内存。所有机器都通过 10\,Gbps 交换机连接，并运行 Ubuntu 20.04.3。
 
 \item {\bf Cloud.} 部署在 {\em 阿里云} \cite{alibaba}。我们在两个区域租用了几台 {\em ecs.g7t.3xlarge} 虚拟机 (VM) 来分别运行云、关键服务器和多个客户端。同一地域和不同地域的虚拟机分别连接 10\,Gbps 和 100\,Mbps 网络。每个 VM 配备一个 12 核 3.5GHz CPU，由 Intel Xeon (Ice Lake) Platinum 8369B 和 48GiB 内存虚拟化，并安装阿里云 Linux 3.2104。我们另外挂载了以 {\em Alibaba General-Purpose NAS} 作为存储后端的云机。 NAS 可实现高达 15K\,IOPS 的 4\,K 次随机读写，带宽为 150\,MBps。
 \end{itemize}
