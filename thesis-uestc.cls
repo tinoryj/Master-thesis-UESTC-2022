@@ -919,7 +919,7 @@ School: & \en@theschool \\
     {\centering\fontsize{15pt}{15pt}\selectfont\strong\thispagestyle{fancy}}{附\hspace{12pt}录}{7.5pt}{}
   %\renewcommand{\thechapter}{附\hspace{12pt}录}
   \ifchinesebook{
-    \renewcommand{\appendixname}{附录}
+    \renewcommand{\appendixname}{附\hspace{12pt}录}
   }{
     \renewcommand{\appendixname}{Appendix}
   }
