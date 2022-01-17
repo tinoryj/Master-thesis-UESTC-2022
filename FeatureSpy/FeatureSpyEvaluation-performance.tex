@@ -1,4 +1,4 @@
-\subsection{Performance Evaluation}
+\subsection{系统性能测试}
 \label{sub:evaluation-performance}
 
 
@@ -60,7 +60,7 @@
 我们考虑单个客户端，并将 \prototype 的性能与基本系统 SGXDedup 进行比较。我们让客户端两次上传相同的文件（如 Exp\#5）并进一步下载文件。
 
 
-图~\ref{fig:singleClientThroughput}(a) 和Figure~\ref{fig:singleClientThroughput}(b) 分别展示了当我们改变提取特征的线程数（\S\ref{sec:implementation})。 SGXDedup 的速度在第一次上传时保持为 297.1\,MiB/s，在第二次上传时保持为 304.3\,MiB/s，因为它不提取特征。 \prototype 的上传速度首先随着线程数的增加而增加（例如，{\tt firstFeature} 为 265.3\,MiB/s，{\tt minFeature} 为 261.3\,MiB/s，{\tt minFeature} 为 262.6\,MiB/s {\tt allFeature} 当三个线程用于在第一次上传中提取特征时），然后减少（例如，在第一次上传中大约为 220\,MiB/s 和在第二次上传中为 225\,MiB/s 对于所有三个实例）由于资源争用。通过利用多线程，\prototype 仅在第一次上传时比 SGXDedup 产生 8.0-12.0\% 的性能开销，在第二次上传时为 6.6-7.5\%。此外，我们观察到第一次和第二次（不需要传输重复数据）上传之间的性能差异很小，因为我们的 LAN 测试平台具有高带宽来传输数据。我们认为基于源的重复数据删除在实际云部署中带来了显着的性能提升（Exp\#8），并减少了处理实际存储工作负载的网络流量（Exp\#10）。图~\ref{fig:singleClientThroughput}(c)比较下载速度。 \prototype 会导致 1.3\% 的性能下降，因为它使用 MLE 密钥和功能密钥解密每个块。
+图~\ref{fig:singleClientThroughput}(a) 和Figure~\ref{fig:singleClientThroughput}(b) 分别展示了当我们改变提取特征的线程数（\S\ref{sec:implementation})。 SGXDedup 的速度在第一次上传时保持为 297.1\,MiB/s，在第二次上传时保持为 304.3\,MiB/s，因为它不提取特征。 \prototype 的上传速度首先随着线程数的增加而增加（例如，{\tt firstFeature} 为 265.3\,MiB/s，{\tt minFeature} 为 261.3\,MiB/s，{\tt minFeature} 为 262.6\,MiB/s {\tt allFeature} 当三个线程用于在第一次上传中提取特征时），然后减少（例如，在第一次上传中大约为 220\,MiB/s 和在第二次上传中为 225\,MiB/s 对于所有三个实例）由于资源争用。通过利用多线程，\prototype 仅在第一次上传时比 SGXDedup 产生 8.0-12.0\% 的性能开销，在第二次上传时为 6.6-7.5\%。此外，我们观察到第一次和第二次（不需要传输重复数据）上传之间的性能差异很小，因为我们的 LAN 测试平台具有高带宽来传输数据。我们认为基于数据源的重复数据删除在实际云部署中带来了显着的性能提升（Exp\#8），并减少了处理实际存储工作负载的网络流量（Exp\#10）。图~\ref{fig:singleClientThroughput}(c)比较下载速度。 \prototype 会导致 1.3\% 的性能下降，因为它使用 MLE 密钥和功能密钥解密每个块。
 
 
 \begin{figure}[t]
@@ -173,7 +173,7 @@
 
 
 \paragraph{Exp\#10（网络流量分析）。}
-我们分析了 \prototype 的网络流量，并将其与三种可以抵御学习内容攻击的重复数据删除方法进行比较：(i) {\em target-based deduplication} \cite{harnik10}，强制客户端传输所有密文块到云端； (ii) {\em random-threshold deduplication} \cite{harnik10}，如果每个块的上传次数小于预定义的阈值，则执行基于目标的重复数据删除，或基于源的重复数据删除 (\S\ref {sub:basics}) 否则； (iii) {\em 两阶段重复数据删除} \cite{li15}，它对来自同一客户端的密文块执行基于源的重复数据删除，然后对跨不同客户端的密文块执行基于目标的重复数据删除。在这里，我们按照之前的工作 \cite{harnik10} 分别在 20 和 2 处选择随机阈值重复数据删除中阈值的上限和下限。我们专注于 FSL 和 MS。对于 FSL，我们每天合并每个用户的快照，并按时间顺序存储。对于 MS，我们认为每个快照都来自一个单独的客户端，并按照快照 ID 的顺序存储快照。我们不考虑文件配方导致的带宽开销。
+我们分析了 \prototype 的网络流量，并将其与三种可以抵御学习内容攻击的重复数据删除方法进行比较：(i) {\em target-based deduplication} \cite{harnik10}，强制客户端传输所有密文块到云端； (ii) {\em random-threshold deduplication} \cite{harnik10}，如果每个块的上传次数小于预定义的阈值，则执行基于存储目标的重复数据删除，或基于数据源的重复数据删除 (\S\ref {sub:basics}) 否则； (iii) {\em 两阶段重复数据删除} \cite{li15}，它对来自同一客户端的密文块执行基于数据源的重复数据删除，然后对跨不同客户端的密文块执行基于存储目标的重复数据删除。在这里，我们按照之前的工作 \cite{harnik10} 分别在 20 和 2 处选择随机阈值重复数据删除中阈值的上限和下限。我们专注于 FSL 和 MS。对于 FSL，我们每天合并每个用户的快照，并按时间顺序存储。对于 MS，我们认为每个快照都来自一个单独的客户端，并按照快照 ID 的顺序存储快照。我们不考虑文件配方导致的带宽开销。
 
 \begin{figure}[t]
     \centering
@@ -192,6 +192,6 @@
     \label{fig:expNetworkTraffic}
 \end{figure}
 
-图~\ref{fig:expNetworkTraffic} 展示了结果。由于 \prototype 执行纯基于源的重复数据删除，因此它优于其他方法。例如，在存储最后一个快照后，\prototype 将基于目标的重复数据删除的网络流量在 FSL 中减少了 98.9\%，在 MS 中减少了 83.1\%。两阶段重复数据删除在 ​​FSL 中表现良好（例如，只有 3.7\% 的带宽开销超过 \prototype），因为 FSL 包含大量用户内冗余。但是，在 MS 中，两级重复数据删除的网络流量最终是 \prototype 的 3.1$\times$。随机阈值重复数据删除会在 FSL（例如，\prototype 的 72.5$\times$）和 MS（例如，\prototype 的 2.6$\times$）中产生不同的网络流量。
+图~\ref{fig:expNetworkTraffic} 展示了结果。由于 \prototype 执行纯基于数据源的重复数据删除，因此它优于其他方法。例如，在存储最后一个快照后，\prototype 将基于存储目标的重复数据删除的网络流量在 FSL 中减少了 98.9\%，在 MS 中减少了 83.1\%。两阶段重复数据删除在 ​​FSL 中表现良好（例如，只有 3.7\% 的带宽开销超过 \prototype），因为 FSL 包含大量用户内冗余。但是，在 MS 中，两级重复数据删除的网络流量最终是 \prototype 的 3.1$\times$。随机阈值重复数据删除会在 FSL（例如，\prototype 的 72.5$\times$）和 MS（例如，\prototype 的 2.6$\times$）中产生不同的网络流量。
 
-由于 Linux 和 CouchDB 数据集的每个版本几乎没有冗余，并且需要大量基于源的重复数据删除查询，对于 Linux，它仅带来 $1.05\%$ 的流量节省，而对于 CouchDB，它甚至导致 $0.31 \%$ 额外的流量开销。随机阈值重复数据删除带来的流量节省是完全不同的。在 MS 中，它带来了 $55.75\%$ 的流量节省，而在 FSL 和 Linux 中，只有 $21.60\%$ 和 $26.68\%$。然而，它甚至在 CouchDB 中引入了 $0.0016\%$ 的额外流量开销。另外，我们发现在CouchDB的前35个版本中，几个方案的网络流量几乎是一样的，而对于后面的版本，\prototype 的累计网络流量几乎保持在一个水平。这是因为这 35 个版本是通用版本，几乎没有冗余。并且这些通用版本和社区/企业版本之间存在大量冗余，使得\prototype 不再需要上传大量数据。
+由于 Linux 和 CouchDB 数据集的每个版本几乎没有冗余，并且需要大量基于数据源的重复数据删除查询，对于 Linux，它仅带来 $1.05\%$ 的流量节省，而对于 CouchDB，它甚至导致 $0.31 \%$ 额外的流量开销。随机阈值重复数据删除带来的流量节省是完全不同的。在 MS 中，它带来了 $55.75\%$ 的流量节省，而在 FSL 和 Linux 中，只有 $21.60\%$ 和 $26.68\%$。然而，它甚至在 CouchDB 中引入了 $0.0016\%$ 的额外流量开销。另外，我们发现在CouchDB的前35个版本中，几个方案的网络流量几乎是一样的，而对于后面的版本，\prototype 的累计网络流量几乎保持在一个水平。这是因为这 35 个版本是通用版本，几乎没有冗余。并且这些通用版本和社区/企业版本之间存在大量冗余，使得\prototype 不再需要上传大量数据。

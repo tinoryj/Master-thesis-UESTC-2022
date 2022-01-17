@@ -4,7 +4,7 @@
 我们为多个客户端、密钥管理器和云配置了一个 LAN 机器集群。每台机器都有一个四核 3.0\,GHz Intel Core i5-7400 CPU，一个 1\,TB 7200 RPM SATA 硬盘和 8\,GB RAM。所有机器都运行 Ubuntu 18.04 并通过 10\,GbE 连接。我们使用合成 (\S\ref{subsec:synthetic}) 和真实世界 (\S\ref{subsec:real-world}) 工作负载来评估 \sysnameS。我们将主要结果总结如下。
 
 \begin{itemize}[leftmargin=*]
-\item \sysnameS 在单客户端 (Exp\#1) 和多客户端 (Exp\#2) 情况下均实现了高 消息锁加密（MLE） 密钥生成性能。例如，在单客户端情况下，它比 DupLESS 的 消息锁加密（MLE） 密钥生成 \cite{bellare13b} 采用的 OPRF-RSA 实现了 131.9$\times$ 的加速。
+\item \sysnameS 在单客户端 (Exp\#1) 和多客户端 (Exp\#2) 情况下均实现了高 消息锁加密（MLE） 密钥生成性能。例如，在单客户端情况下，它比 {\em DupLESS} 的 消息锁加密（MLE） 密钥生成 \cite{bellare13b} 采用的 OPRF-RSA 实现了 131.9$\times$ 的加速。
 \item \sysnameS 与基于通用哈希的 PoW \cite{xu13}（仅实现较弱的安全性）和基于 Merkle 树的 PoW \cite{halevi11} 相比，具有 2.2$\times$ 和 8.2$\times$ 的计算 PoW 加速 (Exp\#3)。
 \item \sysnameS 在单客户端（Exp\#4 和 Exp\#5）和多客户端（Exp\#6）情况下具有较高的整体性能。我们还提供了上传中 \sysnameS 的时间细分 (Exp\#7)。例如，在 10\,GbE LAN 测试平台中，与没有任何安全保护的普通重复数据删除系统相比，\sysnameS 的上传速度仅降低了 17.5\%；在真实云部署（Exp\#5）中，\sysnameS 会导致 13.2\% 的减速，并且其性能受 Internet 带宽的限制。
 \item 在上传时间细分中，\sysnameS 将第二次上传的客户端初始化时间减少了 91.5\%，并将第二次上传的密钥生成时间减少了 41.9\% (Exp\#7)。
@@ -33,7 +33,7 @@
     \cline{3-4}
       &                     & PoW-UH \cite{xu13} & 2.2$\times\;\uparrow$ \\
     \cline{2-4}
-    & \multirow{2}{*}{\shortstack{Overall \\ system}} & DupLESS \cite{bellare13b} & 8.1$\times\;\uparrow$ \\
+    & \multirow{2}{*}{\shortstack{Overall \\ system}} & {\em DupLESS} \cite{bellare13b} & 8.1$\times\;\uparrow$ \\
     \cline{3-4}
     & & PlainDedup & 17.5\% $\downarrow$ \\
     \hline
