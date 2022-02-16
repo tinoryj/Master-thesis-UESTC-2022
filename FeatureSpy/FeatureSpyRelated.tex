@@ -5,7 +5,7 @@
 在 \S\ref{subsec:featurespy-basics} 中，我们回顾了针对重复数据删除的两个正交威胁。 MLE (及其变体 \cite{bellare13a, bellare13b, douceur02, li15}) 保护数据机密性以防止受损云，并从安全理论 \cite{bellare15, abadi13} 进行了广泛研究，并在存储系统 \cite{cox02, adya02, bellare13b, armknecht15, shah15, li15, li19, qin17, li20a, ren21}。 \sysnameF 提出了 SPE (\S\ref{subsec:featurespy-spe})，它通过相似性保留来增强 MLE，从而检测基于密文块的学习内容攻击。
 
 
-PoW 可防止恶意客户端在基于数据源的重复数据删除中损害数据所有权，但无法解决学习内容攻击 (\S\ref{subsec:featurespy-attack})。 \sysnameF 通过主动检测学习内容攻击来补充加密重复数据删除 \cite{ren21}。虽然以前的研究可以通过以不同的方式应用重复数据删除来击败学习内容攻击，但它们会注入网络流量来传输重复的内容。 \sysnameF 执行纯基于数据源的重复数据删除并实现带宽效率 (Exp\#10)。
+PoW 可防止恶意客户端在基于数据源的重复数据删除中损害数据所有权，但无法解决学习内容攻击 (\S\ref{subsec:featurespy-attack})。 \sysnameF 通过主动检测学习内容攻击来补充加密后重复数据删除 \cite{ren21}。虽然以前的研究可以通过以不同的方式应用重复数据删除来击败学习内容攻击，但它们会注入网络流量来传输重复的内容。 \sysnameF 执行纯基于数据源的重复数据删除并实现带宽效率 (Exp\#10)。
 
 
 \paragraph*{基于 SGX 的安全应用程序。}

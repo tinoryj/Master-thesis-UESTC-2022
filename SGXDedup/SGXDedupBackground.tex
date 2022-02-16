@@ -1,24 +1,24 @@
 \section{背景和问题}
 \label{sec:sgxdedup-background}
 
-我们介绍了加密重复数据删除 (\S\ref{subsec:sgxdedup-encrypted-dedup}) 和Intel SGX (\S\ref{subsec:sgxdedup-sgx}) 的背景细节和正式定义。我们还介绍了本文中提到的威胁模型 (\S\ref{subsec:sgxdedup-threat})。
+我们介绍了加密后重复数据删除 (\S\ref{subsec:sgxdedup-encrypted-dedup}) 和Intel SGX (\S\ref{subsec:sgxdedup-sgx}) 的背景细节和正式定义。我们还介绍了本文中提到的威胁模型 (\S\ref{subsec:sgxdedup-threat})。
 
-\subsection{加密重复数据删除}
+\subsection{加密后重复数据删除}
 \label{subsec:sgxdedup-encrypted-dedup}
 
 {\bf } 我们考虑\textit{基于数据块的重复数据删除} \cite{zhu08,wallace12,meyer11}，它广泛部署在现代存储系统中以消除内容冗余。它通过将输入文件划分为不重叠的 \textit{数据块} 来工作。对于每个块，它计算块内容的加密哈希（称为 \textit{指纹}）。它在\textit{指纹索引} 中跟踪所有当前存储的块的指纹。如果指纹是指纹索引的新指纹，它只存储块的物理副本，或者如果指纹已被跟踪，则将块视为副本，假设指纹冲突在实践中极不可能 \cite{black06}。
    
-加密重复数据删除通过加密扩展了基于数据块的重复数据删除，为外包云存储提供数据机密性和存储效率。 \textit{ 客户端} 使用一些对称密钥将输入文件的每个 \textit{ 明文块} 加密成一个 \textit{ 密文块}，并将所有密文块存储在 \textit{ 云}（或任何远程存储站点）中，它管理密文块的重复数据删除存储。为了支持文件重建，客户端创建了一个 \textit{ file recipe}，其中列出了密文块的指纹、大小和密钥。它使用自己的主密钥加密文件元数据，并将加密的文件元数据存储在云中。
+加密后重复数据删除通过加密扩展了基于数据块的重复数据删除，为外包云存储提供数据机密性和存储效率。 \textit{ 客户端} 使用一些对称密钥将输入文件的每个 \textit{ 明文块} 加密成一个 \textit{ 密文块}，并将所有密文块存储在 \textit{ 云}（或任何远程存储站点）中，它管理密文块的重复数据删除存储。为了支持文件重建，客户端创建了一个 \textit{ file recipe}，其中列出了密文块的指纹、大小和密钥。它使用自己的主密钥加密文件元数据，并将加密的文件元数据存储在云中。
 
-\textit{ 消息锁定加密 (消息锁加密（MLE）)} \cite{bellare13a} 将加密原语形式化用于加密重复数据删除。它指定了对称密钥（称为 \textit{ 消息锁加密（MLE） 密钥}）如何从明文块的 \textit{ content}（例如，其流行的实例化 \textit{ convergent encryption (CE)} \cite{douceur02}使用明文块的加密哈希作为 消息锁加密（MLE） 密钥）。因此，它将重复的明文块加密为重复的密文块，从而使重复数据删除在密文块上仍然可行。
+\textit{ 消息锁定加密 (消息锁加密（MLE）)} \cite{bellare13a} 将加密原语形式化用于加密后重复数据删除。它指定了对称密钥（称为 \textit{ 消息锁加密（MLE） 密钥}）如何从明文块的 \textit{ content}（例如，其流行的实例化 \textit{ convergent encryption (CE)} \cite{douceur02}使用明文块的加密哈希作为 消息锁加密（MLE） 密钥）。因此，它将重复的明文块加密为重复的密文块，从而使重复数据删除在密文块上仍然可行。
 
 \paragraph*{Server-aided 消息锁加密（MLE）.} CE 易受 \textit{ 离线暴力攻击}，因为它的 消息锁加密（MLE） 密钥（即明文块的哈希）可以公开派生。具体来说，攻击者通过枚举所有可能的明文块的 消息锁加密（MLE） 密钥来从目标密文块（不知道 消息锁加密（MLE） 密钥）推断输入明文块，以检查是否有任何明文块被加密到目标密文块。
 
-服务器辅助消息锁加密（Server-aided MLE）\cite{bellare13b} 是最先进的加密原语，可增强加密重复数据删除对离线暴力攻击的安全性。
+服务器辅助消息锁加密（Server-aided MLE）\cite{bellare13b} 是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。
 
 它为消息锁加密（MLE） 中的密钥生成步骤部署了一个专用的 \textit{ 密钥管理器（key server）}。为了加密明文块，客户端首先将明文块的指纹发送到密钥管理器，密钥管理器通过指纹和密钥管理器维护的\textit{ global secret}返回 消息锁加密（MLE） 密钥。如果全局机密是安全的，则对手无法发起离线暴力攻击；否则，如果全局机密被泄露，则安全性会降低到原始 消息锁加密（MLE） 的安全性。服务器辅助 消息锁加密（MLE） 进一步建立在两种安全机制之上。首先，它使用 \textit{ oblivious pseudorandom function (OPRF)} \cite{naor04} 允许客户端发送明文块的“盲”指纹，这样密钥管理器仍然可以返回相同的 消息锁加密（MLE） 密钥用于相同指纹无需学习原始指纹。其次，它对来自客户端的密钥生成请求进行速率限制，以防止恶意客户端向密钥管理器发出许多密钥生成请求，以找到目标 消息锁加密（MLE） 密钥。
 
-\paragraph*{Proof-of-ownership.} 为了节省带宽，加密重复数据删除可以应用基于数据源的重复数据删除，而不是基于存储目标的重复数据删除，以在客户端删除重复的密文块，而无需上传到云（\S\ref{sec:sgxdedup-introduction}）。客户端将密文块的指纹发送到云端，云端检查指纹是否被指纹索引跟踪（即对应的密文块已被存储）。然后，客户端仅将非重复密文块上传到云端。
+\paragraph*{Proof-of-ownership.} 为了节省带宽，加密后重复数据删除可以应用基于数据源的重复数据删除，而不是基于存储目标的重复数据删除，以在客户端删除重复的密文块，而无需上传到云（\S\ref{sec:sgxdedup-introduction}）。客户端将密文块的指纹发送到云端，云端检查指纹是否被指纹索引跟踪（即对应的密文块已被存储）。然后，客户端仅将非重复密文块上传到云端。
 
 
 但是，当某些客户端受到威胁时，基于数据源的重复数据删除很容易受到 \textit{ side-channel attack} \cite{harnik10,halevi11} 的攻击。一种侧信道攻击是，受感染的客户端可以通过将密文块的指纹发送到云来查询任何目标密文块的存在（例如，如果密文块对应于某个可能的密码 \cite{harnik10}），因此以识别来自其​​他客户端的敏感信息。另一种侧信道攻击是受感染的客户端可以未经授权访问其他客户端的存储块。具体来说，它可以使用任何目标密文块的指纹来说服云它是具有完全访问权限 \cite{halevi11} 的相应密文块的所有者。
@@ -28,12 +28,12 @@
 
 它的想法是让云验证客户端确实是密文块的所有者，并被授权完全访问密文块。这确保了受感染的客户端无法查询其他客户端的块是否存在。具体来说，在基于 PoW 的基于数据源的重复数据删除中，客户端将发送到云的每个指纹都附加一个 \textit{ PoW 证明}，云可以通过它验证客户端是否是相应密文块的真正所有者。云仅对成功的证明验证做出响应，从而防止任何受感染的客户端识别其他客户端拥有的密文块。 
 
-\paragraph*{Limitations.} 回想一下 \S\ref{sec:sgxdedup-introduction}，现有的加密重复数据删除实现需要昂贵的加密保护。服务器辅助 消息锁加密（MLE） 需要 OPRF 协议 \cite{naor04} 来保护指纹信息免受密钥管理器的影响，但 OPRF 协议涉及昂贵的公钥加密操作。例如，我们的评估 (\S\ref{subsec:sgxdedup-synthetic}) 表明，基于 OPRF 的 消息锁加密（MLE） 密钥生成只能达到 25\,MB/s (Exp\#1) 并将整体加密重复数据删除性能限制在 20 \,MB/s (Exp\#4)。此外，现有的 PoW 实现基于 Merkle-tree 协议 \cite{halevi11}，由于块级 PoW 的频繁哈希计算，该协议仅实现 37\,MB/s (Exp\#3)。在 1\,GbE LAN 环境中，PoW 的计算开销甚至抵消了在基于数据源的重复数据删除中消除重复数据上传的性能增益。虽然我们可以通过基于每个文件应用 PoW 来减轻 PoW 计算（即，客户端证明其对文件的所有权），但云无法验证块是否属于基于数据块的重复数据删除下的文件。提高服务器辅助 消息锁加密（MLE） 或 PoW 性能的现有解决方案通常会牺牲安全性 \cite{li20b,xu13,pietro12}、带宽效率 \cite{harnik10,li15} 或存储效率 \cite{zhou15,qin17,li20b} (\S\ref{sec:sgxdedup-related_work})。
+\paragraph*{Limitations.} 回想一下 \S\ref{sec:sgxdedup-introduction}，现有的加密后重复数据删除实现需要昂贵的加密保护。服务器辅助 消息锁加密（MLE） 需要 OPRF 协议 \cite{naor04} 来保护指纹信息免受密钥管理器的影响，但 OPRF 协议涉及昂贵的公钥加密操作。例如，我们的评估 (\S\ref{subsec:sgxdedup-synthetic}) 表明，基于 OPRF 的 消息锁加密（MLE） 密钥生成只能达到 25\,MB/s (Exp\#1) 并将整体加密后重复数据删除性能限制在 20 \,MB/s (Exp\#4)。此外，现有的 PoW 实现基于 Merkle-tree 协议 \cite{halevi11}，由于块级 PoW 的频繁哈希计算，该协议仅实现 37\,MB/s (Exp\#3)。在 1\,GbE LAN 环境中，PoW 的计算开销甚至抵消了在基于数据源的重复数据删除中消除重复数据上传的性能增益。虽然我们可以通过基于每个文件应用 PoW 来减轻 PoW 计算（即，客户端证明其对文件的所有权），但云无法验证块是否属于基于数据块的重复数据删除下的文件。提高服务器辅助 消息锁加密（MLE） 或 PoW 性能的现有解决方案通常会牺牲安全性 \cite{li20b,xu13,pietro12}、带宽效率 \cite{harnik10,li15} 或存储效率 \cite{zhou15,qin17,li20b} (\S\ref{sec:sgxdedup-related_work})。
 
 \subsection{Intel SGX}
 \label{subsec:sgxdedup-sgx} 
 
-我们探索硬件辅助可信执行以减轻加密重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。在这项工作中，我们专注于Intel SGX \cite{sgx}，这是一套内置于现代Intel CPU 中的安全相关指令。 SGX 在称为 \textit{ enclave} 的硬件保护环境中屏蔽代码和数据的执行。在下文中，我们将重点介绍与我们的工作相关的安全区的三个安全特性:隔离、证明和密封。
+我们探索硬件辅助可信执行以减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。在这项工作中，我们专注于Intel SGX \cite{sgx}，这是一套内置于现代Intel CPU 中的安全相关指令。 SGX 在称为 \textit{ enclave} 的硬件保护环境中屏蔽代码和数据的执行。在下文中，我们将重点介绍与我们的工作相关的安全区的三个安全特性:隔离、证明和密封。
 
 \paragraph*{Isolation.}安全区驻留在称为 \textit{安全区page cache (EPC)} 的硬件保护内存区域中，用于托管任何受保护的代码和数据。一个 EPC 包含 4KB 页面，任何 in-enclave 应用程序最多可占用 96\,MB \cite{harnik18}。如果安全区的大小比 EPC 大，它会加密未使用的页面并将它们驱逐到未受保护的内存中。在这项工作中，我们在每个客户端和密钥管理器中部署安全区以保护敏感操作 (\S\ref{subsec:sgxdedup-arch})。我们还限制了 in-enclave 内容的大小以减轻分页开销 (\S\ref{subsec:sgxdedup-encryption})。
 
