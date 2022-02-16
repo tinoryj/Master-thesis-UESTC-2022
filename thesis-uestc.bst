@@ -38,6 +38,7 @@ ENTRY
   id
   note
   language
+  eprint
 }
 {}
 {label}

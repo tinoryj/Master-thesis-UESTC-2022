@@ -11,7 +11,7 @@
 
 \RequirePackage{array}
 \RequirePackage{booktabs}
-\setlength{\heavyrulewidth}{0.5pt}
+\setlength{\heavyrulewidth}{0.9pt}
 \setlength{\lightrulewidth}{0.5pt}
 \setlength{\arrayrulewidth}{0.5pt}
 \setlength{\cmidrulewidth}{0.5pt}
@@ -79,7 +79,7 @@
 \graphicspath{{./pic/}}
 
 \RequirePackage[titles]{tocloft}
-\RequirePackage[labelformat=simple]{subfig}
+\RequirePackage[labelformat=simple]{subcaption}
 \captionsetup[subfigure]{font=small, belowskip=6pt, width=36pt}
 \renewcommand{\thesubfigure}{(\alph{subfigure})}
 \newcommand{\floatcontinue}{\end{figure}\clearpage\begin{figure}[tb]\ContinuedFloat}
@@ -306,9 +306,6 @@
 \newcommand{\zh@thetitle}{\chinesespace}
 \newcommand{\zh@theauthor}{\chinesespace}
 \newcommand{\zh@thedate}{\chinesespace}
-\newcommand{\zh@thedateoral}{\chinesespace}
-\newcommand{\zh@thedatesubmit}{\chinesespace}
-\newcommand{\zh@thedateconfer}{\chinesespace}
 \newcommand{\zh@theschool}{\chinesespace}
 \newcommand{\zh@themajor}{\chinesespace}
 \newcommand{\zh@theadvisor}{\chinesespace}
@@ -316,9 +313,6 @@
 \newcommand{\en@thetitle}{\chinesespace}
 \newcommand{\en@theauthor}{\chinesespace}
 \newcommand{\en@thedate}{\chinesespace}
-\newcommand{\en@thedateoral}{\chinesespace}
-\newcommand{\en@thedatesubmit}{\chinesespace}
-\newcommand{\en@thedateconfer}{\chinesespace}
 \newcommand{\en@theschool}{\chinesespace}
 \newcommand{\en@themajor}{\chinesespace}
 \newcommand{\en@theadvisor}{\chinesespace}
@@ -338,27 +332,6 @@
 \renewcommand{\date}[2]{
   \renewcommand{\zh@thedate}{#1}
   \renewcommand{\en@thedate}{#2}
-  \renewcommand{\zh@thedateoral}{#1}
-  \renewcommand{\en@thedateoral}{#2}
-  \renewcommand{\zh@thedatesubmit}{#1}
-  \renewcommand{\en@thedatesubmit}{#2}
-  \renewcommand{\zh@thedateconfer}{#1}
-  \renewcommand{\en@thedateconfer}{#2}
-}
-
-\newcommand{\dateoral}[2]{
-  \renewcommand{\zh@thedateoral}{#1}
-  \renewcommand{\en@thedateoral}{#2}
-}
-
-\newcommand{\datesubmit}[2]{
-  \renewcommand{\zh@thedatesubmit}{#1}
-  \renewcommand{\en@thedatesubmit}{#2}
-}
-
-\newcommand{\dateconfer}[2]{
-  \renewcommand{\zh@thedateconfer}{#1}
-  \renewcommand{\en@thedateconfer}{#2}
 }
 
 \newcommand{\major}[2]{
@@ -378,6 +351,22 @@
 
 \newcommand{\studentnumber}[1]{
   \renewcommand{\thestudentnumber}{#1}
+}
+
+\newcommand{\thedateoral}{}
+\newcommand{\thedatesubmit}{}
+\newcommand{\thedateconfer}{年\chinesespace 月}
+
+\newcommand{\setdate}[2][]{ 
+\ifthenelse{\equal{#1}{oral}}{
+  \renewcommand{\thedateoral}{#2}
+}{}
+\ifthenelse{\equal{#1}{submit}}{
+  \renewcommand{\thedatesubmit}{#2}
+}{}
+\ifthenelse{\equal{#1}{confer}}{
+  \renewcommand{\thedateconfer}{#2}
+}{}
 }
 
 \renewcommand{\strong}{\heiti}
@@ -599,23 +588,23 @@
   \ifbachelor{\fontsize{42pt}{42pt}\selectfont{\bfseries\chinesebooktitle} \\[24bp]}{
     \fontsize{42pt}{42pt}\selectfont\chinesebooktitle \\[24bp]}
   \fontsize{16pt}{16pt}\selectfont
-    \textbf{\MakeUppercase{\englishbooktitle}} \\[48bp]
+    \textnormal{\MakeUppercase{\englishbooktitle}} \\[48bp]
   \ifbachelor{
-    \vspace{0.5cm}
-    \includegraphics[width=5cm]{logo.pdf} \\[66bp]
-  }{\includegraphics[width=221bp]{logo.pdf} \\[48bp]}
-  \begin{tabular}{lp{4.6in}}
-    \heiti\fontsize{16pt}{16pt}\selectfont 论文题目 & \multirow[t]{2}{4.6in}{
+    %\vspace{0.4cm}
+    \includegraphics[width=180bp]{logo.pdf} \\[40bp]
+  }{\includegraphics[width=180bp]{logo.pdf} \\[40bp]}
+  \begin{tabular}{lp{4.2in}}
+    \bfseries\fontsize{18pt}{18pt}\selectfont 论文题目 & \multirow[t]{2}{4.2in}{
         \centering
-          \heiti\fontsize{16pt}{19pt}\selectfont
+          \bfseries\fontsize{18pt}{18pt}\selectfont
           \zh@thetitle
     } \\
     \cline{2-2}
             & \\
     \cline{2-2}
   \end{tabular}\hspace*{\fill} \\[\baselineskip]
-  \begin{tabular}{>{\heiti\fontsize{16pt}{16pt}\selectfont}l
-      >{\centering\arraybackslash\heiti\fontsize{16pt}{16pt}\selectfont}
+  \begin{tabular}{>{\bfseries\fontsize{16pt}{16pt}\selectfont}l
+      >{\centering\arraybackslash\bfseries\fontsize{16pt}{16pt}\selectfont}
       p{3.77in}p{15pt}}
     学科专业 & \zh@themajor &\\
     \cline{2-2}
@@ -624,6 +613,8 @@
     作者姓名 & \zh@theauthor &\\
     \cline{2-2}
     指导老师 & \zh@theadvisor &\\
+    \cline{2-2}
+    学\chinesespace\chinesespace 院 & \zh@theschool &\\
     \cline{2-2}
   \end{tabular}
 \end{center}
@@ -643,15 +634,15 @@
 UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
 
 \begin{center}
-  \fontsize{36pt}{36pt}\selectfont{\heiti
+  \fontsize{36pt}{36pt}\selectfont{
     学\chinesespace 位\chinesespace 论\chinesespace 文
   } \\[48bp]
 
-  \fontsize{16pt}{16pt}\selectfont{\heiti\zh@thetitle} \\
+  \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@thetitle} \\
   \vspace{-15pt}
   \rule{5.9in}{.5pt} \\
   \fontsize{12pt}{12pt}\selectfont（题名和副题名）\\[36bp]
-  \fontsize{16pt}{16pt}\selectfont{\heiti\zh@theauthor} \\
+  \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@theauthor} \\
   \vspace{-15pt}
   \rule{1.63in}{.5pt} \\
   \fontsize{12pt}{12pt}\selectfont（作者姓名） \\[36bp]
@@ -659,9 +650,9 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
       p{4.45in}}
-      指导老师 & {\heiti\zh@theadvisor} \\
+      指导老师 & {\bfseries\zh@theadvisor} \\
     \cline{2-2}
-      & {\heiti 电子科技大学\chinesespace 成都} \\
+      & {\bfseries 电子科技大学\chinesespace 成都} \\
     \cline{2-2}
     & \fontsize{12pt}{12pt}\selectfont（姓名、职称、单位名称）
   \end{tabular}  \\[36bp]
@@ -669,49 +660,49 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
 
   \noindent
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
+      >{\centering\arraybackslash\fontsize{14pt}{14pt}\bfseries\selectfont}
       p{1.0in}
       >{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
-      p{2.48in}}
+      >{\centering\arraybackslash\fontsize{14pt}{14pt}\bfseries\selectfont}
+      p{2.50in}}
       申请学位级别 & \chinesedegreename &
       学科专业 & \zh@themajor \\
     \cline{2-2}
     \cline{4-4}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
-      p{1.0in}
+      >{\centering\arraybackslash\fontsize{14pt}{14pt}\bfseries\selectfont}
+      p{1.59in}
       >{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
-      p{2.0in}}
-      提交论文日期 & \zh@thedatesubmit &
-      论文答辩日期 & \zh@thedateoral \\
+      >{\centering\arraybackslash\fontsize{14pt}{14pt}\bfseries\selectfont}
+      p{1.59in}}
+      提交论文日期 & \thedatesubmit &
+      论文答辩日期 & \thedateoral \\
     \cline{2-2}
     \cline{4-4}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
-      p{3.97in}}
-      学位授予单位和日期 & 电子科技大学\chinesespace{} \zh@thedateconfer \\
+      >{\centering\arraybackslash\fontsize{14pt}{14pt}\bfseries\selectfont}
+      p{4.02in}}
+      学位授予单位和日期 & 电子科技大学\chinesespace{} \thedateconfer \\
     \cline{2-2}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
-      p{2.26in}}
+      >{\centering\arraybackslash\fontsize{14pt}{14pt}\heiti\selectfont}
+      p{2.29in}}
       答辩委员会主席 & \\
     \cline{2-2}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{16pt}{16pt}\heiti\selectfont}
-      p{4.89in}}
+      >{\centering\arraybackslash\fontsize{14pt}{14pt}\heiti\selectfont}
+      p{5.03in}}
       评阅人 & \\
     \cline{2-2}
   \end{tabular}
 
 \vspace{0.54in}
 \noindent
-\hspace{12pt}注1:注明《国际十进分类法UDC》的类号。
+\hspace{12pt}注1：注明《国际十进分类法UDC》的类号。
 
 \newpage
 \thispagestyle{empty}\null
@@ -721,17 +712,17 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
   \fontsize{18pt}{20pt}\selectfont
   \bfseries\centering\en@thetitle
 \end{minipage}
-\par{\vspace{7.3cm}}
+\par{\vspace{6.3cm}}
 \noindent
 \begin{minipage}[t][1.52cm][t]{\textwidth}
   \fontsize{15pt}{17pt}\selectfont
-  \bfseries\centering\noindent
+  \centering\noindent
   A \englishbooktitle{} Submitted to \\
   University of Electronic Science and Technology of China
 \end{minipage}
-\par{\vspace{2.2cm}}
+\par{\vspace{3.2cm}}
 \noindent
-\begin{tabular}{>{\bfseries\fontsize{16pt}{16pt}\selectfont}r
+\begin{tabular}{>{\fontsize{16pt}{16pt}\selectfont}r
   >{\centering\arraybackslash\bfseries\fontsize{16pt}{16pt}\selectfont}
   p{10.6cm}}
   Discipline: & \multirow[t]{2}{*}{\en@themajor} \\
@@ -739,6 +730,8 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
 & \\
 \cline{2-2}
 Author: & \en@theauthor \\
+\cline{2-2}
+Student ID: & \thestudentnumber \\
 \cline{2-2}
 Supervisor: & \en@theadvisor \\
 \cline{2-2}
@@ -760,7 +753,7 @@ School: & \en@theschool \\
   \ifchinesebook{\pdfbookmark{独创性声明}{originalitydeclaration}}
     {\pdfbookmark{Originality Declaration}{originalitydeclaration}}
   \noindent\begin{center}
-  \fontsize{18pt}{20pt}\selectfont\heiti 独创性声明
+  \fontsize{18pt}{20pt}\selectfont\bfseries 独创性声明
   \end{center}
     \par{\fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{28pt}%
     本人声明所呈交的学位论文是本人在导师指导下进行的研究工作及取得的研究成果。%
@@ -768,10 +761,10 @@ School: & \en@theschool \\
     也不包含为获得电子科技大学或其它教育机构的学位或证书而使用过的材料。%
     与我一同工作的同志对本研究所做的任何贡献均已在论文中作了明确的说明并表示谢意。}
   \\[14pt]
-  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名:\rule[-3pt]{4.1cm}{0.5pt}\hspace{42pt}%
-  日期:\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日 \\
+  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名：\rule[-3pt]{4.1cm}{0.5pt}\hspace{42pt}%
+  日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日 \\
   \noindent\begin{center}
-    \fontsize{18pt}{20pt}\selectfont\heiti 论文使用授权
+    \fontsize{18pt}{20pt}\selectfont\bfseries 论文使用授权
   \end{center}
   \par{\fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{28pt}%
     本学位论文作者完全了解电子科技大学有关保留、使用学位论文的规定，%
@@ -782,9 +775,9 @@ School: & \en@theschool \\
   \chineseleftparenthesis%
   保密的学位论文在解密后应遵守此规定%
   \chineserightparenthesis} \\[14pt]
-  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名:\rule[-3pt]{4.1cm}{0.5pt}\hspace{12pt}%
-  导师签名:\rule[-3pt]{4.1cm}{0.5pt} \\
-  \null\hspace{259pt} 日期:\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日
+  \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名：\rule[-3pt]{4.1cm}{0.5pt}\hspace{12pt}%
+  导师签名：\rule[-3pt]{4.1cm}{0.5pt} \\
+  \null\hspace{259pt} 日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日
 \end{spacing}
 \newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
 }
@@ -919,7 +912,7 @@ School: & \en@theschool \\
     {\centering\fontsize{15pt}{15pt}\selectfont\strong\thispagestyle{fancy}}{附\hspace{12pt}录}{7.5pt}{}
   %\renewcommand{\thechapter}{附\hspace{12pt}录}
   \ifchinesebook{
-    \renewcommand{\appendixname}{附\hspace{12pt}录}
+    \renewcommand{\appendixname}{附录}
   }{
     \renewcommand{\appendixname}{Appendix}
   }
