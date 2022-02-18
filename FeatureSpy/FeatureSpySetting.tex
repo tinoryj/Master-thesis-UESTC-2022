@@ -21,7 +21,7 @@ SGX 使用一组与安全相关的指令扩展 Intel CPU 以实现 TEE。它在�
   \vspace{-6pt}
 \end{figure}
 
-\paragraph*{威胁模型。} 我们的主要安全目标是增强加密后重复数据删除 (\S\ref{subsec:featurespy-basics}) 以防止 {\em 恶意} 客户端的安全性。与加密后重复数据删除 \cite{bellare13a} 一样，我们考虑了一个旨在从任何存储的密文块中窃听原始内容的受损云。此外，我们考虑一个恶意客户端，旨在学习其他未受损客户端的原始明文块。具体来说，恶意客户端可以访问其受损的明文块和密钥，并任意伪造新的明文块以发起学习内容攻击（\S\ref{subsec:featurespy-basics}）。此外，它可以篡改未受保护的内存中的内容和操作，以逃避 \sysnameF 的捕获。
+\paragraph*{威胁模型。} 我们的主要安全目标是增强加密后重复数据删除 (\S\ref{subsec:featurespy-basics}) 以防止 {\em 恶意} 客户端的安全性。与加密后重复数据删除 \cite{bellare2013MLE} 一样，我们考虑了一个旨在从任何存储的密文块中窃听原始内容的受损云。此外，我们考虑一个恶意客户端，旨在学习其他未受损客户端的原始明文块。具体来说，恶意客户端可以访问其受损的明文块和密钥，并任意伪造新的明文块以发起学习内容攻击（\S\ref{subsec:featurespy-basics}）。此外，它可以篡改未受保护的内存中的内容和操作，以逃避 \sysnameF 的捕获。
 
 我们的威胁模型做出以下假设。
 \begin{itemize}[leftmargin=*]

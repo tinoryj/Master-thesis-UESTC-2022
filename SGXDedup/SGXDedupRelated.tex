@@ -1,7 +1,7 @@
 \section{相关工作}
 \label{sec:sgxdedup-related_work}
 
-\noindent {\bf 消息锁加密（MLE） 密钥管理。} 基于 消息锁加密（MLE） 的传统 \cite{bellare13a} 加密后重复数据删除系统（例如 \cite{adya02,cox02,shah15}）容易受到离线暴力攻击 \cite{bellare13b}。 {\em DupLESS} \cite{bellare13b} 建议服务器辅助 消息锁加密（MLE） 在专用密钥管理器中执行 消息锁加密（MLE） 密钥生成。服务器辅助 消息锁加密（MLE） 的后续研究集中在重复数据删除模式证明 \cite{armknecht15}、跨用户重复数据删除 \cite{zhou15} 和 消息锁加密（MLE） 密钥更新 \cite{qin17}。
+\noindent {\bf 消息锁加密（MLE） 密钥管理。} 基于 消息锁加密（MLE） 的传统 \cite{bellare2013MLE} 加密后重复数据删除系统（例如 \cite{adya02,cox02,shah15}）容易受到离线暴力攻击 \cite{bellare13b}。 {\em DupLESS} \cite{bellare13b} 建议服务器辅助 消息锁加密（MLE） 在专用密钥管理器中执行 消息锁加密（MLE） 密钥生成。服务器辅助 消息锁加密（MLE） 的后续研究集中在重复数据删除模式证明 \cite{armknecht15}、跨用户重复数据删除 \cite{zhou15} 和 消息锁加密（MLE） 密钥更新 \cite{qin17}。
 
 一些研究以降低重复数据删除效率 \cite{zhou15,qin17} 或削弱安全性 \cite{li20a} 为代价来减轻基于块的 消息锁加密（MLE） 密钥生成的开销。 \sysnameS 在性能上优于这些方法，同时保留了重复数据删除的有效性和安全性 (\S\ref{subsec:sgxdedup-synthetic})。其他一些 消息锁加密（MLE） 密钥生成方法包括基于阈值的密钥管理 \cite{duan14} 和分散式密钥管理 \cite{liu15}，但它们建立在密码原语（例如，阈值签名 \cite{duan14} 和密码认证密钥交换\cite{liu15}) 理论证明但不容易实现。
 
