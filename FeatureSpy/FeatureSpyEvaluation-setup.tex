@@ -5,7 +5,7 @@
 我们进行了广泛的评估来研究 \sysnameF (\S\ref{subsec:featurespy-evaluation-detection}) 的攻击检测有效性，以及 \prototype 在合成 (\S\ref{subsec:featurespy-syn}) 和现实世界中的性能(\S\ref{subsec:featurespy-real}) 工作负载。我们将主要结果总结如下：
 
 \begin{itemize}[leftmargin=*]
-\item \sysnameF 根据相应的密文块有效地找到相似的明文块。例如，当它们彼此进行中等修改时，它会检测到多达 80.2\% 的相似块。
+\item \sysnameF 根据相应的密文数据块有效地找到相似的明文数据块。例如，当它们彼此进行中等修改时，它会检测到多达 80.2\% 的相似块。
 \item \sysnameF 有效地检测到学习内容攻击，即使对手在普通内容快照中提交枚举内容。同时，它为现实世界的数据引入了低误判（例如，默认配置中的零）。
 \item \prototype 在处理大规模真实世界数据时，在 SGXDedup（即没有 \sysnameF）的情况下会产生有限的上传（例如，8.8\%）和下载（例如，0.8\%）的性能开销。
 \item 与现有的 \cite{harnik10, li15} 方法相比，可以安全抵御学习内容攻击，\prototype 具有带宽效率（例如，将网络流量节省高达 98.9\%）。

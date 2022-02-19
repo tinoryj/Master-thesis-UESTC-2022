@@ -3,8 +3,8 @@
 
 
 
-\paragraph*{Exp\#1（明文块的相似性检测）。}
-我们首先证明我们可以通过比较内容特征来有效地找到相似的明文块。 我们考虑多个 SYNChunk$(x, y)$，每个 SYNChunk$(x, y)$ 包括 10\,K 个从基本块修改的相似块（即 ground truth）（回想一下，$x$ 定义了修改位置的数量，$y$ 定义每个位置的修改字节数，参见\S\ref{subsec:featurespy-datasets}）。 我们为 SYNChunk$(x, y)$ 中的每个明文块提取四个内容特征，如果它们分别共享一到四个相同的特征，则识别相似的块。 我们评估在基本事实中的所有（相似）块中成功识别的相似块的比例。
+\paragraph*{Exp\#1（明文数据块的相似性检测）。}
+我们首先证明我们可以通过比较内容特征来有效地找到相似的明文数据块。 我们考虑多个 SYNChunk$(x, y)$，每个 SYNChunk$(x, y)$ 包括 10\,K 个从基本块修改的相似块（即 ground truth）（回想一下，$x$ 定义了修改位置的数量，$y$ 定义每个位置的修改字节数，参见\S\ref{subsec:featurespy-datasets}）。 我们为 SYNChunk$(x, y)$ 中的每个明文数据块提取四个内容特征，如果它们分别共享一到四个相同的特征，则识别相似的块。 我们评估在基本事实中的所有（相似）块中成功识别的相似块的比例。
 
 
 \begin{figure}[t]
@@ -18,7 +18,7 @@
         \mbox{\small (b) Fix $y=16$ and vary $x$}\\
     \end{tabular}
     \vspace{-6pt}
-    \caption{(Exp\#1) 明文块的相似性检测。 我们评估每个合成数据集 SYNChunk$(x, y)$ 中所有相似块中具有某些相同特征的块的比例。}
+    \caption{(Exp\#1) 明文数据块的相似性检测。 我们评估每个合成数据集 SYNChunk$(x, y)$ 中所有相似块中具有某些相同特征的块的比例。}
     \vspace{-6pt}
     \label{fig:featurespy-expDetectionSynSim}
 \end{figure}
@@ -27,8 +27,8 @@
 
 
 
-\paragraph*{Exp\#2（密文块的相似性检测）。}
-我们扩展 Exp\#1 来研究基于密文块的 \sysnameF 的相似性检测。我们应用我们的设计技术并研究相应操作后相似性保留的有效性。具体来说，我们对每个明文块执行特征密钥生成（通过 \S\ref{subsec:featurespy-spe} 中的建议实例），并评估相似块的比例（在每个合成数据集 SYNChunk$(x, y)$ 中）分配有相同的功能键。然后，我们执行 SPE，并进一步评估可以基于相应（加密）相似性指标识别的相似块的比例。在这里，我们关注三个 SPE 实例 SPE$(1)$、SPE$(2)$ 和 SPE$(4)$，它们划分了第一个、第二个和四个块（分别占用 16、32 和 64 个字节）每个明文块分别作为相似度指标。
+\paragraph*{Exp\#2（密文数据块的相似性检测）。}
+我们扩展 Exp\#1 来研究基于密文数据块的 \sysnameF 的相似性检测。我们应用我们的设计技术并研究相应操作后相似性保留的有效性。具体来说，我们对每个明文数据块执行特征密钥生成（通过 \S\ref{subsec:featurespy-spe} 中的建议实例），并评估相似块的比例（在每个合成数据集 SYNChunk$(x, y)$ 中）分配有相同的功能键。然后，我们执行 SPE，并进一步评估可以基于相应（加密）相似性指标识别的相似块的比例。在这里，我们关注三个 SPE 实例 SPE$(1)$、SPE$(2)$ 和 SPE$(4)$，它们划分了第一个、第二个和四个块（分别占用 16、32 和 64 个字节）每个明文数据块分别作为相似度指标。
 
 \begin{figure*}[t]
     \centering
@@ -42,12 +42,12 @@
         \mbox{\small (c) $\textrm{SYNChunk}(8, 32)$}\\
     \end{tabular}
     \vspace{-6pt}
-    \caption{(Exp\#2) 密文块的相似性检测。 我们评估分配有相同特征键（对于 KeyGen）的相似块的比例，以及可以通过检查相似性指标来检测（对于配置第一个 $i$ 数据块的每个 SPE$(i)$ 每个明文块作为相应的相似性指标）。}
+    \caption{(Exp\#2) 密文数据块的相似性检测。 我们评估分配有相同特征键（对于 KeyGen）的相似块的比例，以及可以通过检查相似性指标来检测（对于配置第一个 $i$ 数据块的每个 SPE$(i)$ 每个明文数据块作为相应的相似性指标）。}
     \vspace{-6pt}
     \label{fig:featurespy-expDetectionSynDetect}
 \end{figure*}
 
-图~\ref{fig:featurespy-expDetectionSynDetect} 共同展示了具有小 (SYNChunk$(1, 4)$)、中 (SYNChunk$(4, 16)$) 和大 (SYNChunk$(8, 32)$) 修改相似的块，分别。与 {\tt allFeature} 相比，实例 {\tt firstFeature} 和 {\tt minFeature} 为更相似的块生成相同的特征键，尤其是当修改量很大时（例如，{\tt firstFeature} 和 59.3 的 45.7\% {\tt minFeature} 的 \% 与 {\tt allFeature} 的 8.1\%）。此外，{\tt minFeature} 优于 {\tt firstFeature}，这可能是因为最小内容特征对块内容的随机变化更加稳健。此外，我们观察到 SPE 在加密后保留了相似性。具体来说，通过检查密文块中的相似性指标，我们在 SYNChunk$(1, 4)$、SYNChunk$(4, 16)$ 和 SYNChunk$( 8, 32)$，分别。
+图~\ref{fig:featurespy-expDetectionSynDetect} 共同展示了具有小 (SYNChunk$(1, 4)$)、中 (SYNChunk$(4, 16)$) 和大 (SYNChunk$(8, 32)$) 修改相似的块，分别。与 {\tt allFeature} 相比，实例 {\tt firstFeature} 和 {\tt minFeature} 为更相似的块生成相同的特征键，尤其是当修改量很大时（例如，{\tt firstFeature} 和 59.3 的 45.7\% {\tt minFeature} 的 \% 与 {\tt allFeature} 的 8.1\%）。此外，{\tt minFeature} 优于 {\tt firstFeature}，这可能是因为最小内容特征对块内容的随机变化更加稳健。此外，我们观察到 SPE 在加密后保留了相似性。具体来说，通过检查密文数据块中的相似性指标，我们在 SYNChunk$(1, 4)$、SYNChunk$(4, 16)$ 和 SYNChunk$( 8, 32)$，分别。
 
 
 \paragraph*{Exp\#3（攻击检测案例研究）。}
@@ -70,7 +70,7 @@
     \label{fig:featurespy-expDetectionOverall}
   \end{figure*}
 
-  图~\ref{fig:featurespy-expDetectionOverall} 比较 \sysnameF 实例在检测相同 Linux 快照（即 v5.13）中注入（即攻击）或没有（即原始）对抗性提议的学习内容攻击.具体来说，x 轴索引处理窗口（其大小在此处固定为 1\,K），而 y 轴显示 {\em most} 数量的密文块中具有相同相似性指示符的部分相应窗口中所有块的总数（即 1\,K）。我们观察到所有三个实例都可以有效地检测到学习内容攻击，因为它们在攻击快照中至少有一个窗口，因此具有相同相似性指标的密文块的比例大于 $T $（即 3\%）。另一方面，{\tt minFeature} 遭受 {\em false positive}，因为它甚至有一个正常的窗口（例如，原始的第 65 个窗口），其中分数（例如，3.5\%）检测到相似的块中大于$T$。
+  图~\ref{fig:featurespy-expDetectionOverall} 比较 \sysnameF 实例在检测相同 Linux 快照（即 v5.13）中注入（即攻击）或没有（即原始）对抗性提议的学习内容攻击.具体来说，x 轴索引处理窗口（其大小在此处固定为 1\,K），而 y 轴显示 {\em most} 数量的密文数据块中具有相同相似性指示符的部分相应窗口中所有块的总数（即 1\,K）。我们观察到所有三个实例都可以有效地检测到学习内容攻击，因为它们在攻击快照中至少有一个窗口，因此具有相同相似性指标的密文数据块的比例大于 $T $（即 3\%）。另一方面，{\tt minFeature} 遭受 {\em false positive}，因为它甚至有一个正常的窗口（例如，原始的第 65 个窗口），其中分数（例如，3.5\%）检测到相似的块中大于$T$。
 
 
 \begin{figure}[t]
@@ -89,7 +89,7 @@
     \label{fig:featurespy-expDetectionOverallFalsePositive}
 \end{figure}
 
-图~\ref{fig:featurespy-expDetectionOverallFalsePositive} 展示了我们将窗口大小分别配置为 1\,K, 5\,K 和 10\,K 时 Linux 中的总体检测率和误报率。通常，\sysnameF 在 Linux 快照中实现了很高的检测率（例如，至少 98.6\%）。然而，较大的窗口会略微降低检测率，因为相对较小部分的密文块具有相同的相似性指标。
+图~\ref{fig:featurespy-expDetectionOverallFalsePositive} 展示了我们将窗口大小分别配置为 1\,K, 5\,K 和 10\,K 时 Linux 中的总体检测率和误报率。通常，\sysnameF 在 Linux 快照中实现了很高的检测率（例如，至少 98.6\%）。然而，较大的窗口会略微降低检测率，因为相对较小部分的密文数据块具有相同的相似性指标。
 此外，\sysnameF 仅在窗口大小为 1\,K 时才会产生误报（图~\ref{fig:featurespy-featureDistribution}(b)），因为原始快照最初具有相当大的部分相似块。即使在这种情况下，{\tt allFeature} 也没有任何误报，因为它只检测到少量相似的块。另一方面，检测到更多相似块 (Exp\#2) 的 {\tt minFeature} 会产生 28.6\% 的误报。
 
 
