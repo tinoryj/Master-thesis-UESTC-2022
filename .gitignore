@@ -3,6 +3,7 @@ node_modules/
 sub_modules/
 thesis.pdf
 main.pdf
+main.synctex(busy)
 bf.pdf
 *.tmp
 
