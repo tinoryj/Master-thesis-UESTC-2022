@@ -45,7 +45,7 @@
 
 \paragraph*{Exp\#3 (Computational PoW).} 我们评估 PoW 的性能。我们考虑一个对 2GB 文件执行 PoW 的客户端。客户端从文件中创建明文数据块，加密每个明文数据块，并向云端发出 PoW 请求。我们根据客户端（PoW安全区对密文数据块执行指纹识别并签署结果指纹）和云（验证数据的真实性）中所有块的总计算时间来测量 \textit{ 计算 PoW 速度}指纹）；请注意，我们在速度计算中排除了客户端和云端之间的网络传输时间（我们在附录中的 Exp\#11 中考虑了网络传输时间）。
 
-我们将 \sysnameS 与两种最先进的 PoW 方法进行比较:(i) \textit{ PoW-MT} \cite{halevi11}（又名 \cite{halevi11} 中的基本版本）， PoW 方法使用纠删码对块进行编码，并在 PoW 的编码内容上构建 Merkle 树； (ii) \textit{ PoW-UH} \cite{xu13}，它建立在通用散列之上，但以安全性换取性能。为了公平比较，我们自己在 C++ 中实现了 PoW-MT 和 PoW-UH。请注意，有改进的 PoW 方法 \cite{halevi11}，但它们会因低内存使用而产生更高的性能开销。
+我们将 \sysnameS 与两种最先进的 PoW 方法进行比较:(i) \textit{ PoW-MT} \cite{halevi11}（又名 \cite{halevi11} 中的基本版本）， PoW 方法使用纠删码对块进行编码，并在 PoW 的编码内容上构建 Merkle 树； (ii) \textit{ PoW-UH} \cite{xu2013weak}，它建立在通用散列之上，但以安全性换取性能。为了公平比较，我们自己在 C++ 中实现了 PoW-MT 和 PoW-UH。请注意，有改进的 PoW 方法 \cite{halevi11}，但它们会因低内存使用而产生更高的性能开销。
 
 
 图~\ref{fig:sgxdedup-pow-comparison} 显示了结果。 \sysnameS 显着优于 PoW-MT，因为它避免了客户端中的擦除编码和 Merkle 树构造，以及云中基于 Merkle 树的验证。 它比 PoW-MT 实现了 8.2$\times$ 的加速。 它还比 PoW-UH 实现了 2.2$\times$ 的加速。
