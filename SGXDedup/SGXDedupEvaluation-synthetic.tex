@@ -32,7 +32,7 @@
 
 \paragraph*{Exp\#1（单客户端 消息锁加密（MLE） 密钥生成）。} 我们在两轮中评估 消息锁加密（MLE） 密钥生成。首先，客户端通过 Rabin 指纹 (\S\ref{sec:sgxdedup-implementation}) 创建 2\,GB 文件的明文数据块并发出 消息锁加密（MLE） 密钥生成请求。然后它为不同的 2\,GB 文件的块重复 消息锁加密（MLE） 密钥生成过程。不同之处在于第二轮使用预先计算的掩码生成 消息锁加密（MLE） 密钥 (\S\ref{subsec:sgxdedup-encryption})。
 
-我们将 \sysnameS 的单客户端 消息锁加密（MLE） 密钥生成速度与最新技术进行了比较。我们考虑两种基于 OPRF 的密钥生成方法，即 \textit{ OPRF-BLS} \cite{armknecht15} 和 \textit{ OPRF-RSA} \cite{bellare13b}，它们实现了 OPRF 原语（\S\ref{subsec:sgxdedup-encrypted-dedup}）分别基于盲 BLS 和盲 RSA 签名。我们还考虑了两种宽松的密钥生成方法，即 \textit{ MinHash encryption} \cite{qin17} 和 \textit{ TED} \cite{li20b}，它们以存储效率和安全性换取性能。具体来说，MinHash 加密使用 OPRF-RSA 在每个段的基础上生成 消息锁加密（MLE） 密钥，其中平均段大小配置为 1\,MB。 TED 根据块的短散列的基于草图的频率计数为每个块生成 消息锁加密（MLE） 密钥（参见 \cite{li20b} 中的 \S3.3）。
+我们将 \sysnameS 的单客户端 消息锁加密（MLE） 密钥生成速度与最新技术进行了比较。我们考虑两种基于 OPRF 的密钥生成方法，即 \textit{ OPRF-BLS} \cite{armknecht2015transparent} 和 \textit{ OPRF-RSA} \cite{bellare2013DupLESS}，它们实现了 OPRF 原语（\S\ref{subsec:sgxdedup-encrypted-dedup}）分别基于盲 BLS 和盲 RSA 签名。我们还考虑了两种宽松的密钥生成方法，即 \textit{ MinHash encryption} \cite{qin17} 和 \textit{ TED} \cite{li20b}，它们以存储效率和安全性换取性能。具体来说，MinHash 加密使用 OPRF-RSA 在每个段的基础上生成 消息锁加密（MLE） 密钥，其中平均段大小配置为 1\,MB。 TED 根据块的短散列的基于草图的频率计数为每个块生成 消息锁加密（MLE） 密钥（参见 \cite{li20b} 中的 \S3.3）。
 
 图~\ref{fig:sgxdedup-keygen-comparison} 显示了结果。 \sysnameS 通过避免 OPRF-BLS、OPRF-RSA 和 MinHash 加密中昂贵的密码原语以及 TED 中的频率计数计算，优于所有基线方法。它的第一轮分别比 OPRF-BLS 和 OPRF-RSA 实现了 1,583$\times$ 和 131.9$\times$ 的加速。与 MinHash 加密和 TED 相比，加速分别为 9.4$\times$ 和 3.7$\times$，尽管后两者牺牲了存储效率和安全性。第二轮投机加密将第一轮的 消息锁加密（MLE） 密钥生成速度提高了 67.8\%。
 
@@ -70,7 +70,7 @@
   \label{fig:sgxdedup-multiClientThroughput}
 \end{figure}
 
-\paragraph*{Exp\#4 (Single-client uploads and downloads).} 我们考虑单个客户端，并将 \sysnameS 的上传和下载性能与两个基线系统进行比较:(i) \textit{ PlainDedup}，禁用 \sysnameS 的密钥生成、加密和PoW操作，从而实现源端重复数据删除，无需任何安全保护； (ii) \textit{ {\em DupLESS}} \cite{bellare13b}，它通过 OPRF-RSA 生成每块 消息锁加密（MLE） 密钥，执行加密并将所有密文数据块上传到云以进行重复数据删除。由于 {\em DupLESS} 的原始实现不提供重复数据删除存储后端（假设使用了 Dropbox），我们根据 \cite{bellare13b} 中描述的设计在 C++ 中实现 {\em DupLESS}。请注意，PlainDedup 基于未加密的文件元数据检索文件，并且不同于加密后重复数据删除系统中的两轮下载（即 \sysnameS 和 {\em DupLESS}）；在后者中，客户端首先下载并解密文件元数据，然后下载块以重建文件 (\S\ref{subsec:sgxdedup-encrypted-dedup})。
+\paragraph*{Exp\#4 (Single-client uploads and downloads).} 我们考虑单个客户端，并将 \sysnameS 的上传和下载性能与两个基线系统进行比较:(i) \textit{ PlainDedup}，禁用 \sysnameS 的密钥生成、加密和PoW操作，从而实现源端重复数据删除，无需任何安全保护； (ii) \textit{ {\em DupLESS}} \cite{bellare2013DupLESS}，它通过 OPRF-RSA 生成每块 消息锁加密（MLE） 密钥，执行加密并将所有密文数据块上传到云以进行重复数据删除。由于 {\em DupLESS} 的原始实现不提供重复数据删除存储后端（假设使用了 Dropbox），我们根据 \cite{bellare2013DupLESS} 中描述的设计在 C++ 中实现 {\em DupLESS}。请注意，PlainDedup 基于未加密的文件元数据检索文件，并且不同于加密后重复数据删除系统中的两轮下载（即 \sysnameS 和 {\em DupLESS}）；在后者中，客户端首先下载并解密文件元数据，然后下载块以重建文件 (\S\ref{subsec:sgxdedup-encrypted-dedup})。
 
 我们分三个步骤评估上传和下载速度: (i) 客户端首先上传 2\,GB 文件； (ii) 客户端重新启动，然后上传另一个与前一个相同的 2\,GB 文件； (iii) 客户端下载文件。请注意，第二次上传执行源端重复数据删除（对于 PlainDedup 和 \sysnameS），并利用预先计算的掩码来加速密钥生成（仅适用于 \sysnameS）。
 

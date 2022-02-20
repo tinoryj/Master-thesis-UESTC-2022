@@ -71,7 +71,7 @@ N-transform 通过将多个（例如，默认情况下为四个）连续的子�
 \sysnameF 基于 {\em SGX-based PoW} \cite{ren21} 构建，以防止客户端逃避检测过程。具体来说，基于 SGX 的 PoW 方法 \cite{ren21} 将每个密文数据块作为输入并进入 SGX 安全区以计算密文数据块的指纹以及指纹的签名。只有当签名被成功验证时，云才会继续检查指纹是否对应于存储的密文数据块（即重复数据删除）。由于云根据 SGX安全区处理的 {\em authenticated} 指纹进行响应，因此客户端无法识别未经授权访问的块的存在。
 
 因此，一种天真的方法是在稻草人设计中扩大 enclave，以在安全区中完全执行检测、密钥生成、加密和基于 SGX 的 PoW。在这种情况下，只有程序处理的块SGX安全区中的数据被云接受重复数据删除（由于基于 SGX 的 PoW），恶意客户端无法绕过任何程序。
-然而，该方法会产生巨大的 TCB 并引入潜在的性能 \cite{arnautov16, harnik18, dinhngoc19} 和安全 \cite{lie05} 问题。
+然而，该方法会产生巨大的 TCB 并引入潜在的性能 \cite{arnautov2016SCONE, harnik18, dinhngoc19} 和安全 \cite{lie05} 问题。
 
 \begin{figure}
   \centering
@@ -106,11 +106,11 @@ N-transform 通过将多个（例如，默认情况下为四个）连续的子�
 \paragraph*{功能密钥生成。}
 回想一下，我们通过 N 变换（\S\ref{subsec:featurespy-basic}）为每个明文数据块提取三个内容特征，一个基本的密钥生成方法（称为 {\tt allFeature}）是连接所有特征，并计算基于连接结果的加密哈希的特征密钥。但是，{\tt allFeature} 无法为许多相似的块生成相同的特征键。具体来说，如果相似块的内容差异恰好在产生子特征（\S\ref{subsec:featurespy-basic}）的滑动窗口中，则块将具有不同的特征键，并且无法检测到相似度即使剩余的原始内容相同。
 
-我们基于 {\em 基于采样的方法} \cite{bhagwat09, dong11, qin17} 来放宽密钥生成标准。这个想法是为每个明文数据块采样一个{\em 代表}特征，并根据采样的特征计算特征密钥。这可以容忍内容差异，并为各种明文数据块生成相同的特征密钥。
+我们基于 {\em 基于采样的方法} \cite{bhagwat2009extreme, dong11, qin17} 来放宽密钥生成标准。这个想法是为每个明文数据块采样一个{\em 代表}特征，并根据采样的特征计算特征密钥。这可以容忍内容差异，并为各种明文数据块生成相同的特征密钥。
 
-我们考虑了两种选择代表性特征的方法。具体来说，{\tt firstFeature} 根据每个明文数据块的 {\em first} 特征生成特征密钥。优点是我们不需要计算后续的子特征和特征（\S\ref{subsec:featurespy-basic}），并减轻 N-transform 的计算开销 \cite{zhang19}。
+我们考虑了两种选择代表性特征的方法。具体来说，{\tt firstFeature} 根据每个明文数据块的 {\em first} 特征生成特征密钥。优点是我们不需要计算后续的子特征和特征（\S\ref{subsec:featurespy-basic}），并减轻 N-transform 的计算开销 \cite{zhang2019Finesse}。
 
-我们还考虑 {\tt minFeature}，它建立在 {\em Broder's theorem} \cite{broder97} 的基础上，根据每个的 {\em minimum} 特征（即在所有特征中具有最小值）生成特征键明文数据块。具体来说，布罗德定理指出，如果两个明文数据块具有许多共同特征（即，相似的概率很高），它们很可能共享相同的最小特征。那是：
+我们还考虑 {\tt minFeature}，它建立在 {\em Broder's theorem} \cite{broder1997resemblance} 的基础上，根据每个的 {\em minimum} 特征（即在所有特征中具有最小值）生成特征键明文数据块。具体来说，布罗德定理指出，如果两个明文数据块具有许多共同特征（即，相似的概率很高），它们很可能共享相同的最小特征。那是：
 \begin{eqnarray}
   \label{eq:featurespy-broder}
  \Pr[\min(S_1) = \min(S_2)] = \frac{|S_1 \cap S_2|}{|S_1 \cup S_2|},
@@ -130,7 +130,7 @@ N-transform 通过将多个（例如，默认情况下为四个）连续的子�
 
 我们将 FBE 视为 MLE 的一种通用形式。如果我们将采样的特征（例如，{\tt firstFeature} 和 {\tt minFeature} 的代表特征，以及 {\tt allFeature} 的所有特征）视为消息 $M$，那么 FBE 实际上使用$M$的密码散列来加密对应的扩展$f(M)$（即明文数据块），其中$f(\cdot)$是一个扩展函数。由于每个 $M$ 都是不可预测的，因此密钥对多项式时间的对手保持机密。然后，如果底层对称加密是安全的，则对手无法区分密文和随机值。
 
-请注意，我们的非正式分析依赖于特征不可预测的安全假设，而我们可以通过服务器辅助密钥生成 \cite{bellare13b} 来缓解不可预测的假设（请参阅 \S\ref{sec:featurespy-implementation} 了解我们如何部署 \ sysnameF 在解决不可预测假设的现有加密后重复数据删除系统中）。
+请注意，我们的非正式分析依赖于特征不可预测的安全假设，而我们可以通过服务器辅助密钥生成 \cite{bellare2013DupLESS} 来缓解不可预测的假设（请参阅 \S\ref{sec:featurespy-implementation} 了解我们如何部署 \ sysnameF 在解决不可预测假设的现有加密后重复数据删除系统中）。
 
 
 \paragraph*{对恶意客户端的鲁棒性。}

@@ -16,7 +16,7 @@
 
 为了确保 nonce 的唯一性，\sysnameS 在 key安全区中管理一个集中的 key-value 存储，称为 \textit{ nonce index}。 nonce 索引的每个条目将存储的 nonce（12 字节）映射到三个字段:其计数器（4 字节）、相应掩码的起始地址（8 字节）和可用掩码的数量（4 字节）。此外，\sysnameS 实现了一个 \textit{ nonce checks ECall} (Figure~\ref{fig:sgxdedup-SpecEnc})，它可以被密钥管理器调用，以将每个客户端提交的 nonce 与之前存储在 nonce 索引中的 nonce 进行比较，并如果发现重复的 nonce，通知客户重新选择一个新的。请注意，可以有效管理 in-enclave 随机数索引，因为它可以服务多达 112,000 个客户端（假设每个客户端一个随机数），只有 3MB EPC 空间（默认配置为 \sysnameS）。
 
-\sysnameS 应用推测性加密在客户端和密钥安全区之间建立安全通道，以保护 消息锁加密（MLE） 密钥生成。为了初始化安全通道，客户端将其自行选择的随机数 $\theta$ 和对应的计数器 $i$ 与密钥安全区同步，如果 $\theta$ 未用于任何加密，则 $i$ 初始化为零/由客户端解密。具体来说，它使用最新的盲密钥 (\S\ref{subsec:sgxdedup-key-management}) 加密 $\theta$ 和 $i$，根据生成的密文计算消息验证码 (MAC)，并将密文和 MAC 提交给密钥管理器。在这里，我们采用 \textit{ encrypt-then-MAC} \cite{bellare00} 通过检查 MAC 中的客户端和密钥安全区之间传输的任何信息来检测任何过时的盲密钥。
+\sysnameS 应用推测性加密在客户端和密钥安全区之间建立安全通道，以保护 消息锁加密（MLE） 密钥生成。为了初始化安全通道，客户端将其自行选择的随机数 $\theta$ 和对应的计数器 $i$ 与密钥安全区同步，如果 $\theta$ 未用于任何加密，则 $i$ 初始化为零/由客户端解密。具体来说，它使用最新的盲密钥 (\S\ref{subsec:sgxdedup-key-management}) 加密 $\theta$ 和 $i$，根据生成的密文计算消息验证码 (MAC)，并将密文和 MAC 提交给密钥管理器。在这里，我们采用 \textit{ encrypt-then-MAC} \cite{bellare2000Authenticated} 通过检查 MAC 中的客户端和密钥安全区之间传输的任何信息来检测任何过时的盲密钥。
 
 密钥管理器发出随机数检查 ECall，它将客户端的上传作为输入，解密 $\theta$ 和 $i$，并使用随机数索引检查解密后的 $\theta$ 和 $i$:
 %

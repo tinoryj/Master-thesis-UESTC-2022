@@ -6,7 +6,7 @@
 \subsection{加密后重复数据删除}
 \label{subsec:sgxdedup-encrypted-dedup}
 
-{\bf } 我们考虑\textit{基于数据块的重复数据删除} \cite{zhu2008avoiding,wallace12,meyer11}，它广泛部署在现代存储系统中以消除内容冗余。它通过将输入文件划分为不重叠的 \textit{数据块} 来工作。对于每个块，它计算块内容的加密哈希（称为 \textit{指纹}）。它在\textit{指纹索引} 中跟踪所有当前存储的块的指纹。如果指纹是指纹索引的新指纹，它只存储块的物理副本，或者如果指纹已被跟踪，则将块视为副本，假设指纹冲突在实践中极不可能 \cite{black06}。
+{\bf } 我们考虑\textit{基于数据块的重复数据删除} \cite{zhu2008avoiding,wallace12,meyer11}，它广泛部署在现代存储系统中以消除内容冗余。它通过将输入文件划分为不重叠的 \textit{数据块} 来工作。对于每个块，它计算块内容的加密哈希（称为 \textit{指纹}）。它在\textit{指纹索引} 中跟踪所有当前存储的块的指纹。如果指纹是指纹索引的新指纹，它只存储块的物理副本，或者如果指纹已被跟踪，则将块视为副本，假设指纹冲突在实践中极不可能 \cite{black2006compare}。
    
 加密后重复数据删除通过加密扩展了基于数据块的重复数据删除，为外包云存储提供数据机密性和存储效率。 \textit{ 客户端} 使用一些对称密钥将输入文件的每个 \textit{ 明文数据块} 加密成一个 \textit{ 密文数据块}，并将所有密文数据块存储在 \textit{ 云}（或任何远程存储站点）中，它管理密文数据块的重复数据删除存储。为了支持文件重建，客户端创建了一个 \textit{ file recipe}，其中列出了密文数据块的指纹、大小和密钥。它使用自己的主密钥加密文件元数据，并将加密的文件元数据存储在云中。
 
@@ -14,7 +14,7 @@
 
 \paragraph*{Server-aided 消息锁加密（MLE）.} CE 易受 \textit{ 离线暴力攻击}，因为它的 消息锁加密（MLE） 密钥（即明文数据块的哈希）可以公开派生。具体来说，攻击者通过枚举所有可能的明文数据块的 消息锁加密（MLE） 密钥来从目标密文数据块（不知道 消息锁加密（MLE） 密钥）推断输入明文数据块，以检查是否有任何明文数据块被加密到目标密文数据块。
 
-服务器辅助消息锁加密（Server-aided MLE）\cite{bellare13b} 是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。
+服务器辅助消息锁加密（Server-aided MLE）\cite{bellare2013DupLESS} 是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。
 
 它为消息锁加密（MLE） 中的密钥生成步骤部署了一个专用的 \textit{ 密钥管理器（key server）}。为了加密明文数据块，客户端首先将明文数据块的指纹发送到密钥管理器，密钥管理器通过指纹和密钥管理器维护的\textit{ global secret}返回 消息锁加密（MLE） 密钥。如果全局机密是安全的，则对手无法发起离线暴力攻击；否则，如果全局机密被泄露，则安全性会降低到原始 消息锁加密（MLE） 的安全性。服务器辅助 消息锁加密（MLE） 进一步建立在两种安全机制之上。首先，它使用 \textit{ oblivious pseudorandom function (OPRF)} \cite{naor04} 允许客户端发送明文数据块的“盲”指纹，这样密钥管理器仍然可以返回相同的 消息锁加密（MLE） 密钥用于相同指纹无需学习原始指纹。其次，它对来自客户端的密钥生成请求进行速率限制，以防止恶意客户端向密钥管理器发出许多密钥生成请求，以找到目标 消息锁加密（MLE） 密钥。
 
@@ -43,17 +43,17 @@ enclave 提供了一个接口，即 \textit{安全区call (ECall)}，以便外�
 
 \paragraph*{Sealing.} SGX 通过密封将安全区内容存储在安全区外部时对其进行保护。它使用秘密 \textit{ 密封密钥} 在被驱逐之前加密数据。密封密钥可以从 \textit{ 测量散列}（即安全区内容的 SHA256 散列）或安全区的作者身份派生，因此只有相应的安全区才能访问密封密钥并解密密封数据.由于远程证明会导致显着延迟（Exp\#7），我们使用密封来消除安全区第一次引导后的远程证明（\S\ref{subsec:sgxdedup-enclave-management}）。
 
-\paragraph*{Remarks.} 我们不考虑基于内存加密的 TEE（例如 AMD SEV \cite{Amdsev} 和 MK-TME \cite{Mktem}），因为它们需要大型可信计算基础并暴露出广泛的攻击面\cite{mofrad18}。此外，AMD SEV \cite{Amdsev} 不保护内存完整性，并且容易受到特权对手可以操纵加密内存页 \cite{mofrad18} 的攻击。
+\paragraph*{Remarks.} 我们不考虑基于内存加密的 TEE（例如 AMD SEV \cite{AMDSEV} 和 MK-TME \cite{Mktem}），因为它们需要大型可信计算基础并暴露出广泛的攻击面\cite{mofrad18}。此外，AMD SEV \cite{AMDSEV} 不保护内存完整性，并且容易受到特权对手可以操纵加密内存页 \cite{mofrad18} 的攻击。
 
 \subsection{威胁模型}
 \label{subsec:sgxdedup-threat}
 
-\noindent{\bf 对抗能力。} 我们从具有多个客户端、密钥管理器和云的服务器辅助 消息锁加密（MLE） 架构 \cite{bellare13b} 开始。我们的主要安全目标是实现外包云存储 \cite{bellare13b} 的数据机密性，以对抗通过以下恶意行为推断原始明文数据块的 \textit{ semi-honest} 对手:
+\noindent{\bf 对抗能力。} 我们从具有多个客户端、密钥管理器和云的服务器辅助 消息锁加密（MLE） 架构 \cite{bellare2013DupLESS} 开始。我们的主要安全目标是实现外包云存储 \cite{bellare2013DupLESS} 的数据机密性，以对抗通过以下恶意行为推断原始明文数据块的 \textit{ semi-honest} 对手:
 
 \begin{itemize}[leftmargin=*]
-\item 攻击者可以破坏密钥管理器并了解每个客户端发出的 消息锁加密（MLE） 密钥生成请求。它还可以通过离线暴力攻击 \cite{bellare13b} 访问全局机密来推断外包存储中的原始块。
-    \item 攻击者可以破坏一个或多个客户端并发送任意 消息锁加密（MLE） 密钥生成请求来查询某些目标块 \cite{bellare13b} 的 消息锁加密（MLE） 密钥。它还可以对某些目标块 \cite{harnik10} (\S\ref{subsec:sgxdedup-encrypted-dedup}) 发起侧信道攻击，从而推断出其他未受损客户端拥有的原始明文数据块。
+\item 攻击者可以破坏密钥管理器并了解每个客户端发出的 消息锁加密（MLE） 密钥生成请求。它还可以通过离线暴力攻击 \cite{bellare2013DupLESS} 访问全局机密来推断外包存储中的原始块。
+    \item 攻击者可以破坏一个或多个客户端并发送任意 消息锁加密（MLE） 密钥生成请求来查询某些目标块 \cite{bellare2013DupLESS} 的 消息锁加密（MLE） 密钥。它还可以对某些目标块 \cite{harnik10} (\S\ref{subsec:sgxdedup-encrypted-dedup}) 发起侧信道攻击，从而推断出其他未受损客户端拥有的原始明文数据块。
 \end{itemize}
 
 \paragraph*{假设。}
-我们做出以下威胁假设。 (i) 客户端、密钥管理器和云之间的所有通信都受到保护以防篡改（例如，通过 SSL/TLS）。 (ii) 新交所值得信赖且可靠；针对 SGX \cite{bulck18, oleksenko18} 的拒绝服务或侧信道攻击超出了我们的范围。 (iii) 我们可以通过远程审计 \cite{ateniese07, juels07} 和 \textit{ 容错} 通过多云方法 \cite{li15} 实现 \textit{ 完整性}。 (iv) 我们不考虑流量分析 \cite{zuo2018mitigating}、频率分析 \cite{li20b} 和块大小泄漏 \cite{ritzdorf16}，而相关的防御 \cite{zuo2018mitigating,li20b,ritzdorf16} 与我们的设计兼容。
+我们做出以下威胁假设。 (i) 客户端、密钥管理器和云之间的所有通信都受到保护以防篡改（例如，通过 SSL/TLS）。 (ii) 新交所值得信赖且可靠；针对 SGX \cite{bulck18, oleksenko18} 的拒绝服务或侧信道攻击超出了我们的范围。 (iii) 我们可以通过远程审计 \cite{ateniese2007provable, juels07} 和 \textit{ 容错} 通过多云方法 \cite{li15} 实现 \textit{ 完整性}。 (iv) 我们不考虑流量分析 \cite{zuo2018mitigating}、频率分析 \cite{li20b} 和块大小泄漏 \cite{ritzdorf16}，而相关的防御 \cite{zuo2018mitigating,li20b,ritzdorf16} 与我们的设计兼容。

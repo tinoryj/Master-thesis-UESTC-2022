@@ -6,7 +6,7 @@
 
 随着信息技术产业的高速发展，数字信息量呈爆炸式增长。国际数据资讯公司（IDC）\cite{IDC}于2020年公布的统计及预测报告\cite{DataReport2020}显示，每年新产生的数据量在2015年至2025年间以约26\%的复合年增长率增长，预计仅2025年创建的新数据数据量将高达175.8\,ZB（而2015年仅为18.2\,ZB）。新创建数据量的快速增长导致个人及企业面临的数据存储和管理成本快速上涨\cite{敖莉2010重复数据删除技术}。另一方面，在各类型存储系统所保存的数据中，高达60\%的数据都是冗余的。并且，随着时间的推移，这些冗余数据占总数据量的比例将进一步上升\cite{mcknight2006digital}。近年来，存储系统中数据高度冗余的特点得到越来越多研究人员的关注，利用该特点来节省存储空间、降低存储管理开销是成为热门研究课题。
 
-重复数据删除（data deduplication）\cite{2012重复数据删除关键技术研究进展, 敖莉2010重复数据删除技术,xia16,Paulo2014} 是一种粗粒度数据压缩技术。传统数据压缩针对小规模数据（例如同一文件内部），使用字节级重新编码以降低冗余；而重复数据删除作用的基本单位是数据块（通常为8KiB），通过比较来自相同和不同文件的数据块，为具有相同内容的数据块仅保存一份物理拷贝以节约存储空间。如图~\ref{fig:Deduplication-storage-pattern}所示，在支持重复数据删除的各类存储系统（统称为重复数据删除系统）中，重复数据删除后的任何数据块都被一个或多个文件引用，而每个文件则以指向这些数据块的指针的集合形式进行存储。重复数据删除可为主存和备份数据分别节省50\%\cite{meyer11}和98\%\cite{wallace12}的存储空间，可显著降低云存储厂商的存储及维护成本\cite{2012重复数据删除关键技术研究进展}。由于能够有效地降低存储开销，重复数据删除技术非常适合为管理日益增长的海量数据节省成本。在工业界，Dell EMC Data Domain\cite{EMCDataDomain}、Avamar\cite{Avamar}、Veritas的NetBackup Appliances\cite{veritas} 以及Commvault的开放数据平台\cite{CommVault} 都是较为知名的重复数据删除应用产品；此外，各大云存储厂商（例如 Dropbox\cite{Dropbox}、Google Drive\cite{GoogleDrive}、百度网盘\cite{BaiduPan}等）也纷纷将重复数据删除技术应用于各自的云服务产品中，以提升经济效益\cite{harnik2010side}。  
+重复数据删除（data deduplication）\cite{付印金2012重复数据删除关键技术研究进展, 敖莉2010重复数据删除技术,xia2016Deduplication,Paulo2014} 是一种粗粒度数据压缩技术。传统数据压缩针对小规模数据（例如同一文件内部），使用字节级重新编码以降低冗余；而重复数据删除作用的基本单位是数据块（通常为8KiB），通过比较来自相同和不同文件的数据块，为具有相同内容的数据块仅保存一份物理拷贝以节约存储空间。如图~\ref{fig:Deduplication-storage-pattern}所示，在支持重复数据删除的各类存储系统（统称为重复数据删除系统）中，重复数据删除后的任何数据块都被一个或多个文件引用，而每个文件则以指向这些数据块的指针的集合形式进行存储。重复数据删除可为主存和备份数据分别节省50\%\cite{meyer11}和98\%\cite{wallace12}的存储空间，可显著降低云存储厂商的存储及维护成本\cite{付印金2012重复数据删除关键技术研究进展}。由于能够有效地降低存储开销，重复数据删除技术非常适合为管理日益增长的海量数据节省成本。在工业界，Dell EMC Data Domain\cite{EMCDataDomain}、Avamar\cite{Avamar}、Veritas的NetBackup Appliances\cite{veritas} 以及Commvault的开放数据平台\cite{CommVault} 都是较为知名的重复数据删除应用产品；此外，各大云存储厂商（例如 Dropbox\cite{Dropbox}、Google Drive\cite{GoogleDrive}、百度网盘\cite{BaiduPan}等）也纷纷将重复数据删除技术应用于各自的云服务产品中，以提升经济效益\cite{harnik2010side}。  
 
 \begin{figure}[!htb]
     \small
@@ -27,7 +27,7 @@
 \end{figure} 
 
 近年来，研究者提出加密后重复数据删除\cite{bellare2013MLE}以保护重复数据删除过程中的数据安全。图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}描述了加密后重复数据删除系统框架，其包括客户端和云服务端两个主要组成部分。为了防止云服务商获取外包数据内容，加密后重复数据删除系统在客户端部署消息锁加密（MLE：message-locked encryption）\cite{bellare2013MLE}以加密明文数据块（简称为明文数据块），同时确保重复数据删除仍然能够作用于密文数据块（简称为密文数据块）以节约存储空间。传统对称加密算法为每个客户端或每个数据块分配不同加密密钥，导致相同的明文数据块被加密为不同的密文数据块，无法通过重复数据删除进行冗余消除。消息锁加密的核心思路时基于数据块内容产生密钥（称为MLE密钥，例如MLE密钥为明文数据块的哈希值\cite{douceur02}），从而将相同明文数据块加密为相同的密文数据块，以兼容直接针对密文数据块的重复数据删除。现有消息锁加密采用服务器辅助密钥生成方式（称为服务器辅助消息锁加密（Server-aided MLE）
-\cite{keelveedhi2013DupLESS}），即部署第三方密钥服务器管理全局秘密，同时基于明文数据块哈希值以及密钥服务器的全局秘密共同生成MLE密钥，以防止攻击者针对MLE密钥实施离线暴力破解攻击。
+\cite{bellare2013DupLESS}），即部署第三方密钥服务器管理全局秘密，同时基于明文数据块哈希值以及密钥服务器的全局秘密共同生成MLE密钥，以防止攻击者针对MLE密钥实施离线暴力破解攻击。
 
 \begin{figure}[!htb]
     \small
@@ -49,9 +49,9 @@
 \subsubsection{系统效率} 
 \label{subsec:intro-problem-performance}
 
-在服务器辅助密钥生成过程中，现有加密后重复数据删除系统（图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}）须使用基于盲签名\cite{armknecht15,keelveedhi2013DupLESS}的无记忆伪随机函数（OPRF：oblivious pseudorandom function）生成密钥\cite{keelveedhi2013DupLESS}，以防止密钥服务器获得明文块的哈希值。同时，为了实现所有权证明，系统须在云服务端维护Merkle哈希树，并基于哈希树验证客户端提交的证明信息\cite{halevi2011proofs}。项目组指出，服务器辅助密钥生成和所有权证明的密码操作是加密后重复数据删除系统的主要效率瓶颈。
+在服务器辅助密钥生成过程中，现有加密后重复数据删除系统（图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}）须使用基于盲签名\cite{armknecht2015transparent,bellare2013DupLESS}的无记忆伪随机函数（OPRF：oblivious pseudorandom function）生成密钥\cite{bellare2013DupLESS}，以防止密钥服务器获得明文块的哈希值。同时，为了实现所有权证明，系统须在云服务端维护Merkle哈希树，并基于哈希树验证客户端提交的证明信息\cite{halevi2011proofs}。项目组指出，服务器辅助密钥生成和所有权证明的密码操作是加密后重复数据删除系统的主要效率瓶颈。
 
-为了验证以上论断，项目组基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}框架和现有技术方案实现了加密后重复数据删除系统的基础原型。基础原型支持基于RSA\cite{keelveedhi2013DupLESS}或BLS\cite{armknecht15}盲签名生成密钥，以及基于Merkle哈希树\cite{halevi2011proofs}或通用哈希（universal hash）\cite{xu2013weak}证明所有权（注：基于通用哈希的所有权证明方法\cite{xu2013weak}只能达到较低安全性）。
+为了验证以上论断，项目组基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}框架和现有技术方案实现了加密后重复数据删除系统的基础原型。基础原型支持基于RSA\cite{bellare2013DupLESS}或BLS\cite{armknecht2015transparent}盲签名生成密钥，以及基于Merkle哈希树\cite{halevi2011proofs}或通用哈希（universal hash）\cite{xu2013weak}证明所有权（注：基于通用哈希的所有权证明方法\cite{xu2013weak}只能达到较低安全性）。
 
 
 \begin{table}[!htb]
@@ -93,7 +93,7 @@
     \label{tab:intro-bottleneck}
 \end{table}
 
-为了实现以上案例，项目组基于Google合同模版\cite{google_offer}，更改其中姓名、年薪（假设为6K的倍数\cite{harnik10}，介于204K和804K之间）和签字费（假设为10K的倍数，介于300K和600K之间）以生成Alice和Bob的合同，每个合同约占18.5KiB。项目组随机生成Bob的薪水和签字费，并通过基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}设计实现的基础原型将Bob的合同存储至服务端。令Alice基于自身合同作为内容模版，枚举Bob所有可能的薪水和签字费，以实施推测内容攻击。项目组分别在本地局域网（客户端、密钥服务器和服务端均部署在具有10Gb/s网速的本地实验环境）和阿里云（在本地部署客户端和密钥服务器，在阿里云部署服务端）实现上述攻击。Alice需上传大约841份伪造合同，消耗7.4MiB网络流量（包括传输非重复密文块和元数据），在局域网和阿里云环境中推断Bob的隐私信息分别只需105.0秒和475.5秒。
+为了实现以上案例，项目组基于Google合同模版\cite{GoogleOffer}，更改其中姓名、年薪（假设为6K的倍数\cite{harnik10}，介于204K和804K之间）和签字费（假设为10K的倍数，介于300K和600K之间）以生成Alice和Bob的合同，每个合同约占18.5KiB。项目组随机生成Bob的薪水和签字费，并通过基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}设计实现的基础原型将Bob的合同存储至服务端。令Alice基于自身合同作为内容模版，枚举Bob所有可能的薪水和签字费，以实施推测内容攻击。项目组分别在本地局域网（客户端、密钥服务器和服务端均部署在具有10Gb/s网速的本地实验环境）和阿里云（在本地部署客户端和密钥服务器，在阿里云部署服务端）实现上述攻击。Alice需上传大约841份伪造合同，消耗7.4MiB网络流量（包括传输非重复密文块和元数据），在局域网和阿里云环境中推断Bob的隐私信息分别只需105.0秒和475.5秒。
 
 \subsection{研究内容概述}
 \label{subsec:intro-target}
@@ -146,12 +146,12 @@
 \subsection{基于TEE的安全应用}
 \label{subsec:compare-tee}
 
-TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZone是ARM CPU的硬件安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\cite{rubinov2016automated}、用户输入口令\cite{ying2018truz}，以及监控安全区以外的程序执行\cite{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\cite{matetic19}、文件系统\cite{ahmad18,shinde20}、外包数据库\cite{eskandarian17,priebe18,sun21}、键值存储\cite{mishra18,bailleu19,kim19,bailleu21}和数据分析平台\cite{schuster15, zheng17, bowe20}等。
+TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZone是ARM CPU的硬件安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\cite{rubinov2016automated}、用户输入口令\cite{ying2018truz}，以及监控安全区以外的程序执行\cite{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\cite{matetic19}、文件系统\cite{ahmad2018OBLIVIATE,shinde20}、外包数据库\cite{eskandarian17,priebe18,sun21}、键值存储\cite{mishra18,bailleu2019SPEICHER,kim19,bailleu2021Avocado}和数据分析平台\cite{schuster15, zheng2017Opaque, bowe2020ZEXE}等。
 
-此外，SGX \cite{sgx} 已被广泛用于保护存储系统。PESOS \cite{krahn18} 使用 SGX 强制执行对象存储的访问策略。 OBLIVIATE \cite{ahmad18} 增强了基于 SGX 的文件系统对特权侧信道攻击的安全性。 EnclaveDB \cite{priebe18} 和 ObliDB \cite{eskandarian19} 保护外包数据库免受 SGX 信息泄露。 NEXUS \cite{djoko19} 通过 SGX 对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik18} 提出了减轻 SGX 实现的性能开销的指南。 ShieldStore \cite{kim19} 实现特定于应用程序的数据管理以限制安全区内存使用。 SPEICHER \cite{bailleu19} 是一个基于 SGX 的基于 LSM 的键值存储，具有高效的 I/O 操作。以上所有研究均未考虑重复数据删除。Dang等人\cite{dang17} 提出了基于代理的协议，用于带宽高效的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现。SPEED \cite{cui19} 利用重复数据删除来提高 SGX 计算的效率，但 \sysnameS 使用 SGX 提高了加密后重复数据删除的性能。其他研究使用云端安全区进行 PoW 验证 \cite{you20} 和安全的基于文件的重复数据删除 \cite{fuhry20}，而 \sysnameS 使用客户端安全区进行有效的 PoW 证明生成并支持更细粒度的块-基于重复数据删除。S2Dedup \cite{miranda21} 管理一个云端安全区来执行安全的重复数据删除，但它依赖于客户端完全受信任的假设。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda21}在服务端部署安全区以重加密来自不同客户端的密文块，并在安全区外执行针对重加密后密文块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup导致严重的CPU环境切换开销（context-switching overhead）\cite{weisse2017regaining}。
+此外，SGX \cite{sgx} 已被广泛用于保护存储系统。PESOS \cite{krahn18} 使用 SGX 强制执行对象存储的访问策略。 OBLIVIATE \cite{ahmad2018OBLIVIATE} 增强了基于 SGX 的文件系统对特权侧信道攻击的安全性。 EnclaveDB \cite{priebe18} 和 ObliDB \cite{eskandarian19} 保护外包数据库免受 SGX 信息泄露。 NEXUS \cite{djoko19} 通过 SGX 对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik18} 提出了减轻 SGX 实现的性能开销的指南。 ShieldStore \cite{kim19} 实现特定于应用程序的数据管理以限制安全区内存使用。 SPEICHER \cite{bailleu2019SPEICHER} 是一个基于 SGX 的基于 LSM 的键值存储，具有高效的 I/O 操作。以上所有研究均未考虑重复数据删除。Dang等人\cite{dang17} 提出了基于代理的协议，用于带宽高效的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现。SPEED \cite{cui19} 利用重复数据删除来提高 SGX 计算的效率，但 \sysnameS 使用 SGX 提高了加密后重复数据删除的性能。其他研究使用云端安全区进行 PoW 验证 \cite{you2020Proofs} 和安全的基于文件的重复数据删除 \cite{fuhry20}，而 \sysnameS 使用客户端安全区进行有效的 PoW 证明生成并支持更细粒度的块-基于重复数据删除。S2Dedup \cite{miranda21} 管理一个云端安全区来执行安全的重复数据删除，但它依赖于客户端完全受信任的假设。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda21}在服务端部署安全区以重加密来自不同客户端的密文块，并在安全区外执行针对重加密后密文块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup导致严重的CPU环境切换开销（context-switching overhead）\cite{weisse2017regaining}。
 
 \section{本文的主要贡献与创新}
-我们提出了 \sysnameS，这是一个基于 SGX 的高性能加密后重复数据删除系统。 \sysnameS 建立在 {\em DupLESS} \cite{bellare13b} 中的服务器辅助密钥管理之上，但在安全区内执行高效的加密操作。实现 \sysnameS 的设计具有不小的挑战。首先，安全地引导安全区以托管受信任的代码和数据至关重要，但证明安全区的真实性会导致显着延迟。其次，每个客户端都需要通过安全通道与密钥管理器内部的安全区进行通信，但安全通道的管理开销会随着客户端数量的增加而增加。最后，客户端可以续订或撤销云服务订阅，因此允许动态客户端身份验证至关重要。为此，我们为 \sysnameS 实现了三个主要构建块: 
+我们提出了 \sysnameS，这是一个基于 SGX 的高性能加密后重复数据删除系统。 \sysnameS 建立在 {\em DupLESS} \cite{bellare2013DupLESS} 中的服务器辅助密钥管理之上，但在安全区内执行高效的加密操作。实现 \sysnameS 的设计具有不小的挑战。首先，安全地引导安全区以托管受信任的代码和数据至关重要，但证明安全区的真实性会导致显着延迟。其次，每个客户端都需要通过安全通道与密钥管理器内部的安全区进行通信，但安全通道的管理开销会随着客户端数量的增加而增加。最后，客户端可以续订或撤销云服务订阅，因此允许动态客户端身份验证至关重要。为此，我们为 \sysnameS 实现了三个主要构建块: 
 
 \begin{itemize}[leftmargin=*]
     \item \textit{安全高效的安全区管理}:
@@ -162,6 +162,6 @@ TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZ
         它通过推测性加密 \cite{eduardo19} 减轻了安全通道管理的在线加密/解密开销。
 \end{itemize}
 
-我们广泛表明 \sysnameF 可以有效地检测学习内容攻击（例如，在我们的案例研究中，概率至少为 98.6\%），而误判的数量很低（例如，\sysnameF 的默认配置中为零）。此外，我们将 \sysnameF 部署到现有的面向性能的系统 SGXDedup \cite{ren21} 中，以提高其对学习内容攻击的安全性。请注意，SGXDedup 基于 TEE 构建，可将之前的加密后重复数据删除系统 \cite{bellare13b} 加速八倍以上，而我们的 \sysnameF 部署系统，即 \prototype 相比 SGXDedup 的性能开销低至 8.8\% 和 0.8\%分别是大规模真实世界数据的上传和下载。
+我们广泛表明 \sysnameF 可以有效地检测学习内容攻击（例如，在我们的案例研究中，概率至少为 98.6\%），而误判的数量很低（例如，\sysnameF 的默认配置中为零）。此外，我们将 \sysnameF 部署到现有的面向性能的系统 SGXDedup \cite{ren21} 中，以提高其对学习内容攻击的安全性。请注意，SGXDedup 基于 TEE 构建，可将之前的加密后重复数据删除系统 \cite{bellare2013DupLESS} 加速八倍以上，而我们的 \sysnameF 部署系统，即 \prototype 相比 SGXDedup 的性能开销低至 8.8\% 和 0.8\%分别是大规模真实世界数据的上传和下载。
 
 \section{本论文的结构安排}

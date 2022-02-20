@@ -1,6 +1,6 @@
 \section{实现}
 \label{sec:featurespy-implementation}
-我们使用 OpenSSL 1.1.1l \cite{openssl}、SGX SDK 2.15 \cite{sgxsdk} 和 SGX SSL \cite{sgxssl} 实现 \sysnameF，并将其部署到现有的基于 SGX 的加密后重复数据删除系统 {\em SGXDedup} \cite{ren21} 来提高其针对学习内容攻击的安全性。具体来说，SGXDedup除了每个客户端和云端之外，还维护一个{\em key server}来管理一个全局secret，并根据chunk指纹和全局secret生成每个明文chunk的MLE key，从而对 {\em 离线暴力攻击} 具有鲁棒性（即解决了不可预测的假设）\cite{bellare13b}。为了加速基于数据源的加密后重复数据删除，它在密钥服务器中部署了一个 SGX 安全区，并执行 {\em 推测性加密} \cite{eduardo19} 以减轻（服务器辅助）密钥生成的在线计算开销。此外，它还部署了一个客户端安全区来执行基于 SGX 的高效 PoW (\S\ref{subsec:featurespy-secure_design})。请注意，SGXDedup 无法抵御学习内容攻击（\S\ref{subsec:featurespy-attack}），我们的新原型（称为 \prototype）是为了增强 SGXDedup 以抵御学习内容攻击的安全性。目前，\prototype（包括底层的 SGXDedup）由 C++ 中的 16\,K LoC 组成。下面，我们重点介绍与 \prototype 相关的实现细节。
+我们使用 OpenSSL 1.1.1l \cite{openssl}、SGX SDK 2.15 \cite{sgxsdk} 和 SGX SSL \cite{sgxssl} 实现 \sysnameF，并将其部署到现有的基于 SGX 的加密后重复数据删除系统 {\em SGXDedup} \cite{ren21} 来提高其针对学习内容攻击的安全性。具体来说，SGXDedup除了每个客户端和云端之外，还维护一个{\em key server}来管理一个全局secret，并根据chunk指纹和全局secret生成每个明文chunk的MLE key，从而对 {\em 离线暴力攻击} 具有鲁棒性（即解决了不可预测的假设）\cite{bellare2013DupLESS}。为了加速基于数据源的加密后重复数据删除，它在密钥服务器中部署了一个 SGX 安全区，并执行 {\em 推测性加密} \cite{eduardo19} 以减轻（服务器辅助）密钥生成的在线计算开销。此外，它还部署了一个客户端安全区来执行基于 SGX 的高效 PoW (\S\ref{subsec:featurespy-secure_design})。请注意，SGXDedup 无法抵御学习内容攻击（\S\ref{subsec:featurespy-attack}），我们的新原型（称为 \prototype）是为了增强 SGXDedup 以抵御学习内容攻击的安全性。目前，\prototype（包括底层的 SGXDedup）由 C++ 中的 16\,K LoC 组成。下面，我们重点介绍与 \prototype 相关的实现细节。
 
 
 \paragraph*{设置。}
@@ -12,7 +12,7 @@
 
 
 \paragraph*{安全区操作。}
-加密后（通过 AES-CFB-256 实现），\prototype 将 4,096 个密文数据块分批到安全区中进行处理，以减轻 SGX 上下文切换开销 \cite{arnautov16}。它跟踪哈希表中相似性指标的出现，并将窗口大小 $W$ 和比率阈值 $T$ 的默认值分别配置为 5\,K 和 3\%。
+加密后（通过 AES-CFB-256 实现），\prototype 将 4,096 个密文数据块分批到安全区中进行处理，以减轻 SGX 上下文切换开销 \cite{arnautov2016SCONE}。它跟踪哈希表中相似性指标的出现，并将窗口大小 $W$ 和比率阈值 $T$ 的默认值分别配置为 5\,K 和 3\%。
 
 \prototype 遵循 SGXDedup 将源端重复数据删除与基于 SGX 的 PoW 相结合。它通过证明密钥基于 4,096 个指纹（密文数据块）的串联生成签名（通过 AES-CMAC 实现），以便云使用相同的密钥验证这些指纹的真实性。云通过LevelDB\cite{leveldb}实现指纹索引（\S\ref{subsec:featurespy-basics}），并通知客户端只传输非重复密文数据块。
 
