@@ -29,7 +29,158 @@
 \RequirePackage{xspace}
 \RequirePackage{algpseudocode}
 \RequirePackage{makecell}
+\RequirePackage{xcolor}
+% Listing lstlisting -------
+\definecolor{commentColor}{RGB}{53,129,34}
+\definecolor{keywordColor}{RGB}{172, 62, 158}
+\definecolor{stringColor}{RGB}{194, 62, 42}
+\definecolor{preprocessorColor}{RGB}{114, 75, 48}
+\definecolor{characterColor}{RGB}{31, 53, 207}
+\definecolor{numberColor}{RGB}{166, 166, 166}
+\definecolor{oglobalColor}{RGB}{97, 64, 154}
+\definecolor{globalColor}{RGB}{89, 127, 134}
+\definecolor{functionColor}{RGB}{56, 36, 124}
+\definecolor{backgroundColor}{RGB}{249, 241, 165}
+\RequirePackage{fontspec}
+\RequirePackage{listings}
+\newfontfamily\codefont{Cascadia Code}
 
+\lstdefinestyle{c++}{language=C++,
+basicstyle=\sffamily\codefont,
+keywordstyle=\color{keywordColor}\sffamily\codefont,
+commentstyle=\color{commentColor}\sffamily\codefont,
+stringstyle=\color{stringColor}\sffamily\codefont,
+showstringspaces=false,
+columns=fixed,keepspaces,
+breaklines=true,
+frameround = tttt,
+framexleftmargin=8mm,
+frame = trbl,
+rulecolor=\color{gray}, %框架颜色设置
+rulesepcolor=\color{yellow!15}, %框架阴影颜色设置
+backgroundcolor = \color{yellow!5}, 
+numbers=left, %在左侧显示行数, right %在右侧显示行, none, %去掉行数显示
+stepnumber=1, %每两行标号一次
+% numbersep=5pt, %数字右端（若为左侧显示数字）水平距离代码5pt
+numberstyle=\color{numberColor}\footnotesize\codefont,
+escapechar=\$,
+morecomment=*[s][\color{stringColor}\sffamily\codefont]{<}{>},
+morecomment=[s][\color{characterColor}\sffamily\codefont]{'}{'},
+keywords=[2]{cout, cin, std, uint64_t, uint32_t},
+keywordstyle = [2]{\color{oglobalColor}\sffamily\codefont},
+keywords=[3]{endl, printf, scanf, setw, setfill, setbase, setprecision, time, ctime, rand, map,set,multimap,multiset, string, unordered_map,unordered_set, unordered_multiset,unordered_multimap,vector,string,list,deque, array,stack,forwared_list,iostream,memory,shared_ptr,unique_ptr, random,bitset,ostream,istream,cout,cin,endl,move,default_random_engine, uniform_int_distribution,iterator,algorithm,functional,bing,numeric},
+keywordstyle = [3]{\color{functionColor}\sffamily\codefont},
+keywords=[4]{\#include},
+keywordstyle =[4]{\color{preprocessorColor}\ssfamily\codefont},
+literate={
+    {<<}{{{\color{black}<<}}}1
+    {>>}{{{\color{black}>>}}}1
+    {*}{{{*}}}1
+    % {0}{{{\color{characterColor}0}}}1
+    % {1}{{{\color{characterColor}1}}}1
+    % {2}{{{\color{characterColor}2}}}1
+    % {3}{{{\color{characterColor}3}}}1
+    % {4}{{{\color{characterColor}4}}}1
+    % {5}{{{\color{characterColor}5}}}1
+    % {6}{{{\color{characterColor}6}}}1
+    % {7}{{{\color{characterColor}7}}}1
+    % {8}{{{\color{characterColor}8}}}1
+    % {9}{{{\color{characterColor}9}}}1
+    },
+tabsize=4
+}
+
+\lstdefinestyle{shell}{language=bash,
+basicstyle=\sffamily\codefont,
+keywordstyle=\color{keywordColor}\sffamily\codefont,
+commentstyle=\color{commentColor}\sffamily\codefont,
+stringstyle=\color{stringColor}\sffamily\codefont,
+showstringspaces=false,
+columns=fixed,keepspaces,
+breaklines=true,
+frameround = tttt,
+frame = trbl,
+rulecolor=\color{gray}, %框架颜色设置
+rulesepcolor=\color{yellow!15}, %框架阴影颜色设置
+backgroundcolor = \color{yellow!5}, 
+numbers=none,
+morekeywords={chmod, sudo, apt},
+tabsize=4
+}
+
+\colorlet{punct}{red!60!black}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+\lstdefinestyle{json}{
+	basicstyle=\sffamily\codefont,
+  	keywordstyle=\color{keywordColor}\sffamily\codefont,
+  	commentstyle=\color{commentColor}\sffamily\codefont,
+  	stringstyle=\color{stringColor}\sffamily\codefont,
+  	showstringspaces=false,
+  	columns=fixed,keepspaces,
+  	breaklines=true,
+  	frameround = tttt,
+  	frame = trbl,
+  	rulecolor=\color{gray}, %框架颜色设置
+  	rulesepcolor=\color{yellow!15}, %框架阴影颜色设置
+  	backgroundcolor = \color{yellow!5}, 
+  	string=[s]{"}{"},
+  	comment=[l]{:\ "},
+  	morecomment=[l]{:"},
+  	literate=
+   	*{0}{{{\color{numb}0}}}{1}
+   	 {1}{{{\color{numb}1}}}{1}
+   	 {2}{{{\color{numb}2}}}{1}
+   	 {3}{{{\color{numb}3}}}{1}
+   	 {4}{{{\color{numb}4}}}{1}
+   	 {5}{{{\color{numb}5}}}{1}
+   	 {6}{{{\color{numb}6}}}{1}
+   	 {7}{{{\color{numb}7}}}{1}
+   	 {8}{{{\color{numb}8}}}{1}
+   	 {9}{{{\color{numb}9}}}{1}
+   	 {:}{{{\color{punct}{:}}}}{1}
+   	 {,}{{{\color{punct}{,}}}}{1}
+   	 {\{}{{{\color{delim}{\{}}}}{1}
+   	 {\}}{{{\color{delim}{\}}}}}{1}
+   	 {[}{{{\color{delim}{[}}}}{1}
+   	 {]}{{{\color{delim}{]}}}}{1},
+  	tabsize=4
+}
+
+\definecolor{darkred}{rgb}{0.6,0.0,0.0}
+\definecolor{darkgreen}{rgb}{0,0.50,0}
+\definecolor{lightblue}{rgb}{0.0,0.42,0.91}
+\definecolor{orange}{rgb}{0.99,0.48,0.13}
+\definecolor{grass}{rgb}{0.18,0.80,0.18}
+\definecolor{pink}{rgb}{0.97,0.15,0.45}
+\lstdefinestyle{python}{ 
+	basicstyle=\sffamily\codefont,
+  	showstringspaces=false,
+  	columns=fixed,keepspaces,
+  	breaklines=true,
+  	frameround = tttt,
+  	frame = trbl,
+	framexleftmargin=8mm,
+  	rulecolor=\color{gray}, %框架颜色设置
+  	rulesepcolor=\color{yellow!15}, %框架阴影颜色设置
+  	backgroundcolor = \color{yellow!5}, 
+	numbers=left, %在左侧显示行数, right %在右侧显示行, none, %去掉行数显示
+	stepnumber=1, %每两行标号一次
+  	morekeywords=[1]{import,as,assert,nonlocal,with,yield,self,True,False,None}, % Python builtin
+  	morekeywords=[2]{,__init__,__add__,__mul__,__div__,__sub__,__call__,__getitem__,__setitem__,__eq__,__ne__,__nonzero__,__rmul__,__radd__,__repr__,__str__,__get__,__truediv__,__pow__,__name__,__future__,__all__,}, % magic methods
+  	morekeywords=[3]{,object,type,isinstance,copy,deepcopy,zip,enumerate,reversed,list,set,len,dict,tuple,range,xrange,append,execfile,real,imag,reduce,str,repr,}, % common functions
+  	morekeywords=[4]{,Exception,NameError,IndexError,SyntaxError,TypeError,ValueError,OverflowError,ZeroDivisionError,}, % errors
+  	morekeywords=[5]{,ode,fsolve,sqrt,exp,sin,cos,arctan,arctan2,arccos,pi, array,norm,solve,dot,arange,isscalar,max,sum,flatten,shape,reshape,find,any,all,abs,plot,linspace,legend,quad,polyval,polyfit,hstack,concatenate,vstack,column_stack,empty,zeros,ones,rand,vander,grid,pcolor,eig,eigs,eigvals,svd,qr,tan,det,logspace,roll,min,mean,cumsum,cumprod,diff,vectorize,lstsq,cla,eye,xlabel,ylabel,squeeze,}, % numpy / math
+  	commentstyle=\color{darkgreen}\slshape,
+  	keywordstyle=\color{blue}\bfseries\itshape,
+  	keywordstyle=[2]\color{blue}\bfseries,
+  	keywordstyle=[3]\color{grass},
+  	keywordstyle=[4]\color{red},
+  	keywordstyle=[5]\color{orange},
+  	stringstyle=\color{darkred},
+  	emphstyle=\color{pink}\underbar,
+}
+% Listing over --------
 
 \setCJKmainfont[AutoFakeBold=true]{SimSun}
 \newCJKfontfamily{\heiti}{SimHei}
@@ -89,7 +240,7 @@
 
 % \AtBeginDocument{\pretocmd{\ref}{~}{}{}\apptocmd{\ref}{}{}{}}
 
-\newcommand{\thesistablelist}{
+\newcommand{\thesislist}{
   \listoftables
 }
 
@@ -113,11 +264,15 @@
 \renewcommand{\theequation}{\arabic{chapter}-\arabic{equation}}
 \renewcommand{\thetable}{\arabic{chapter}-\arabic{table}}
 \renewcommand{\thefigure}{\arabic{chapter}-\arabic{figure}}
+\AtBeginDocument{
+	\renewcommand{\thelstlisting}{\arabic{chapter}-\arabic{lstlisting}}
+}
 
 \captionsetup{format=hang}
 \captionsetup{width=\textwidth - 42pt}
 \captionsetup[figure]{aboveskip=6pt, belowskip=0pt}
 \captionsetup[table]{aboveskip=9pt, belowskip=0pt}
+\captionsetup[lstlisting]{aboveskip=6pt, belowskip=0pt}
 
 \setlength{\intextsep}{9pt}
 
@@ -444,6 +599,7 @@
   \renewcommand{\bibname}{参考文献}
   \renewcommand{\figurename}{图}
   \renewcommand{\tablename}{表}
+  \renewcommand{\lstlistingname}{代码}
   \renewcommand{\listfigurename}{图目录}
   \renewcommand{\listtablename}{表目录}
 }{}
@@ -466,6 +622,22 @@
 \newcommand{\thesisfigurelist}{
   \listoffigures
 }
+
+\pretocmd{\listoftables}{
+    \newpage
+  \fancyhf{}
+  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont\listtablename}
+  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
+  
+  \ifchinesebook{
+    \addtolength{\cfttabnumwidth}{12pt}
+    \renewcommand{\cfttabpresnum}{\tablename}
+  }{
+    \addtolength{\cfttabnumwidth}{32pt}
+    \renewcommand{\cfttabpresnum}{\tablename~}
+  }
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
+}{}{}
 
 \pretocmd{\listoftables}{
     \newpage
@@ -894,6 +1066,7 @@ School: & \en@theschool \\
   \renewcommand{\thesection}{\Alph{chapter}.\arabic{section}}
   \renewcommand{\theequation}{\alph{chapter}-\arabic{equation}}
   \renewcommand{\thetable}{\alph{chapter}-\arabic{table}}
+  \renewcommand{\thelstlisting}{\alph{chapter}-\arabic{lstlisting}}
   \renewcommand{\thefigure}{\alph{chapter}-\arabic{figure}}
   \renewcommand{\thetheorem}{\alph{chapter}.\arabic{theorem}}
   \renewcommand{\theaxiom}{\alph{chapter}.\arabic{axiom}}
@@ -921,6 +1094,7 @@ School: & \en@theschool \\
   
   \renewcommand{\theequation}{a-\arabic{equation}}
   \renewcommand{\thetable}{a-\arabic{table}}
+  \renewcommand{\thelstlisting}{a-\arabic{lstlisting}}
   \renewcommand{\thefigure}{a-\arabic{figure}}
   \renewcommand{\thetheorem}{a.\arabic{theorem}}
   \renewcommand{\theaxiom}{a.\arabic{axiom}}
@@ -961,8 +1135,10 @@ School: & \en@theschool \\
     \renewcommand{\theequation}{\arabic{equation}}
     \renewcommand{\thetable}{\arabic{table}}
     \renewcommand{\thefigure}{\arabic{figure}}
+	\renewcommand{\thelstlisting}{\arabic{lstlisting}}
     \renewcommand{\figurename}{Figure}
     \renewcommand{\tablename}{Table}
+	\renewcommand{\lstlistingname}{List}
 }
 
 \newcommand{\thesistranslationchinese}{
@@ -978,8 +1154,10 @@ School: & \en@theschool \\
     \renewcommand{\theequation}{\arabic{equation}}
     \renewcommand{\thetable}{\arabic{table}}
     \renewcommand{\thefigure}{\arabic{figure}}
+	\renewcommand{\thelstlisting}{\arabic{lstlisting}}
     \renewcommand{\figurename}{图}
     \renewcommand{\tablename}{表}
+	\renewcommand{\lstlistingname}{代码}
 }
 
 \ifchinesebook{
