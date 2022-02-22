@@ -20,17 +20,17 @@
 \label{subsec:featurespy-attack}
 除了虚假所有权之外，加密的重复数据删除还面临另一种侧通道攻击（仍然由恶意客户端发起），称为 {\em learning-content attack} \cite{harnik10, zuo2018mitigating}，它利用了 {\em 重复数据删除的泄漏模式}（即，块是否由任何其他客户端上传）。学习内容攻击假设攻击者先验地知道某些受害者客户端拥有一个单独的文件，其内容遵循公开的内容模式（即已知部分）。它的目标是识别文件的私有部分。具体来说，攻击者会枚举私有部分的所有可能值，并生成许多假文件。它上传每个假文件，如果被告知不要传输某个文件的任何块（即假文件是整个副本），则推断目标文件。
 
-我们认为 PoW \cite{halevi11} 不足以防止学习内容攻击，因为对手枚举了块的全部内容并且能够说服其对它们的所有权。换句话说，PoW 无法检测到这些块是完全由客户拥有还是只是一些伪造品。
+本文认为 PoW \cite{halevi11} 不足以防止学习内容攻击，因为对手枚举了块的全部内容并且能够说服其对它们的所有权。换句话说，PoW 无法检测到这些块是完全由客户拥有还是只是一些伪造品。
 
 \paragraph*{案例研究。}
-我们通过案例研究强调学习内容攻击的严重性。我们认为 Alice 和 Bob 是一所大学的高年级学生，他们租用云（启用跨用户重复数据删除）来备份注册学生的计算机。求职后，Alice 和 Bob 都会收到一家公司的 offer，这些 offer 最初存储在各自的计算机中，然后自动备份到云端。
-我们假设 Alice 是旨在推断 Bob 的报价信息的对手。
+本文通过案例研究强调学习内容攻击的严重性。本文认为 Alice 和 Bob 是一所大学的高年级学生，他们租用云（启用跨用户重复数据删除）来备份注册学生的计算机。求职后，Alice 和 Bob 都会收到一家公司的 offer，这些 offer 最初存储在各自的计算机中，然后自动备份到云端。
+本文假设 Alice 是旨在推断 Bob 的报价信息的对手。
 
 
-在这里，我们通过 Google 的 offer letter \cite{GoogleOffer} 模拟 offer，并更改 \textit{姓名}，\textit{年薪}（假设是 6\,K \cite{harnik10} 的倍数，介于204\,K 和 804\,K) 和 \textit{签到红利}（假设是 10\,K 的倍数并且介于 300\,K 和 600\,K 之间）生成 Alice 和 Bob 的报价，每个大约需要 18.5\,KiB。此外，我们实施了一个加密的重复数据删除存储系统，以将优惠存储在云中。具体来说，客户端将录取通知书作为输入，执行分块、加密和源端重复数据删除，并且仅将非重复的密文数据块传输到云（\S\ref{subsec:featurespy-basics}）。最初，我们将 Bob 的报价存储在云中，这样 Alice 可以通过学习内容攻击推断 Bob 的实际工资和签约奖金。具体来说，Alice 建立在自己的 offer 之上，枚举 Bob 的所有可能的年薪和签约奖金，并在存储一些虚假 offer 时，如果没有转移任何块，则推断 Bob 的 offer。
+在这里，本文通过 Google 的 offer letter \cite{GoogleOffer} 模拟 offer，并更改 \textit{姓名}，\textit{年薪}（假设是 6\,K \cite{harnik10} 的倍数，介于204\,K 和 804\,K) 和 \textit{签到红利}（假设是 10\,K 的倍数并且介于 300\,K 和 600\,K 之间）生成 Alice 和 Bob 的报价，每个大约需要 18.5\,KiB。此外，本文实施了一个加密的重复数据删除存储系统，以将优惠存储在云中。具体来说，客户端将录取通知书作为输入，执行分块、加密和源端重复数据删除，并且仅将非重复的密文数据块传输到云（\S\ref{subsec:featurespy-basics}）。最初，本文将 Bob 的报价存储在云中，这样 Alice 可以通过学习内容攻击推断 Bob 的实际工资和签约奖金。具体来说，Alice 建立在自己的 offer 之上，枚举 Bob 的所有可能的年薪和签约奖金，并在存储一些虚假 offer 时，如果没有转移任何块，则推断 Bob 的 offer。
 
 
-我们随机生成 Bob 的工资和签约奖金，并评估两个 LAN 中的学习内容攻击（在我们的本地测试平台中部署客户端和云，请参阅 \S\ref{subsec:featurespy-evaluation-performance} 以了解测试平台配置) 和云（将客户端部署在我们的本地测试平台和云在阿里云 \cite{Alibaba}，请参阅 \S\ref{subsec:featurespy-evaluation-performance} 以了解云配置）测试平台。表~\ref{tab:featurespy-attack} 显示了识别正确报价的平均成本。 Alice 需要上传大约 841 个虚假报价，这些报价转换为消耗 7.4\,MiB 网络流量（包括非重复密文数据块和元数据的传输）。也就是说，在局域网和云测试台上分别推断出 Bob 的隐私信息只需要 105.0\,s 和 475.5\,s。
+本文随机生成 Bob 的工资和签约奖金，并评估两个 LAN 中的学习内容攻击（在本文的本地测试平台中部署客户端和云，请参阅 \S\ref{subsec:featurespy-evaluation-performance} 以了解测试平台配置) 和云（将客户端部署在本文的本地测试平台和云在阿里云 \cite{Alibaba}，请参阅 \S\ref{subsec:featurespy-evaluation-performance} 以了解云配置）测试平台。表~\ref{tab:featurespy-attack} 显示了识别正确报价的平均成本。 Alice 需要上传大约 841 个虚假报价，这些报价转换为消耗 7.4\,MiB 网络流量（包括非重复密文数据块和元数据的传输）。也就是说，在局域网和云测试台上分别推断出 Bob 的隐私信息只需要 105.0\,s 和 475.5\,s。
 
 
 \begin{table}
@@ -46,7 +46,7 @@
     Cloud & & & 475.5 $\pm$ 339.8\,s   \\
     \hline
   \end{tabular}
-  \caption{学习内容攻击的平均成本。 我们在 10 次运行中评估结果，并包括来自 {\em Student's t-Distribution} 的 95\% 置信区间.}
+  \caption{学习内容攻击的平均成本。 本文在 10 次运行中评估结果，并包括来自 {\em Student's t-Distribution} 的 95\% 置信区间.}
   \label{tab:featurespy-attack}
   \vspace{-6pt}
 \end{table}

@@ -1,13 +1,13 @@
 \section{实现}
 \label{sec:sgxdedup-implementation}
 
-我们使用 OpenSSL 1.1.1g \cite{openssl}、Intel SGX SDK 2.7 \cite{sgx} 和Intel SGX SSL \cite{sgxssl} 在 C++ 中构建了一个 \sysnameS 原型。我们的原型通过 SHA256 实现明文和密文数据块的指纹识别操作，并通过 AES256 实现基于块的加密。它包含大约 14.2\,K LoC。
+本文使用 OpenSSL 1.1.1g \cite{openssl}、Intel SGX SDK 2.7 \cite{sgx} 和Intel SGX SSL \cite{sgxssl} 在 C++ 中构建了一个 \sysnameS 原型。本文的原型通过 SHA256 实现明文和密文数据块的指纹识别操作，并通过 AES256 实现基于块的加密。它包含大约 14.2\,K LoC。
 
 \paragraph*{Setup.} 
 为了引导密钥安全区，云对云的子密钥 (\S\ref{subsec:sgxdedup-enclave-management}) 和盲密钥 (\S\ref{subsec:sgxdedup-key-management}）进入关键安全区代码。或者，\sysnameS 也可以在验证密钥安全区后提供两个秘密（使用 SGX \cite{sgx} 的秘密提供功能），但会产生额外的引导开销。密钥安全区使用 SHA256 生成全局密钥并在密钥回归中实现哈希函数。每个 PoW 安全区都在 NIST P-256 椭圆曲线中实现 DHKE，以与云共享一个 PoW 密钥。
 
-\paragraph*{Key generation.} 每个客户端都实现了 Rabin 指纹识别 \cite{rabin81} 用于内容定义的分块。我们将 Rabin 指纹识别中的最小、平均和最大块大小分别固定为 4\,KB, 8\,KB 和 16\,KB。为了实现基于 SGX 的推测性加密 (\S\ref{subsec:sgxdedup-encryption})，我们将 nonce 和计数器分别固定为 12 字节和 4 字节，并使用 HMAC-SHA256 实现 MAC。密钥安全区通过 SHA256 生成每个明文数据块的 消息锁加密（MLE） 密钥。
+\paragraph*{Key generation.} 每个客户端都实现了 Rabin 指纹识别 \cite{rabin81} 用于内容定义的分块。本文将 Rabin 指纹识别中的最小、平均和最大块大小分别固定为 4\,KB, 8\,KB 和 16\,KB。为了实现基于 SGX 的推测性加密 (\S\ref{subsec:sgxdedup-encryption})，本文将 nonce 和计数器分别固定为 12 字节和 4 字节，并使用 HMAC-SHA256 实现 MAC。密钥安全区通过 SHA256 生成每个明文数据块的 消息锁加密（MLE） 密钥。
 
-\paragraph*{Deduplication.} \sysnameS 实现了源端重复数据删除与 PoW 相结合。 PoW安全区实现了一个 \textit{ proof generation ECall} 来计算密文数据块的指纹，并使用 AES-CMAC 基于生成的指纹生成签名。云将指纹索引 (\S\ref{subsec:sgxdedup-encrypted-dedup}) 实现为基于 LevelDB \cite{leveldb} 的键值存储。为了降低网络和磁盘 I/O 成本，我们将（非重复）密文数据块存储在 8MB 的容器中，作为传输和存储单位 \cite{lillibridge13}。
+\paragraph*{Deduplication.} \sysnameS 实现了源端重复数据删除与 PoW 相结合。 PoW安全区实现了一个 \textit{ proof generation ECall} 来计算密文数据块的指纹，并使用 AES-CMAC 基于生成的指纹生成签名。云将指纹索引 (\S\ref{subsec:sgxdedup-encrypted-dedup}) 实现为基于 LevelDB \cite{leveldb} 的键值存储。为了降低网络和磁盘 I/O 成本，本文将（非重复）密文数据块存储在 8MB 的容器中，作为传输和存储单位 \cite{lillibridge13}。
 
-\paragraph*{优化。} 为了减少上下文切换和 SGX 内存加密/解密开销，每个客户端批量处理多个指纹（默认为 4,096 个）以在具有密钥安全区 (\S\ref{subsec:sgxdedup-encryption}) 的安全通信通道中传输.密钥安全区处理每批接收到的指纹。它通过指针访问批处理，而不将内容复制到安全区\cite{harnik18}。类似地，PoW安全区按批次（默认为 4,096）处理密文数据块，无需内容复制。我们还使用多线程来提高性能。每个客户端通过多线程并行处理分块、明文数据块指纹识别、加密、PoW 和上传，而密钥安全区和云服务于不同线程中的多个连接。
+\paragraph*{优化。} 为了减少上下文切换和 SGX 内存加密/解密开销，每个客户端批量处理多个指纹（默认为 4,096 个）以在具有密钥安全区 (\S\ref{subsec:sgxdedup-encryption}) 的安全通信通道中传输.密钥安全区处理每批接收到的指纹。它通过指针访问批处理，而不将内容复制到安全区\cite{harnik18}。类似地，PoW安全区按批次（默认为 4,096）处理密文数据块，无需内容复制。本文还使用多线程来提高性能。每个客户端通过多线程并行处理分块、明文数据块指纹识别、加密、PoW 和上传，而密钥安全区和云服务于不同线程中的多个连接。

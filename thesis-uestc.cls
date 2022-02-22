@@ -180,6 +180,40 @@ tabsize=4
   	stringstyle=\color{darkred},
   	emphstyle=\color{pink}\underbar,
 }
+
+\lstdefinestyle{solidity}{
+	basicstyle=\sffamily\codefont,
+  	showstringspaces=false,
+  	columns=fixed,keepspaces,
+  	breaklines=true,
+  	frameround = tttt,
+  	frame = trbl,
+	framexleftmargin=8mm,
+  	rulecolor=\color{gray}, %框架颜色设置
+  	rulesepcolor=\color{yellow!15}, %框架阴影颜色设置
+  	backgroundcolor = \color{yellow!5}, 
+	numbers=left, %在左侧显示行数, right %在右侧显示行, none, %去掉行数显示
+	stepnumber=1, %每两行标号一次
+  	keywords={msg, true, false, catch, function, returns, if, while, do, else, case, break, require, def, throw, public, emit},
+  	keywordstyle=\color{blue}\bfseries,
+  	%ndkeywords={class, export, boolean, throw, implements, import, this},
+  	ndkeywords={mapping, string, struct, address, uint256, map, uint, int, this, memory},
+  	ndkeywordstyle=\color{darkgreen}\bfseries,
+  	identifierstyle=\color{black},
+  	sensitive=false,
+  	comment=[l]{//},
+  	morecomment=[s]{/*}{*/},
+  	commentstyle=\color{darkgray}\ttfamily,
+  	stringstyle=\color{red}\ttfamily,
+  	morestring=[b]',
+  	morestring=[b]"
+   	backgroundcolor=\color{white},
+   	extendedchars=true,
+   	showspaces=false,
+   	tabsize=4,
+   	showtabs=false,
+   	captionpos=b
+}
 % Listing over --------
 
 \setCJKmainfont[AutoFakeBold=true]{SimSun}

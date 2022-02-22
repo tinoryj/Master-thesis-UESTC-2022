@@ -1,6 +1,6 @@
 \section{实现}
 \label{sec:featurespy-implementation}
-我们使用 OpenSSL 1.1.1l \cite{openssl}、SGX SDK 2.15 \cite{sgxsdk} 和 SGX SSL \cite{sgxssl} 实现 \sysnameF，并将其部署到现有的基于 SGX 的加密后重复数据删除系统 {\em SGXDedup} \cite{ren21} 来提高其针对学习内容攻击的安全性。具体来说，SGXDedup除了每个客户端和云端之外，还维护一个{\em key server}来管理一个全局secret，并根据chunk指纹和全局secret生成每个明文chunk的MLE key，从而对 {\em 离线暴力攻击} 具有鲁棒性（即解决了不可预测的假设）\cite{bellare2013DupLESS}。为了加速基于数据源的加密后重复数据删除，它在密钥服务器中部署了一个 SGX 安全区，并执行 {\em 推测性加密} \cite{eduardo19} 以减轻（服务器辅助）密钥生成的在线计算开销。此外，它还部署了一个客户端安全区来执行基于 SGX 的高效 PoW (\S\ref{subsec:featurespy-secure_design})。请注意，SGXDedup 无法抵御学习内容攻击（\S\ref{subsec:featurespy-attack}），我们的新原型（称为 \prototype）是为了增强 SGXDedup 以抵御学习内容攻击的安全性。目前，\prototype（包括底层的 SGXDedup）由 C++ 中的 16\,K LoC 组成。下面，我们重点介绍与 \prototype 相关的实现细节。
+本文使用 OpenSSL 1.1.1l \cite{openssl}、SGX SDK 2.15 \cite{sgxsdk} 和 SGX SSL \cite{sgxssl} 实现 \sysnameF，并将其部署到现有的基于 SGX 的加密后重复数据删除系统 {\em SGXDedup} \cite{ren21} 来提高其针对学习内容攻击的安全性。具体来说，SGXDedup除了每个客户端和云端之外，还维护一个{\em key server}来管理一个全局secret，并根据chunk指纹和全局secret生成每个明文chunk的MLE key，从而对 {\em 离线暴力攻击} 具有鲁棒性（即解决了不可预测的假设）\cite{bellare2013DupLESS}。为了加速基于数据源的加密后重复数据删除，它在密钥服务器中部署了一个 SGX 安全区，并执行 {\em 推测性加密} \cite{eduardo19} 以减轻（服务器辅助）密钥生成的在线计算开销。此外，它还部署了一个客户端安全区来执行基于 SGX 的高效 PoW (\S\ref{subsec:featurespy-secure_design})。请注意，SGXDedup 无法抵御学习内容攻击（\S\ref{subsec:featurespy-attack}），本文的新原型（称为 \prototype）是为了增强 SGXDedup 以抵御学习内容攻击的安全性。目前，\prototype（包括底层的 SGXDedup）由 C++ 中的 16\,K LoC 组成。下面，本文重点介绍与 \prototype 相关的实现细节。
 
 
 \paragraph*{设置。}
@@ -22,4 +22,4 @@
 要下载文件，客户端首先从云端检索文件配方，并使用相应的主密钥对其进行解密。然后，客户端根据文件配方检索密文数据块，并根据 MLE 密钥和功能密钥对其进行解密。
 
 \paragraph*{优化。}
-我们应用标准方法来提高 \prototype 的性能。每个客户端在不同线程中提取多个明文数据块的内容特征，并在管道中并行处理分块、密钥生成、加密、PoW和上传。此外，为了提高下载性能，云会在内存中维护一个最近最少使用的缓存 (1\,GiB) 来保存最近恢复的容器。对于每个下载请求，它首先在缓存中搜索容器，并且仅当容器不在缓存中时才从磁盘中检索容器。
+本文应用标准方法来提高 \prototype 的性能。每个客户端在不同线程中提取多个明文数据块的内容特征，并在管道中并行处理分块、密钥生成、加密、PoW和上传。此外，为了提高下载性能，云会在内存中维护一个最近最少使用的缓存 (1\,GiB) 来保存最近恢复的容器。对于每个下载请求，它首先在缓存中搜索容器，并且仅当容器不在缓存中时才从磁盘中检索容器。

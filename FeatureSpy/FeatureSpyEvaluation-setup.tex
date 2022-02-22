@@ -2,7 +2,7 @@
 \label{sec:featurespy-evaluation}
 
 
-我们进行了广泛的评估来研究 \sysnameF (\S\ref{subsec:featurespy-evaluation-detection}) 的攻击检测有效性，以及 \prototype 在合成 (\S\ref{subsec:featurespy-syn}) 和现实世界中的性能(\S\ref{subsec:featurespy-real}) 工作负载。我们将主要结果总结如下：
+本文进行了广泛的评估来研究 \sysnameF (\S\ref{subsec:featurespy-evaluation-detection}) 的攻击检测有效性，以及 \prototype 在合成 (\S\ref{subsec:featurespy-syn}) 和现实世界中的性能(\S\ref{subsec:featurespy-real}) 工作负载。本文将主要结果总结如下：
 
 \begin{itemize}[leftmargin=*]
 \item \sysnameF 根据相应的密文数据块有效地找到相似的明文数据块。例如，当它们彼此进行中等修改时，它会检测到多达 80.2\% 的相似块。
@@ -17,13 +17,13 @@
 
 \paragraph*{合成数据集。}
 
-我们考虑三种类型的合成数据集进行评估。通过以受控方式修改基本块来生成第一数据集。具体来说，我们首先创建一个 8\,KiB 基本块 $M$。每次，我们在 $M$ 中随机选择 $x$ 个位置，并在每个位置更改 $y$ 个字节，以创建一个修改过的块。经过 10\,K 次修改后，我们得到一个合成数据集 {\em SYNChunk}$(x, y)$，其中包括从同一个基本块 $M$ 修改的 10\,K 个块。我们使用 SYNChunk$(x, y)$ 作为（相似块的）基本事实来研究相似性检测的有效性（Exp\#1 和 Exp\#2）。
+本文考虑三种类型的合成数据集进行评估。通过以受控方式修改基本块来生成第一数据集。具体来说，本文首先创建一个 8\,KiB 基本块 $M$。每次，本文在 $M$ 中随机选择 $x$ 个位置，并在每个位置更改 $y$ 个字节，以创建一个修改过的块。经过 10\,K 次修改后，本文得到一个合成数据集 {\em SYNChunk}$(x, y)$，其中包括从同一个基本块 $M$ 修改的 10\,K 个块。本文使用 SYNChunk$(x, y)$ 作为（相似块的）基本事实来研究相似性检测的有效性（Exp\#1 和 Exp\#2）。
 
-此外，我们将 {\em SYNFile}$(x, y)$ 视为大小为 4\,KiB 的文件。我们假设 SYNFile$(x, y)$ 在文件内容中包含 $x$ 未知变量（其值将被推断），并且每个变量的值是从大小为 $y$ 的空间中选择的。我们使用 SYNFile$(x, y)$ 作为目标文件来研究 \sysnameF 在不同情况下的检测有效性（Exp\#4）。我们不考虑更大的目标文件，因为对手需要枚举更多相似的块（用于攻击）并且更有可能被 \sysnameF 捕获。
+此外，本文将 {\em SYNFile}$(x, y)$ 视为大小为 4\,KiB 的文件。本文假设 SYNFile$(x, y)$ 在文件内容中包含 $x$ 未知变量（其值将被推断），并且每个变量的值是从大小为 $y$ 的空间中选择的。本文使用 SYNFile$(x, y)$ 作为目标文件来研究 \sysnameF 在不同情况下的检测有效性（Exp\#4）。本文不考虑更大的目标文件，因为对手需要枚举更多相似的块（用于攻击）并且更有可能被 \sysnameF 捕获。
 
-此外，我们将 {\em SYNUnique} 生成为一组 2\,GiB 文件，每个文件都包含全局非重复块。我们使用 SYNUnique 对 \prototype (\S\ref{subsec:featurespy-syn}) 的性能进行压力测试。
+此外，本文将 {\em SYNUnique} 生成为一组 2\,GiB 文件，每个文件都包含全局非重复块。本文使用 SYNUnique 对 \prototype (\S\ref{subsec:featurespy-syn}) 的性能进行压力测试。
 
-\paragraph*{Real-world datasets.} 我们考虑四个真实世界数据集，其特征总结在 Table~\ref{tab:featurespy-datasets} 中： (i) {\em FSL} \cite{fsl}，其中包括 795 个 home 2013 年 1 月 22 日至 6 月 17 日 9 名学生的目录快照； (ii) {\em MS} \cite{meyer11}，其中包括 143 个 windows 文件系统快照，每个快照的逻辑大小约为 100\,GiB； (iii) {\em Linux} \cite{linux}，其中包括来自 Linux 源代码稳定版本（v2.6.11 和 v5.13 之间）的 84 个快照； (iv) {\em CouchDB} \cite{couchdb}，其中包括 83 个 CouchDB 的 docker 镜像，版本介于 v2.5.2 和 v6.6.2 之间，在一般、社区和企业发行版下。请注意，FSL 和 MS 仅包括块元数据（例如，指纹和大小）而不是实际数据；我们将重放两条轨迹以评估 \prototype 在处理大规模工作负载（Exp\#9）中的性能。
+\paragraph*{Real-world datasets.} 本文考虑四个真实世界数据集，其特征总结在 Table~\ref{tab:featurespy-datasets} 中： (i) {\em FSL} \cite{fsl}，其中包括 795 个 home 2013 年 1 月 22 日至 6 月 17 日 9 名学生的目录快照； (ii) {\em MS} \cite{meyer11}，其中包括 143 个 windows 文件系统快照，每个快照的逻辑大小约为 100\,GiB； (iii) {\em Linux} \cite{linux}，其中包括来自 Linux 源代码稳定版本（v2.6.11 和 v5.13 之间）的 84 个快照； (iv) {\em CouchDB} \cite{couchdb}，其中包括 83 个 CouchDB 的 docker 镜像，版本介于 v2.5.2 和 v6.6.2 之间，在一般、社区和企业发行版下。请注意，FSL 和 MS 仅包括块元数据（例如，指纹和大小）而不是实际数据；本文将重放两条轨迹以评估 \prototype 在处理大规模工作负载（Exp\#9）中的性能。
 
 \begin{table}
   \centering
