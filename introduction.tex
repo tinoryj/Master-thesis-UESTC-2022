@@ -1,6 +1,8 @@
 \chapter{绪\hspace{6pt}论}
+\label{chapter:introduction}
 
 \section{研究工作的背景与意义}
+\label{sec:intro}
 \subsection{研究背景}
 \label{subsec:intro-background}
 
@@ -39,20 +41,17 @@
 
 另一方面，重复数据删除受到伪造数据所有权的攻击威胁\cite{harnik10,mulazzani11}。由于云服务商仅基于收到的数据块哈希值判断客户端是否拥有相应数据块，恶意用户/客户端可以伪造任意密文数据块的哈希值，如果该密文数据块已在云端存储（即已发生重复数据删除），则恶意客户端无需传输密文数据块内容便可获得相应密文数据块的访问权限。为了防止伪造所有权攻击，加密后重复数据删除增加了所有权证明（proof-of-ownership）技术\cite{halevi11}：除了密文数据块的哈希值以外，云服务商要求客户端额外提交目标密文数据块的所有权证明（proof）；云服务商首先基于证明验证该客户端是否真实且完整拥有相应密文数据块，然后再执行如前所述的重复数据删除过程。所有权证明技术的合理性在于，只针对客户端真实拥有（即具有完整访问权限）的密文数据块执行重复数据删除，从而避免非法访问其他客户端已在云端存储的内容。
 
-然而，支持数据块所有权证明技术的加密后重复数据删除依然不足以完全击败恶意客户端，恶意客户端仍可通过枚举数据块内容以发起推测内容攻击（{\em learning-content attack}）\cite{harnik10, zuo2018mitigating}。具体来说，攻击者对目标文件具有相当的先验知识，了解目标文件（例如，来自同一家公司的录用通知书）的大部分格式化内容，并旨在识别其他客户拥有的目标文件的私有部分（例如，录用通知书中的签约工资和入职奖金数额）。攻击者通过枚举目标文件中私有内容的可能值来伪造大量文件，对每个伪造的文件执行源端重复数据删除，进而在某些伪造的文件无需上传任何内容时推断出目标文件中的隐私信息（即当前伪造文件所包含的内容）。
-
 \subsection{问题和动机}
 \label{subsec:intro-problem}
 
 现有面向云环境的加密后重复数据删除系统面临着系统效率低与安全性不足的双重挑战：
 
 \subsubsection{系统效率} 
-\label{subsec:intro-problem-performance}
+\label{subsubsec:intro-problem-performance}
 
-在服务器辅助密钥生成过程中，现有加密后重复数据删除系统（图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}）须使用基于盲签名\cite{armknecht2015transparent,bellare2013DupLESS}的无记忆伪随机函数（OPRF：oblivious pseudorandom function）生成密钥\cite{bellare2013DupLESS}，以防止密钥服务器获得明文块的哈希值。同时，为了实现所有权证明，系统须在云服务端维护Merkle哈希树，并基于哈希树验证客户端提交的证明信息\cite{halevi2011proofs}。项目组指出，服务器辅助密钥生成和所有权证明的密码操作是加密后重复数据删除系统的主要效率瓶颈。
+在服务器辅助密钥生成过程中，现有加密后重复数据删除系统（图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}）须使用基于盲签名\cite{armknecht2015transparent,bellare2013DupLESS}的无记忆伪随机函数（OPRF：oblivious pseudorandom function）生成密钥\cite{bellare2013DupLESS}，以防止密钥服务器获得明文块的哈希值。同时，为了实现所有权证明，系统须在云服务端维护Merkle哈希树，并基于哈希树验证客户端提交的证明信息\cite{halevi2011proofs}。本文指出，服务器辅助密钥生成和所有权证明的密码操作是加密后重复数据删除系统的主要效率瓶颈。
 
-为了验证以上论断，项目组基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}框架和现有技术方案实现了加密后重复数据删除系统的基础原型。基础原型支持基于RSA\cite{bellare2013DupLESS}或BLS\cite{armknecht2015transparent}盲签名生成密钥，以及基于Merkle哈希树\cite{halevi2011proofs}或通用哈希（universal hash）\cite{xu2013weak}证明所有权（注：基于通用哈希的所有权证明方法\cite{xu2013weak}只能达到较低安全性）。
-
+为了验证以上论断，本文基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}框架和现有技术方案实现了加密后重复数据删除系统的基础原型。基础原型支持基于RSA\cite{bellare2013DupLESS}或BLS\cite{armknecht2015transparent}盲签名生成密钥，以及基于Merkle哈希树\cite{halevi2011proofs}或通用哈希（universal hash）\cite{xu2013weak}证明所有权（注：基于通用哈希的所有权证明方法\cite{xu2013weak}只能达到较低安全性）。
 
 \begin{table}[!htb]
     \small
@@ -73,11 +72,11 @@
 表~\ref{tab:intro-bottleneck}展示了基础原型每个步骤处理1MiB数据的平均时间开销。服务器辅助密钥生成是最大效率瓶颈。如果采用基于Merkle哈希树的所有权证明方案，RSA盲签名和BLS盲签名分别占系统总开销的53.8\%和93.3\%。同时，所有权证明也是限制系统效率的重要因素，如果采用基于RSA盲签名的服务器辅助密钥生成方案，Merkle哈希树和（较低安全性的）通用哈希方案分别占系统总开销的35.7\%和9.5\%。
 
 \subsubsection{安全隐患} 
-\label{subsec:intro-problem-security}
+\label{subsubsec:intro-problem-security}
 
-在重复数据删除过程中，云服务商通知客户端传输或不传输密文块内容（\S\ref{subsec:intro-background}） ，实质上泄漏了“其他客户端是否已经存储相应密文块”的侧信道信息（side-channel information）。虽然所有权证明阻止了针对非授权密文块的重复数据删除，但不足以防止恶意客户端的侧信道攻击。
-例如，攻击者可以枚举所有可能的数据内容，并利用重复数据删除泄漏的侧信道信息实施推测内容攻击（learning-content attack）\cite{harnik10,zuo2018mitigating}。假设攻击者已知某个客户端持有目标文件且文件内容符合固定的公开格式（例如工资条、合同等模版化数据），致力于推断目标文件未公开的敏感内容（例如薪水金额）。攻击者枚举所有可能的未公开内容，并通过恶意客户端上传所生成的枚举文件。如果上传某个枚举文件时无需传输任何密文块，即可推断该枚举文件即为目标文件。此时，由于攻击者完全获得了所枚举文件的访问权限，仅检测所有权无法阻止推测内容攻击。
-项目组扩展现有工作\cite{harnik10,zuo2018mitigating}，设计案例验证推测内容攻击的可行性。考虑Alice和Bob为应届毕业学生，同时收到某公司的雇佣合同。他们将各自合同备份至云端。假设Alice为攻击者，通过推测内容攻击推断Bob合同中的薪水和签字费。
+现有支持数据块所有权证明技术的加密后重复数据删除依然不足以完全击败恶意客户端。在重复数据删除过程中，云服务商通知客户端传输或不传输密文数据块内容（\S\ref{subsec:intro-background}） ，实质上泄漏了“其他客户端是否已经存储相应密文数据块”的侧信道信息（side-channel information）。虽然所有权证明阻止了针对非授权密文数据块的重复数据删除，但不足以防止恶意客户端的侧信道攻击。例如，攻击者可以枚举所有可能的数据内容，并利用重复数据删除泄漏的侧信道信息实施推测内容攻击（{\em learning-content attack}）\cite{harnik10,zuo2018mitigating}。假设攻击者已知某个客户端持有目标文件且文件内容符合固定的公开格式（例如工资条、合同等模版化数据），致力于推断目标文件未公开的敏感内容（例如薪水金额）。攻击者枚举所有可能的未公开内容，并通过恶意客户端上传所生成的枚举文件。如果上传某个枚举文件时无需传输任何密文数据块，即可推断该枚举文件即为目标文件。此时，由于攻击者完全获得了所枚举文件的访问权限，仅检测所有权无法阻止推测内容攻击。
+
+本文扩展现有工作\cite{harnik10,zuo2018mitigating}对推测内容攻击的场景分析，设计案例验证推测内容攻击的可行性。考虑Alice和Bob为应届毕业学生，同时收到某公司的雇佣合同。他们将各自合同备份至云端。假设Alice为攻击者，通过推测内容攻击推断Bob合同中的薪水和签字费。
 
 \begin{table}[!htb]
     \small
@@ -93,14 +92,27 @@
     \label{tab:intro-bottleneck}
 \end{table}
 
-为了实现以上案例，项目组基于Google合同模版\cite{GoogleOffer}，更改其中姓名、年薪（假设为6K的倍数\cite{harnik10}，介于204K和804K之间）和签字费（假设为10K的倍数，介于300K和600K之间）以生成Alice和Bob的合同，每个合同约占18.5KiB。项目组随机生成Bob的薪水和签字费，并通过基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}设计实现的基础原型将Bob的合同存储至服务端。令Alice基于自身合同作为内容模版，枚举Bob所有可能的薪水和签字费，以实施推测内容攻击。项目组分别在本地局域网（客户端、密钥服务器和服务端均部署在具有10Gb/s网速的本地实验环境）和阿里云（在本地部署客户端和密钥服务器，在阿里云部署服务端）实现上述攻击。Alice需上传大约841份伪造合同，消耗7.4MiB网络流量（包括传输非重复密文块和元数据），在局域网和阿里云环境中推断Bob的隐私信息分别只需105.0秒和475.5秒。
+为了实现以上推测内容攻击案例，本文基于Google合同模版\cite{GoogleOffer}，更改其中姓名、年薪（假设为6K的倍数\cite{harnik10}，介于204K和804K之间）和签字费（假设为10K的倍数，介于300K和600K之间）以生成Alice和Bob的合同，每个合同约占18.5KiB。本文随机生成Bob的薪水和签字费，并通过基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}设计实现的基础原型将Bob的合同存储至服务端。令Alice基于自身合同作为内容模版，枚举Bob所有可能的薪水和签字费，以实施推测内容攻击。本文分别在本地局域网（客户端、密钥服务器和服务端均部署在具有10\,Gb/s网速的本地实验环境）和阿里云（在本地部署客户端和密钥服务器，在阿里云部署服务端）实现上述攻击。Alice需上传大约841份伪造合同，消耗7.4MiB网络流量（包括传输非重复密文数据块和元数据），在局域网和阿里云环境中推断Bob的隐私信息分别只需105.0秒和475.5秒。
+
+\subsection{研究内容概述}
+\label{subsec:intro-content}
+
+本文指出，现有加密后重复数据删除使用纯软件实现的密码算法保障数据安全，但是，由于密码算法计算开销大、安全防护不完整，导致当前的重复数据删除系统存在效率和安全方面的不足。因此，本文拟开展基于硬件可信执行环境的安全重复数据删除研究，意图通过硬件实现的可信执行环境（TEE：trusted execution environment）优化/改变现有基于纯软件的重复数据删除方法思路，进而克服现有研究的不足。具体的，TEE是一组软硬件结合的系统组件，可为应用程序提供必要的基础设施和运行资源，同时为内部代码的安全执行提供机密性和完整性保证\cite{OMTP}。各大软硬件厂商均推出了各自的TEE实现方案，包括TrustZone\cite{trustzone}、Intel SGX\cite{sgx,sgx2}、AMD SEV\cite{AMDSEV}、Apple Secure Enclave\cite{AppleSecureEnclave}、Google Titan\cite{GoogleTitan}等。为了避免硬件依赖，本文的系统设计并不基于某一具体的TEE解决方案，统一使用“安全区”指代TEE实现的具有隔离条件和安全保障的程序执行环境。本文的核心方法是，在安全区内执行面向明文数据的敏感操作，以基于硬件的保护方式替代传统基于纯软件实现的复杂密码算法，从而保持安全性并提高系统效率。
+
+针对现有面向云环境的加密后重复数据删除存在密钥生成效率低、所有权证明计算复杂、易于遭受推测内容攻击等不足。本文拟改进现有的加密后重复数据删除方法，提出：
+
+\begin{enumerate}
+    \item 基于TEE的轻量级密钥生成技术，以提升服务器辅助密钥生成的效率和可扩展性。
+    \item 基于TEE的高效所有权证明技术，以提升所有权证明效率。
+    \item 基于TEE的扩展所有权证明技术，以进一步防止推测内容攻击（现有所有权证明技术不足以防止推测内容攻击，见\S\ref{subsubsec:intro-problem-security}）。
+\end{enumerate}
 
 \subsection{研究意义}
 \label{subsec:intro-meaning}
 
-在学术界，自收敛加密\cite{douceur02}提出以来，安全重复数据删除已有20余年研究历史，但由于一些本质问题（例如效率、侧信道攻击、密钥管理等，见\S\ref{subsec:intro-problem}）未能得到妥善解决而难以落地推广；并且，目前的学术研究聚焦于解决某一方面本质问题，同时以牺牲另一方面性能为代价（\S\ref{sec:compare-deduplication}）。本研究的学术研究意义在于，突破现有安全重复数据删除方法局限，同时妥善解决效率、安全、存储多个本质问题，推动安全重复数据删除理论到实践的转化。并且，本研究作为TEE在数据存储领域的应用范例，所提出的系统和方法对TEE在其他领域研究具有参考价值。
+在学术界，自收敛加密\cite{douceur02}提出以来，安全重复数据删除已有20余年研究历史，但由于一些本质问题（例如效率、侧信道攻击、密钥管理等，见\S\ref{subsec:intro-problem}）未能得到妥善解决而难以落地推广；并且，目前的学术研究聚焦于解决某一方面本质问题，同时以牺牲另一方面性能为代价（\S\ref{subsubsec:intro-problem-performance}）。本文的学术研究意义在于，\textbf{突破现有安全重复数据删除方法局限，同时妥善解决效率、安全、存储多个本质问题，推动安全重复数据删除理论到实践的转化。并且，本文作为TEE在数据存储领域的应用范例，所提出的系统和方法对TEE在其他领域研究具有参考价值。}
 
-在工业界，本研究研究的安全、效率、成本问题是云服务商关注的焦点问题。一方面，数据安全隐私和服务使用体验，是决定用户是否选择云服务的关键因素；另一方面，重复数据删除有助于降低设备购置和维护成本，提升云服务商的经济效益。因此，本研究的应用实践价值在于，在服务商关注的安全、效率、成本维度，研究的系统和方法将全面领先于现有基于纯软件的安全存储解决方案，将推动未来基于TEE的云存储架构，对促进云服务产业发展具有积极意义。
+在工业界，本文研究的安全、效率、成本问题是云服务商关注的焦点问题。一方面，数据安全隐私和服务使用体验，是决定用户是否选择云服务的关键因素；另一方面，重复数据删除有助于降低设备购置和维护成本，提升云服务商的经济效益。因此，本文的应用实践价值在于，\textbf{在服务商关注的安全、效率、成本维度，研究的系统和方法将全面领先于现有基于纯软件的安全存储解决方案，将推动未来基于TEE的云存储架构，对促进云服务产业发展具有积极意义。}
 
 \section{国内外研究历史与现状}
 \label{sec:compare}
@@ -108,80 +120,46 @@
 \subsection{加密后重复数据删除}
 \label{subsec:compare-deduplication}
 
-\S\ref{subsec:intro-problem}列举了加密后重复数据删除系统面临的系统效率、安全隐患方面的不足，接下来将综述现有的针对性解决方法及与本研究研究内容的区别。
+\S\ref{subsec:intro-problem}指出了加密后重复数据删除系统面临的系统效率、安全隐患方面的不足，接下来将综述现有的针对性解决方法及其与本文研究内容的区别。
 
 \subsubsection{系统效率}
 \label{subsubsec:compare-deduplication-performance}
 
-为了解决服务器辅助密钥生成效率瓶颈，SecDep\cite{zhou2015secdep}提出生成粗粒度的文件级MLE密钥，并针对不同用户之间的相同数据使用文件级重复数据删除；项目组提出了基于相似性密钥生成方法\cite{qin17}，为若干个连续明文块生成基于代表性明文块（例如其中具有最小哈希值的明文块）的MLE密钥，用以加密其中的每个明文块。以上方法均是通过减少MLE密钥生成次数来解决效率问题，但导致部分相同明文块被加密为不同密文块而无法被删除。本研究研究的基于TEE的轻量级密钥生成技
-术将提升单次密钥生成速率，同时允许删除所有数据块级冗余；研究的加密前重复数据删除方法无需通过服务器辅助方式生成密钥。
-在所有权证明方面，研究者通过降低安全性提升效率\cite{xu2013weak,pietro12}，但是，本研究研究的基于TEE的扩展所有权证明技术将同时提升所有权证明的安全性和效率。
+为了解决服务器辅助密钥生成效率瓶颈，SecDep\cite{zhou2015secdep}提出生成粗粒度的文件级MLE密钥，并针对不同用户之间的相同数据使用文件级重复数据删除；本文提出了基于相似性密钥生成方法\cite{qin17}，为若干个连续明文块生成基于代表性明文块（例如其中具有最小哈希值的明文块）的MLE密钥，用以加密其中的每个明文块。以上方法均是通过减少MLE密钥生成次数来解决效率问题，但导致部分相同明文块被加密为不同密文数据块而无法被删除。本文研究的基于TEE的轻量级密钥生成技术将提升单次密钥生成速率，同时允许删除所有数据块级冗余；研究的加密前重复数据删除方法无需通过服务器辅助方式生成密钥。
+在所有权证明方面，研究者通过降低安全性提升效率\cite{xu2013weak,pietro12}，但是，本文研究的基于TEE的扩展所有权证明技术将同时提升所有权证明的安全性和效率。
 
 \subsubsection{安全隐患}
 \label{subsubsec:compare-deduplication-security}
 
-为了防止推测内容攻击，现有方法包括：
+本文总结分析以下几种防御推测内容攻击的方案，这些方案均可保护源端重复数据删除中可能泄露的重复数据删除信息。
 
 \begin{enumerate}
-    \item \textbf{目标端重复数据删除（target-based deduplication）}\cite{harnik10}强制客户端传输所有密文块后在服务端删除重复密文块。
-    \item \textbf{随机阈值重复数据删除（randomized-threshold deduplication）}\cite{harnik10}为每个密文块分配一个随机阈值，如果密文块被上传次数超过阈值，则执行源端重复数据删除（\S\ref{subsec:intro-background}），否则执行目标端重复数据删除。
-    \item \textbf{两阶段重复数据删除（two-stage deduplication）}\cite{li2015cdstore}针对来自同一客户端的密文块采取源端重复数据删除，不同客户端的密文块采取目标端重复数据删除。
+    \item \textbf{目标端重复数据删除（target-based deduplication）}\cite{harnik10}强制客户端传输所有密文数据块后在服务端删除重复密文数据块，使得重复数据删除过程向客户端完全隐藏。
+    \item \textbf{随机阈值重复数据删除（randomized-threshold deduplication）}\cite{harnik10}为每个密文数据块分配一个随机阈值，如果密文数据块被上传次数超过阈值，则执行源端重复数据删除（\S\ref{subsec:intro-background}），否则执行目标端重复数据删除。由于系统为每个数据块设立的阈值完全随机，恶意客户端无法确定该数据块被上传次数。
+    \item \textbf{两阶段重复数据删除（two-stage deduplication）}\cite{li2015cdstore}针对来自同一客户端的密文块采取源端重复数据删除，而对来自不同客户端的密文块采取目标端重复数据删除。该防御机制的原理是恶意客户端仅能获得其自身所有数据块的重复数据删除信息。
+    \item \textbf{随机冗余数据块传输方案（RRCS）}\cite{zuo2018mitigating}工作在文件级别，其通知每个客户端传输上传文件中的多个随机的重复数据块，以及相应的非重复数据块，这样攻击者无法在重复和非重复的文件之间区分传输的数据块个数。 
 \end{enumerate}
 
-以上方法均须传输全部（目标端重复数据删除）或部分（随机阈值重复数据删除和两阶段重复数据删除）重复数据，增加带宽开销。本研究研究的基于TEE的扩展所有权证明技术兼容源端重复数据删除而无需传输重复数据。 
-
-除推测内容攻击以外，消息锁加密将相同明文块加密为相同密文块（\S\ref{subsec:intro-background}），泄漏了数据块频率（即每个数据块在总体数据中的出现次数）而易于受到频率分析攻击威胁。项目组针对频率分析的攻击和防御开展了深入研究：在攻击方面，构造了基于数据局部性攻击方法，表明消息锁加密产生的密文块的原始内容不仅易于被推测分析\cite{li2020Info}，并且攻击者还能以较高概率判断所推测内容的正确性\cite{li2022revisiting}；在防御方面，提出了可调节加密重复数据删除\cite{li2020balancing}，实现了频率保护-存储性能的可控平衡。本论文所研究的加密后重复数据删除兼容可调节加密技术，以抵御频率分析攻击。
+以上方法均须传输全部（目标端重复数据删除）或部分（随机阈值重复数据删除，两阶段重复数据删除和随机冗余数据块传输方案）重复数据，增加网络资源和服务端处理开销。本文研究的基于TEE的扩展所有权证明技术兼容源端重复数据删除而无需传输任意重复数据块。 
 
 \subsection{基于TEE的安全应用}
 \label{subsec:compare-tee}
 
 TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZone是ARM CPU指令集的安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\cite{rubinov2016automated}、用户输入口令\cite{ying2018truz}，以及监控安全区以外的程序执行\cite{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\cite{matetic19}、文件系统\cite{ahmad2018OBLIVIATE,shinde20}、外包数据库\cite{eskandarian17,priebe18,sun21}、键值存储\cite{mishra18,bailleu2019SPEICHER,kim19,bailleu2021Avocado}和数据分析平台\cite{schuster15, zheng2017Opaque, bowe2020ZEXE}等。
+%TODO
+此外，SGX\cite{sgx}已被广泛用于保护存储系统。PESOS\cite{krahn18} 使用SGX强制执行对象存储的访问策略。OBLIVIATE\cite{ahmad2018OBLIVIATE}增强了基于SGX的文件系统对特权侧信道攻击的安全性。EnclaveDB\cite{priebe18}和ObliDB\cite{eskandarian19}保护外包数据库免受SGX信息泄露。NEXUS\cite{djoko19}通过SGX对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik18}提出了减轻SGX实现的性能开销的指南。ShieldStore\cite{kim19}实现特定于应用程序的数据管理以限制安全区内存使用。SPEICHER\cite{bailleu2019SPEICHER}是一个基于SGX的基于LSM的键值存储，具有高效的I/O操作。\textbf{以上所有研究均未考虑重复数据删除。}
 
-此外，SGX \cite{sgx} 已被广泛用于保护存储系统。PESOS \cite{krahn18} 使用 SGX 强制执行对象存储的访问策略。 OBLIVIATE \cite{ahmad2018OBLIVIATE} 增强了基于 SGX 的文件系统对特权侧信道攻击的安全性。 EnclaveDB \cite{priebe18} 和 ObliDB \cite{eskandarian19} 保护外包数据库免受 SGX 信息泄露。 NEXUS \cite{djoko19} 通过 SGX 对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik18} 提出了减轻 SGX 实现的性能开销的指南。 ShieldStore \cite{kim19} 实现特定于应用程序的数据管理以限制安全区内存使用。 SPEICHER \cite{bailleu2019SPEICHER} 是一个基于 SGX 的基于 LSM 的键值存储，具有高效的 I/O 操作。以上所有研究均未考虑重复数据删除。Dang等人\cite{dang17} 提出了基于代理的协议，用于带宽高效的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现。SPEED \cite{cui19} 利用重复数据删除来提高 SGX 计算的效率，但 \sysnameS 使用 SGX 提高了加密后重复数据删除的性能。其他研究使用云端安全区进行 PoW 验证 \cite{you2020Proofs} 和安全的基于文件的重复数据删除 \cite{fuhry20}，而 \sysnameS 使用客户端安全区进行有效的 PoW 证明生成并支持更细粒度的块-基于重复数据删除。S2Dedup \cite{miranda21} 管理一个云端安全区来执行安全的重复数据删除，但它依赖于客户端完全受信任的假设。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda21}在服务端部署安全区以重加密来自不同客户端的密文块，并在安全区外执行针对重加密后密文块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup导致严重的CPU环境切换开销（context-switching overhead）\cite{weisse2017regaining}。
-
-
-\section{本文的研究内容、研究目标、以及拟解决的关键问题}
-
-\subsection{研究内容概述}
-\label{subsec:intro-content}
-
-如前所述（\S\ref{subsec:intro-problem}），现有面向云环境的加密后重复数据删除存在密钥生成效率低、所有权证明计算复杂、易于遭受推测内容攻击等不足。本研究拟改进现有的加密后重复数据删除方法，提出：
-
-\begin{enumerate}
-    \item 基于TEE的轻量级密钥生成技术，以提升服务器辅助密钥生成的效率和可扩展性。
-    \item 基于TEE的高效所有权证明技术，以提升所有权证明效率。
-    \item 基于TEE的扩展所有权证明技术，以进一步防止推测内容攻击（现有所有权证明技术不足以防止推测内容攻击，见\S\ref{subsec:intro-problem-security}）。
-\end{enumerate}
-
-\subsection{研究目标}
-\label{subsec:intro-target}
-
-\subsection{拟解决的关键问题}
-\label{subsec:intro-main-problem}
-
+Dang等人\cite{dang17}提出了基于代理的协议，用于带宽高效的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现。SPEED\cite{cui19}利用重复数据删除来提高SGX计算的效率，但本文使用SGX提高了加密后重复数据删除的性能。其他研究使用云端安全区进行PoW验证 \cite{you2020Proofs}和安全的基于文件的重复数据删除 \cite{fuhry20}，而本文 使用客户端安全区进行有效的PoW证明生成并支持更细粒度的块-基于重复数据删除。S2Dedup\cite{miranda21}管理一个云端安全区来执行安全的重复数据删除，但它依赖于客户端完全受信任的假设。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda21}在服务端部署安全区以重加密来自不同客户端的密文数据块，并在安全区外执行针对重加密后密文数据块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup导致严重的CPU环境切换开销（context-switching overhead）\cite{weisse2017regaining}。
 
 \section{本文的主要贡献与创新}
-我们提出了 \sysnameS，这是一个基于 SGX 的高性能加密后重复数据删除系统。 \sysnameS 建立在 {\em DupLESS} \cite{bellare2013DupLESS} 中的服务器辅助密钥管理之上，但在安全区内执行高效的加密操作。实现 \sysnameS 的设计具有不小的挑战。首先，安全地引导安全区以托管受信任的代码和数据至关重要，但证明安全区的真实性会导致显着延迟。其次，每个客户端都需要通过安全通道与密钥管理器内部的安全区进行通信，但安全通道的管理开销会随着客户端数量的增加而增加。最后，客户端可以续订或撤销云服务订阅，因此允许动态客户端身份验证至关重要。为此，我们为 \sysnameS 实现了三个主要构建块: 
 
-\begin{itemize}[leftmargin=*]
-    \item \textit{安全高效的安全区管理}:
-        它可以防止密钥管理器受到破坏，并允许客户端在重新启动后快速引导安全区。
-    \item \textit{自更新盲密钥管理}:
-        它基于密钥回归 \cite{fu06} 生成一个盲密钥，用于保护密钥管理器内的安全区和每个客户端之间的通信，以便可以更新盲密钥以进行动态客户端身份验证。
-    \item \textit{基于 Intel SGX的推测性加密}:
-        它通过推测性加密 \cite{eduardo19} 减轻了安全通道管理的在线加密/解密开销。
-\end{itemize}
-
-我们广泛表明 \sysnameF 可以有效地检测学习内容攻击（例如，在我们的案例研究中，概率至少为 98.6\%），而误判的数量很低（例如，\sysnameF 的默认配置中为零）。此外，我们将 \sysnameF 部署到现有的面向性能的系统 SGXDedup \cite{ren21} 中，以提高其对学习内容攻击的安全性。请注意，SGXDedup 基于 TEE 构建，可将之前的加密后重复数据删除系统 \cite{bellare2013DupLESS} 加速八倍以上，而我们的 \sysnameF 部署系统，即 \prototype 相比 SGXDedup 的性能开销低至 8.8\% 和 0.8\%分别是大规模真实世界数据的上传和下载。
+\begin{enumerate}
+    \item 系统性研究如何使用TEE改进重复数据删除，为后续TEE应用起到一定启发作用。
+    尽管已有少量工作提出基于TEE的重复数据删除方法，但这些工作或者只支持粗粒度文件级重复数据删除[18]，或者由于持续访问安全区外索引导致巨大环境切换开销[30]。本项目明确了如何使用TEE改进现有加密后重复数据删除的密钥生成和所有权证明，以及实现对推测内容攻击的防御，并提供系统以论证实用性。本项目所提出的系统和方法对TEE在其他领域研究具有参考价值。
+    \item 研发高效实用的加密前和加密后重复数据删除原型系统，推动安全重复数据删除理论到实践的转化。
+    本项目研发的原型系统均能解决服务商关注的安全、效率、成本问题，并全面领先于现有基于纯软件的存储解决方案。同时，加密前和加密后重复数据删除系统在应用场景上形成互补，共同推动安全重复数据删除落地实践。
+\end{enumerate}
 
 \section{本论文的结构安排}
 
-本文的其余部分安排如下：第二章将介绍本文针对加密后重复数据删除系统效率提升所做的相关研究，第三章将给出本文针对
-
-
-介绍本文中将使用的概念的背景知识，
-第三章将介绍本文的威胁模型与假设，第四章将给出本文提出的第一种攻击方法
-（基于分布的攻击），第五章将给出本文提出的第二种攻击方法（基于聚类的攻击），
-第六章将给出本文实验采用的相关数据来源的介绍，第七章将对两种攻击进行实
-验分析，第八章将给出应对本文提出的攻击方法的一些讨论，第九章将介绍重复
-数据删除与相应攻击的相关工作，最后第十章对本文进行总结。
+本文的其余部分安排如下：第二章将介绍本文中使用的相关概念及背景知识，第三章将介绍本文针对加密后重复数据删除系统效率进行的研究，第四章将介绍本文针对推测内容攻击安全威胁的防御进行的相关研究，最后第五章对本文的研究工作进行总结。
