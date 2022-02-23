@@ -1,7 +1,7 @@
-\chapter{SGXDedup开发测试说明}
+\chapter{\sysnameS开发测试说明}
 \section{简介}
 
-Encrypted deduplication preserves the deduplication effectiveness on encrypted data and is attractive for outsourced storage.  However, existing encrypted deduplication approaches build on expensive cryptographic primitives that incur substantial performance slowdown.  We present SGXDedup, which leverages Intel SGX to speed up encrypted deduplication based on server-aided message-locked encryption (MLE) while preserving security via SGX.  SGXDedup implements a suite of secure interfaces to execute MLE key generation and proof-of-ownership operations in SGX enclaves.  It also proposes various designs to support secure and efficient enclave operations.  Evaluation of synthetic and real-world workloads shows that SGXDedup achieves significant speedups and maintains high bandwidth and storage savings.
+Encrypted deduplication preserves the deduplication effectiveness on encrypted data and is attractive for outsourced storage.  However, existing encrypted deduplication approaches build on expensive cryptographic primitives that incur substantial performance slowdown.  We present \sysnameS, which leverages Intel SGX to speed up encrypted deduplication based on server-aided message-locked encryption (MLE) while preserving security via SGX.  \sysnameS implements a suite of secure interfaces to execute MLE key generation and proof-of-ownership operations in SGX enclaves.  It also proposes various designs to support secure and efficient enclave operations.  Evaluation of synthetic and real-world workloads shows that \sysnameS achieves significant speedups and maintains high bandwidth and storage savings.
 
 \section{Publication}
 
@@ -9,19 +9,19 @@ Encrypted deduplication preserves the deduplication effectiveness on encrypted d
 
 \section{Prerequisites}
 
-SGXDedup is tested on a machine that equips with a Gigabyte B250M-D3H motherboard and an Intel i5-7400 CPU and runs Ubuntu 18.04.5 LTS.
+\sysnameS is tested on a machine that equips with a Gigabyte B250M-D3H motherboard and an Intel i5-7400 CPU and runs Ubuntu 18.04.5 LTS.
 
-Before running SGXDedup, check if your machine supports SGX. If there is an option as `SGX` or `Intel Software Guard Extensions` in BIOS, then enable the option; otherwise your machine does not support SGX.
+Before running \sysnameS, check if your machine supports SGX. If there is an option as `SGX` or `Intel Software Guard Extensions` in BIOS, then enable the option; otherwise your machine does not support SGX.
 We strongly recommend to find the SGX-supported device in the [SGX hardware list](https://github.com/ayeks/SGX-hardware).
 
 \subsection{Registration}
 
-SGXDedup uses EPID-based remote attestation, and you need to register at the [EPID attestation page](https://api.portal.trustedservices.intel.com/EPID-attestation). Then, you can find your SPID and the corresponding subscription keys (both the primary and the secondary keys) at the [products page](https://api.portal.trustedservices.intel.com/products). Our test uses the `DEV Intel® Software Guard Extensions Attestation Service (Unlinkable)` product.
+\sysnameS uses EPID-based remote attestation, and you need to register at the [EPID attestation page](https://api.portal.trustedservices.intel.com/EPID-attestation). Then, you can find your SPID and the corresponding subscription keys (both the primary and the secondary keys) at the [products page](https://api.portal.trustedservices.intel.com/products). Our test uses the `DEV Intel® Software Guard Extensions Attestation Service (Unlinkable)` product.
 
 
 \subsection{Dependencies}
 
-SGXDedup depends on the following packages that  need to be installed manually or by package management tools.
+\sysnameS depends on the following packages that  need to be installed manually or by package management tools.
 
 1. Intel® Software Guard Extensions (Intel® SGX) driver version 2.6.0\_4f5bb53 [Download Link](https://download.01.org/intel-sgx/sgx-linux/2.7/distro/ubuntu18.04-server/sgx\_linux\_x64\_driver\_2.6.0\_4f5bb63.bin)
 2. Intel® SGX platform software (Intel® SGX PSW) version 2.7.100.4 [Download Link](https://download.01.org/intel-sgx/sgx-linux/2.7/distro/ubuntu18.04-server/libsgx-enclave-common\_2.7.100.4-bionic1\_amd64.deb)
@@ -29,11 +29,11 @@ SGXDedup depends on the following packages that  need to be installed manually o
 4. Intel® SGX SSL version lin\_2.5\_1.1.1d [Download Link](https://github.com/intel/intel-sgx-ssl/archive/refs/tags/lin\_2.5\_1.1.1d.zip)
 5. OpenSSL version 1.1.1d [Donwload Link](https://www.openssl.org/source/old/1.1.1/openssl-1.1.1d.tar.gz)
 6. The cmake module used to compile the SGX program in the cmake system: [Download Link](https://github.com/xzhangxa/SGX-CMake/blob/master/cmake/FindSGX.cmake)
-7. libssl-dev (For SGXDedup encryption algorithm)
+7. libssl-dev (For \sysnameS encryption algorithm)
 8. libcurl4-openssl-dev (Required by SGX packages)
 9. libprotobuf-dev (Required by SGX packages)
-10. libboost-all-dev (For SGXDedup multithreading, message transmission, etc.)
-11. libleveldb-dev (For SGXDedup deduplication index based on LevelDB)
+10. libboost-all-dev (For \sysnameS multithreading, message transmission, etc.)
+11. libleveldb-dev (For \sysnameS deduplication index based on LevelDB)
 12. libsnappy-dev (Required by LevelDB)
 13. build-essential (Basic program compilation environment)
 14. cmake (CMake automated build framework)
@@ -41,7 +41,7 @@ SGXDedup depends on the following packages that  need to be installed manually o
 
 We now provide a one-step script to automatically install and configure the dependencies. We have tested the script on Ubuntu 18.04 LTS.
 
-\begin{lstlisting}[style=shell, caption={Bash环境下运行一键配置脚本}, label={lst:sgxdedup-bash-env-install}]
+\begin{lstlisting}[style=shell, caption={Bash环境下运行一键配置脚本}, label={lst:\sysnameS-bash-env-install}]
 chmod +x Scripts/environmentInstall.sh
 sudo ./Scripts/environmentInstall.sh
 \end{lstlisting}
@@ -49,13 +49,13 @@ sudo ./Scripts/environmentInstall.sh
 Restart is required after the installation is finished. Then, check whether `isgx` is in `/dev`. If it is not in the directory (i.e., SGX driver is not successfully installed), reinstall SGX driver manually and restart the machine until `isgx` is in `/dev`.
 
 
-\section{SGXDedup Running Guide}
+\section{\sysnameS Running Guide}
 
 \subsection{Configuration}
 
-SGXDedup is configured based on JSON. You can change its configuration without rebuilding. We show the default configuration (`./config.json`) of SGXDedup as follows.
+\sysnameS is configured based on JSON. You can change its configuration without rebuilding. We show the default configuration (`./config.json`) of \sysnameS as follows.
 
-\begin{lstlisting}[style=json,caption={SGXDedup原型系统运行参数},label={lst:sgxdedup-config}]
+\begin{lstlisting}[style=json,caption={\sysnameS原型系统运行参数},label={lst:\sysnameS-config}]
 {
     "ChunkerConfig": {
         "_chunkingType": 1, 
@@ -191,9 +191,9 @@ Before starting, you need to fill the SPID and subscription keys in `./config.js
 
 \subsection{Build}
 
-Compile SGXDedup as follows.
+Compile \sysnameS as follows.
 
-\begin{lstlisting}[style=shell,caption={SGXDedup原型系统编译与清理（手动）},label{lst:sgxdedup-build-manual}]
+\begin{lstlisting}[style=shell,caption={\sysnameS原型系统编译与清理（手动）},label{lst:\sysnameS-build-manual}]
 mkdir -p bin \&\& mkdir -p build \&\& mkdir -p lib \&\& cd build
 cmake -DCMAKE\_BUILD\_TYPE=Release .. \&\& make
 
@@ -208,11 +208,11 @@ mkdir -p bin/Containers \&\& mkdir -p bin/Recipes
 
 Alternatively, we provide a script for a quick build and clean-up, and you can use it.
 
-\begin{lstlisting}[style=shell,caption={SGXDedup原型系统编译与清理（自动化脚本）},label{lst:sgxdedup-build-automatic}]
+\begin{lstlisting}[style=shell,caption={\sysnameS原型系统编译与清理（自动化脚本）},label{lst:\sysnameS-build-automatic}]
 chmod +x ./Scripts/*.sh
-# Build SGXDedup in release mode
+# Build \sysnameS in release mode
 ./Scripts/buildReleaseMode.sh
-# Build SGXDedup in debug mode
+# Build \sysnameS in debug mode
 ./Scripts/buildDebugMode.sh
 # Clean up build result
 ./Scripts/cleanBuild.sh
@@ -220,9 +220,9 @@ chmod +x ./Scripts/*.sh
 
 \subsection{Usage}
 
-You can test SGXDedup in a single machine, and connect the key manager, server (e.g., the cloud in the ATC paper), and client instances via the local loopback interface.
+You can test \sysnameS in a single machine, and connect the key manager, server (e.g., the cloud in the ATC paper), and client instances via the local loopback interface.
 
-\begin{lstlisting}[style=shell,caption={SGXDedup原型系统测试，启动云服务端及密钥服务器},label{lst:sgxdedup-runtime-servers}]
+\begin{lstlisting}[style=shell,caption={\sysnameS原型系统测试，启动云服务端及密钥服务器},label{lst:\sysnameS-runtime-servers}]
 # start cloud
 ./bin/server-sgx
 
@@ -232,9 +232,9 @@ You can test SGXDedup in a single machine, and connect the key manager, server (
 
 Since the key enclave  needs to be attested by the cloud before usage, you need to start the cloud (`server-sgx`) first, then start the key manager (`keymanager-sgx`), and wait for the message `KeyServer : keyServer session key update done` that indicates a successful attestation.
 
-SGXDedup automatically verifies the PoW enclave by remote attestation in the first startup of the client, and by unsealing (Section 3.2 in the ATC paper) in the following startups. SGXDedup provides store and restores interfaces to clients.
+\sysnameS automatically verifies the PoW enclave by remote attestation in the first startup of the client, and by unsealing (Section 3.2 in the ATC paper) in the following startups. \sysnameS provides store and restores interfaces to clients.
 
-\begin{lstlisting}[style=shell,caption={SGXDedup原型系统测试，启动客户端},label{lst:sgxdedup-runtime-client}]
+\begin{lstlisting}[style=shell,caption={\sysnameS原型系统测试，启动客户端},label{lst:\sysnameS-runtime-client}]
 # store file
 ./client-sgx -s file
 
