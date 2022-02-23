@@ -89,20 +89,15 @@ Table~\ref{tab:sgxdedup-real-cloud} 显示了结果。在第一次上传时，�
 \small
 \centering
 \renewcommand{\arraystretch}{1.05}
-\begin{tabular}{|c|c|c|c|}
-\hline
-{\bf Approach} & {\bf First Upload} & {\bf Second Upload} & {\bf Download} \\
-\hline
-\hline
-Transfer & \multicolumn{3}{c|}{11.9 $\pm$ 0.03} \\  
-\hline
-\hline
+\begin{tabular}{cccc}
+\toprule
+{\bf 方案} & {\bf 第一轮上传（非重复数据）} & {\bf 第二轮上传（重复数据）} & {\bf 下载} \\
+\midrule
+网络带宽 & \multicolumn{3}{c}{11.9 $\pm$ 0.03} \\  
 \sysnameS & 11.4 $\pm$ 0.3 & 104.3 $\pm$ 1.2 & 10.1 $\pm$ 0.1 \\ 
-\hline
 PlainDedup & 11.6 $\pm$ 0.1 & 120.1 $\pm$ 1.4 & 11.3 $\pm$ 0.3 \\
-\hline
-{\em DupLESS} & \multicolumn{2}{c|}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1 \\
-\hline
+{\em DupLESS} & \multicolumn{2}{c}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1 \\
+\bottomrule
 \end{tabular}
 \vspace{-3pt}
 \caption{(Exp\#5) Real-cloud upload and download (unit: MB/s).} 

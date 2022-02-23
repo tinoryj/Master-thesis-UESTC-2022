@@ -89,7 +89,7 @@
     \bottomrule
     \end{tabular}
     \caption{推测内容攻击开销：以上结果包含十次测试数据基于T分布的95\%置信区间}
-    \label{tab:intro-bottleneck}
+    \label{tab:intro-LRI-verify}
 \end{table}
 
 为了实现以上推测内容攻击案例，本文基于Google合同模版\cite{GoogleOffer}，更改其中姓名、年薪（假设为6K的倍数\cite{harnik10}，介于204K和804K之间）和签字费（假设为10K的倍数，介于300K和600K之间）以生成Alice和Bob的合同，每个合同约占18.5KiB。本文随机生成Bob的薪水和签字费，并通过基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}设计实现的基础原型将Bob的合同存储至服务端。令Alice基于自身合同作为内容模版，枚举Bob所有可能的薪水和签字费，以实施推测内容攻击。本文分别在本地局域网（客户端、密钥服务器和服务端均部署在具有10\,Gb/s网速的本地实验环境）和阿里云（在本地部署客户端和密钥服务器，在阿里云部署服务端）实现上述攻击。Alice需上传大约841份伪造合同，消耗7.4MiB网络流量（包括传输非重复密文数据块和元数据），在局域网和阿里云环境中推断Bob的隐私信息分别只需105.0秒和475.5秒。

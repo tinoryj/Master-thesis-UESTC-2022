@@ -15,32 +15,25 @@
 \begin{table}
   \centering
   \small
-    \begin{tabular}{|@{\hspace{.1em}}c@{\hspace{.2em}}|c@{\hspace{.2em}}|c@{\hspace{.2em}}|@{\hspace{.2em}}c@{\hspace{.2em}}|}
-%\begin{tabular}{|c|c|c|c|}
-    \hline
-    \multicolumn{2}{|c|}{\bf Model} & {\bf Baseline approach/system} & {\bf Gains} \\
-    \hline
-    \hline
-    \multirow{8}{*}{\rotatebox{90}{\bf Performance}} & \multirow{4}{*}{\shortstack{Key \\  generation}} & OPRF-BLS \cite{armknecht2015transparent} & 1,583$\times\;\uparrow$  \\
-    \cline{3-4}
+    % \begin{tabular}{|@{\hspace{.1em}}c@{\hspace{.2em}}|c@{\hspace{.2em}}|c@{\hspace{.2em}}|@{\hspace{.2em}}c@{\hspace{.2em}}|}
+  \begin{tabular}{cccc}
+    \toprule
+    \multicolumn{2}{c}{\bf 对比对象} & {\bf 基础方案/系统} & {\bf 优势} \\
+    \midrule
+    \multirow{8}{*}{\bf 性能提升} & \multirow{4}{*}{\shortstack{密钥生成}} & OPRF-BLS \cite{armknecht2015transparent} & 1,583$\times\;\uparrow$  \\
                &            & OPRF-RSA \cite{bellare2013DupLESS} & 131.9$\times\;\uparrow$ \\
-    \cline{3-4}
                &            & MinHash encryption \cite{li2020Info} & 9.4$\times\;\uparrow$ \\
-    \cline{3-4}
                &            & TED \cite{li20b} & 3.7$\times\;\uparrow$ \\
     \cline{2-4}
-    & \multirow{2}{*}{PoW} & PoW-MT \cite{halevi11} & 8.2$\times\;\uparrow$ \\
-    \cline{3-4}
+    & \multirow{2}{*}{所有权证明} & PoW-MT \cite{halevi11} & 8.2$\times\;\uparrow$ \\
       &                     & PoW-UH \cite{xu2013weak} & 2.2$\times\;\uparrow$ \\
     \cline{2-4}
-    & \multirow{2}{*}{\shortstack{Overall \\ system}} & {\em DupLESS} \cite{bellare2013DupLESS} & 8.1$\times\;\uparrow$ \\
-    \cline{3-4}
+    & \multirow{2}{*}{\shortstack{原型系统}} & {\em DupLESS} \cite{bellare2013DupLESS} & 8.1$\times\;\uparrow$ \\
     & & PlainDedup & 17.5\% $\downarrow$ \\
     \hline
-    \multicolumn{2}{|c|}{\multirow{2}{*}{\shortstack{\bf Bandwidth \\ \bf saving}}} & Two-stage dedup \cite{li15} & 35.3\% $\uparrow$ \\
-    \cline{3-4}
-\multicolumn{2}{|c|}{} & Randomized-threshold dedup \cite{harnik10} & 91.4\% $\uparrow$ \\
-    \hline
+    \multicolumn{2}{c}{\multirow{2}{*}{\shortstack{\bf 网络资源节省}}} & Two-stage dedup \cite{li15} & 35.3\% $\uparrow$ \\
+\multicolumn{2}{c}{} & Randomized-threshold dedup \cite{harnik10} & 91.4\% $\uparrow$ \\
+    \bottomrule
   \end{tabular}
     \vspace{-6pt}
     \caption{Summary of main results.}
