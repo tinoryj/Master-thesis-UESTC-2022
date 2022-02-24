@@ -6,11 +6,10 @@
 \section{重复数据删除}
 \label{sec:background-deduplication}
 
-
 \begin{figure}[!htb]
     \small
     \centering
-    \includegraphics[width=14cm]{DedupSystemView.eps}
+    \includegraphics[width=\textwidth]{DedupSystemView.eps}
     \caption{基于数据块的重复数据删除的工作流程概览} 
     \label{fig:重复数据删除的工作流程概览}
 \end{figure}
@@ -19,29 +18,32 @@
 
 具体地，重复数据删除系统首先通过文件切块过程将客户端的文件（例如，备份文件）分割成逻辑数据块，根据每一个逻辑数据块的内容,使用哈希算法计算得到其对应的唯一标签（又成为指纹）。如果两个数据块具有相同的标签，那么认为两个数据块相同（不同逻辑数据块计算得到相同的标志的概率忽略不计\cite{black2006compare}），即数据块内容和其标志完全一致；若两个逻辑数据块标签不一致，显然两逻辑数据块不同。重复数据删除系统的存储系统仅存储相同逻辑数据块的副本（称为物理数据块），并且每个相同的逻辑数据块通过一个较小空间开销的索引引用相同的物理数据块。  
 
-基于数据块的重复数据删除比基于文件的重复数据删除更精细，因此通常具有更高的存储效率（节省更多的存储空间）。基于数据块的重复数据删除有两种基本的数据块分块方法：固定大小的数据分块方法和可变大小的数据分块方法。固定大小的数据分块方法将数据分割为大小相同的逻辑数据块，而可变大小的数据分块方法（也称为内容定义的数据块分块方法）通常以内容相关的方式指定数据块的边界（例如，通过Rabin指纹识别基于数据块{rabin1981fingerprinting}）将文件数据分区为可变大小的数据块。固定大小的分块方法简单而快速，而可变大小的分块方法可以在内容发生变换时保持存储效率，因为即使文件添加或删除了某些内容，大多数数据块仍保持不变。可变大小的分块通常用在备份系统中（例如，\cite{zhu2008avoiding,lillibridge2009sparse}），但固定大小的分块显然对某些工作负载更加有效（例如，VM备份数据集\cite{jin2009effectiveness}）。本文的工作同时涉及固定大小和可变大小的分块方法产生的数据块。
-
-加密的重复数据删除解决了外包环境（例如，云存储）中的数据块机密性，同时保持了重复数据删除的有效性。出于安全考虑，用户希望在将自己的数据外包之前对其数据进行加密，以确保个人数据的隐私性。传统的对称加密要求多个客户端通过其（不同的）密钥加密其文件数据，即使相同的明文数据块也会被加密为不同的密文数据块，服务器无法感知到这些密文数据块所对应的的原始明文数据块内容是否相同。消息锁加密（MLE）\cite{bellare2013message}给加密重复数据删除提供了新的处理方法。最基本的MLE实例化是基于每个明文的内容（例如，基于数据块的重复数据删除中的逻辑数据块）导出其对称密钥（称为MLE密钥），并使用MLE密钥加密明文以形成对应的密文数据块（例如，加密的逻辑数据块）。因此，MLE可以确保将相同的明文加密为相同的密文数据块。最后，存储系统从每个密文数据块中导出其对应的标签并执行重复数据删除。
+基于数据块的重复数据删除比基于文件的重复数据删除更精细，因此通常具有更高的存储效率（节省更多的存储空间）。基于数据块的重复数据删除有两种基本的数据块分块方法：固定大小的数据分块方法和可变大小的数据分块方法。固定大小的数据分块方法将数据分割为大小相同的逻辑数据块，而可变大小的数据分块方法（也称为内容定义的数据块分块方法）通常以内容相关的方式指定数据块的边界（例如，通过Rabin指纹识别基于数据块\cite{rabin1981fingerprinting}）将文件数据分区为可变大小的数据块。固定大小的分块方法简单而快速，而可变大小的分块方法可以在内容发生变换时保持存储效率，因为即使文件添加或删除了某些内容，大多数数据块仍保持不变。可变大小的分块通常用在备份系统中（例如，\cite{zhu2008avoiding,lillibridge2009sparse}），但固定大小的分块显然对某些工作负载更加有效（例如，VM备份数据集\cite{jin2009effectiveness}）。本文的工作同时涉及固定大小和可变大小的分块方法产生的数据块。
 
 \section{加密重复数据删除（密钥生成技术）}
 \label{sec:background-encrypted-deduplication}
 
-\textit{消息锁加密（MLE）} \cite{bellare2013MLE} 将加密原语形式化用于加密后重复数据删除。它指定了对称密钥（称为 \textit{ 消息锁加密（MLE） 密钥}）如何从明文数据块的 \textit{ content}（例如，其流行的实例化 \textit{ convergent encryption (CE)} \cite{douceur02}使用明文数据块的加密哈希作为 消息锁加密（MLE） 密钥）。因此，它将重复的明文数据块加密为重复的密文数据块，从而使重复数据删除在密文数据块上仍然可行。
+加密的重复数据删除解决了外包环境（例如，云存储）中的数据块机密性，同时保持了重复数据删除的有效性。出于安全考虑，用户希望在将自己的数据外包之前对其数据进行加密，以确保个人数据的隐私性。传统的对称加密要求多个客户端通过其（不同的）密钥加密其文件数据，即使相同的明文数据块也会被加密为不同的密文数据块，服务器无法感知到这些密文数据块所对应的的原始明文数据块内容是否相同。消息锁加密（MLE）\cite{bellare2013message}给加密重复数据删除提供了新的处理方法。最基本的MLE实例化是基于每个明文的内容（例如，基于数据块的重复数据删除中的逻辑数据块）导出其对称密钥（称为MLE密钥），并使用MLE密钥加密明文以形成对应的密文数据块（例如，加密的逻辑数据块）。因此，MLE可以确保将相同的明文加密为相同的密文数据块。最后，存储系统从每个密文数据块中导出其对应的标签并执行重复数据删除。
+
+\textit{消息锁加密（MLE）} \cite{bellare2013MLE} 将加密原语形式化用于加密后重复数据删除。它指定了对称密钥（称为 \textit{ 消息锁加密（MLE） 密钥}）如何从明文数据块的 \textit{ content}（例如，其流行的实例化 \textit{ convergent encryption (CE)} \cite{douceur02}使用明文数据块的加密哈希作为 消息锁加密（MLE） 密钥）。因此，它将重复的明文数据块加密为重复的密文数据块，从而使重复数据删除在密文数据块上仍然可行。此外，基于CE的加密重复数据删除方案还包括:
+
+\begin{enumerate}
+    \item 哈希收敛加密（hash convergent encryption，HCE）\cite{douceur2002reclaiming}与CE具有相同的MLE密钥产生规则，但基于明文哈希值计算指纹。
+    \item 随机收敛加密（random convergent encryption，RCE）\cite{douceur2002reclaiming}使用随机密钥加密以产生非确定的密文，同时也基于明文哈希值来进行重复检查。
+    \item 收敛扩散（convergent dispersal，CD）\cite{li2016cdstore}使用明文哈希值作为秘密共享（secret sharing）的输入种子，在兼容重复数据删除的基础上 提高了密文存储的可靠性。
+\end{enumerate}
+
 
 \paragraph*{Server-aided 消息锁加密（MLE）.} CE 易受 \textit{ 离线暴力攻击}，因为它的 消息锁加密（MLE） 密钥（即明文数据块的哈希）可以公开派生。具体来说，攻击者通过枚举所有可能的明文数据块的 消息锁加密（MLE） 密钥来从目标密文数据块（不知道 消息锁加密（MLE） 密钥）推断输入明文数据块，以检查是否有任何明文数据块被加密到目标密文数据块。
 
-服务器辅助消息锁加密（Server-aided MLE）\cite{bellare2013DupLESS} 是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。
-
-它为消息锁加密（MLE） 中的密钥生成步骤部署了一个专用的 \textit{ 密钥管理器（key server）}。为了加密明文数据块，客户端首先将明文数据块的指纹发送到密钥管理器，密钥管理器通过指纹和密钥管理器维护的\textit{ global secret}返回消息锁加密（MLE） 密钥。如果全局机密是安全的，则对手无法发起离线暴力攻击；否则，如果全局机密被泄露，则安全性会降低到原始 消息锁加密（MLE） 的安全性。服务器辅助 消息锁加密（MLE） 进一步建立在两种安全机制之上。首先，它使用 \textit{ oblivious pseudorandom function (OPRF)} \cite{naor2004Number} 允许客户端发送明文数据块的“盲”指纹，这样密钥管理器仍然可以返回相同的 消息锁加密（MLE） 密钥用于相同指纹无需学习原始指纹。其次，它对来自客户端的密钥生成请求进行速率限制，以防止恶意客户端向密钥管理器发出许多密钥生成请求，以找到目标消息锁加密（MLE） 密钥。
+服务器辅助消息锁加密（Server-aided MLE）\cite{bellare2013DupLESS} 是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。它为消息锁加密（MLE） 中的密钥生成步骤部署了一个专用的 \textit{ 密钥管理器（key server）}。为了加密明文数据块，客户端首先将明文数据块的指纹发送到密钥管理器，密钥管理器通过指纹和密钥管理器维护的\textit{ global secret}返回消息锁加密（MLE） 密钥。如果全局机密是安全的，则对手无法发起离线暴力攻击；否则，如果全局机密被泄露，则安全性会降低到原始 消息锁加密（MLE） 的安全性。服务器辅助 消息锁加密（MLE） 进一步建立在两种安全机制之上。首先，它使用 \textit{ oblivious pseudorandom function (OPRF)} \cite{naor2004Number} 允许客户端发送明文数据块的“盲”指纹，这样密钥管理器仍然可以返回相同的 消息锁加密（MLE） 密钥用于相同指纹无需学习原始指纹。其次，它对来自客户端的密钥生成请求进行速率限制，以防止恶意客户端向密钥管理器发出许多密钥生成请求，以找到目标消息锁加密（MLE） 密钥。
 
 \section{数据所有权证明}
 \label{sec:background-pow}
 
 \paragraph*{Proof-of-ownership.} 为了节省带宽，加密后重复数据删除可以应用源端重复数据删除，而不是基于存储目标的重复数据删除，以在客户端删除重复的密文数据块，而无需上传到云（\S\ref{sec:sgxdedup-introduction}）。客户端将密文数据块的指纹发送到云端，云端检查指纹是否被指纹索引跟踪（即对应的密文数据块已被存储）。然后，客户端仅将非重复密文数据块上传到云端。
 
-
 但是，当某些客户端受到威胁时，源端重复数据删除很容易受到 \textit{ side-channel attack} \cite{harnik10,halevi11} 的攻击。一种侧信道攻击是，受感染的客户端可以通过将密文数据块的指纹发送到云来查询任何目标密文数据块的存在（例如，如果密文数据块对应于某个可能的密码 \cite{harnik10}），因此以识别来自其​​他客户端的敏感信息。另一种侧信道攻击是受感染的客户端可以未经授权访问其他客户端的存储块。具体来说，它可以使用任何目标密文数据块的指纹来说服云它是具有完全访问权限 \cite{halevi11} 的相应密文数据块的所有者。
-
 
 \textit{ 所有权证明 (PoW)} \cite{halevi11} 是一种加密方法，可增强源端重复数据删除，防止侧信道攻击，同时保持源端重复数据删除的带宽节省。
 
@@ -53,9 +55,17 @@
 \section{可信计算环境（TEE）}
 \label{sec:background-tee}
 
-
 \subsection{Intel SGX}
 \label{subsec:background-tee-sgx}
+
+\begin{figure}[!htb]
+    \small
+    \centering
+    \includegraphics[width=0.6\textwidth]{sgx-example.pdf}
+    \caption{基于数据块的重复数据删除的工作流程概览} 
+    \label{fig:重复数据删除的工作流程概览}
+\end{figure}
+
 
 本文探索硬件辅助可信执行以减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。在这项工作中，本文专注于Intel SGX \cite{sgx}，这是一套内置于现代Intel CPU 中的安全相关指令。 SGX 在称为 \textit{ enclave} 的硬件保护环境中屏蔽代码和数据的执行。在下文中，本文将重点介绍与本文的工作相关的安全区的三个安全特性:隔离、证明和密封。
 
@@ -67,8 +77,60 @@ enclave 提供了一个接口，即 \textit{安全区call (ECall)}，以便外�
 
 \paragraph*{Sealing.} SGX 通过密封将安全区内容存储在安全区外部时对其进行保护。它使用秘密 \textit{ 密封密钥} 在被驱逐之前加密数据。密封密钥可以从 \textit{ 测量散列}（即安全区内容的 SHA256 散列）或安全区的作者身份派生，因此只有相应的安全区才能访问密封密钥并解密密封数据.由于远程证明会导致显着延迟（Exp\#7），本文使用密封来消除安全区第一次引导后的远程证明（\S\ref{subsec:sgxdedup-enclave-management}）。
 
-\paragraph*{Remarks.} 本文不考虑基于内存加密的 TEE（例如 AMD SEV \cite{AMDSEV} 和 MK-TME \cite{Mktem}），因为它们需要大型可信计算基础并暴露出广泛的攻击面\cite{mofrad18}。此外，AMD SEV \cite{AMDSEV} 不保护内存完整性，并且容易受到特权对手可以操纵加密内存页 \cite{mofrad18} 的攻击。
-
-
-\subsection{ARM TrustZone}
+\subsection{ARM TrustZone及OP-TEE}
 \label{subsec:background-tee-tz}
+
+\subsubsection{TrustZone}
+\begin{figure}[!htb]
+    \small
+    \centering
+    \includegraphics[width=\textwidth]{ARM-TZ-base.png}
+    \caption{基于数据块的重复数据删除的工作流程概览} 
+    \label{fig:重复数据删除的工作流程概览}
+\end{figure}
+
+
+TrustZone is the name of the Security architecture in the Arm A-profile architecture. First introduced in Armv6K, TrustZone is also supported in Armv7-A and Armv8-A. TrustZone provides two execution environments with system-wide hardware enforced isolation between them, as shown in this diagram:
+
+TrustZone execution environments.
+The Normal world runs a rich software stack. This software stack typically includes a large application set, a complex operating system like Linux, and possibly a hypervisor. Such software stacks are large and complex. While efforts can be made to secure them, the size of the attack surface means that they are more vulnerable to attack.
+
+The Trusted world runs a smaller and simpler software stack, which is referred to as a Trusted Execution Environment (TEE). Typically, a TEE includes several Trusted services that are hosted by a lightweight kernel. The Trusted services provide functionality like key management. This software stack has a considerably smaller attack surface, which helps reduce vulnerability to attack.
+
+Note: You might sometimes see the term Rich Execution Environment (REE) used to describe the software that is running in the Normal world.
+
+TrustZone aims to square a circle. As users and developers, we want the rich feature set and flexibility of the Normal world. At the same time, we want the higher degrees of trust that it is possible to achieve with a smaller and more restricted software stack in the Trusted world. TrustZone gives us both, providing two environments with hardware-enforced isolation between them.
+
+
+Security states
+In the Arm architecture, there are two Security states: Secure and Non-secure. These Security states map onto the Trusted and Normal worlds that we referred to in What is TrustZone?
+
+Note: In Armv9-A, if the Realm Management Extension (RME) is implemented, then there are two extra Security states. This guide does not cover the change introduced by RME, for more information on RME, see Realm Management Extension Guide.
+
+At EL0, EL1, and EL2 the processor can be in either Secure state or Non-secure state, which is controlled by the SCR\_EL3.NS bit. You often see this written as:
+
+NS.EL1: Non-secure state, Exception level 1
+S.EL1: Secure state, Exception level 1
+EL3 is always in Secure state, regardless of the value of the SCR\_EL3.NS bit. The arrangement of Security states and Exception levels is shown here:
+
+\begin{figure}[!htb]
+    \small
+    \centering
+    \includegraphics[width=\textwidth]{ARM-TZ.png}
+    \caption{基于数据块的重复数据删除的工作流程概览} 
+    \label{fig:重复数据删除的工作流程概览}
+\end{figure}
+
+\subsubsection{OP-TEE}
+
+OP-TEE is a Trusted Execution Environment (TEE) designed as companion to a non-secure Linux kernel running on Arm; Cortex-A cores using the TrustZone technology. OP-TEE implements TEE Internal Core API v1.1.x which is the API exposed to Trusted Applications and the TEE Client API v1.0, which is the API describing how to communicate with a TEE. Those APIs are defined in the GlobalPlatform API specifications.
+
+The non-secure OS is referred to as the Rich Execution Environment (REE) in TEE specifications. It is typically a Linux OS flavor as a GNU/Linux distribution or the AOSP.
+
+OP-TEE is designed primarily to rely on the Arm TrustZone technology as the underlying hardware isolation mechanism. However, it has been structured to be compatible with any isolation technology suitable for the TEE concept and goals, such as running as a virtual machine or on a dedicated CPU.
+
+The main design goals for OP-TEE are:
+
+Isolation - the TEE provides isolation from the non-secure OS and protects the loaded Trusted Applications (TAs) from each other using underlying hardware support,
+Small footprint - the TEE should remain small enough to reside in a reasonable amount of on-chip memory as found on Arm based systems,
+Portability - the TEE aims at being easily pluggable to different architectures and available HW and has to support various setups such as multiple client OSes or multiple TEEs.
