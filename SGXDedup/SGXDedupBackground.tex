@@ -10,7 +10,7 @@
    
 加密后重复数据删除通过加密扩展了基于数据块的重复数据删除，为外包云存储提供数据机密性和存储效率。 \textit{ 客户端} 使用一些对称密钥将输入文件的每个 \textit{ 明文数据块} 加密成一个 \textit{ 密文数据块}，并将所有密文数据块存储在 \textit{ 云}（或任何远程存储站点）中，它管理密文数据块的重复数据删除存储。为了支持文件重建，客户端创建了一个 \textit{ file recipe}，其中列出了密文数据块的指纹、大小和密钥。它使用自己的主密钥加密文件元数据，并将加密的文件元数据存储在云中。
 
-\textit{ 消息锁加密 (消息锁加密（MLE）)} \cite{bellare2013MLE} 将加密原语形式化用于加密后重复数据删除。它指定了对称密钥（称为 \textit{ 消息锁加密（MLE） 密钥}）如何从明文数据块的 \textit{ content}（例如，其流行的实例化 \textit{ convergent encryption (CE)} \cite{douceur02}使用明文数据块的加密哈希作为 消息锁加密（MLE） 密钥）。因此，它将重复的明文数据块加密为重复的密文数据块，从而使重复数据删除在密文数据块上仍然可行。
+\textit{ 消息锁加密 (消息锁加密（MLE）)} \cite{bellare2013MLE} 将加密原语形式化用于加密后重复数据删除。它指定了对称密钥（称为 \textit{ 消息锁加密（MLE） 密钥}）如何从明文数据块的 \textit{ content}（例如，其流行的实例化 \textit{ convergent encryption (CE)} \cite{douceur2002reclaiming}使用明文数据块的加密哈希作为 消息锁加密（MLE） 密钥）。因此，它将重复的明文数据块加密为重复的密文数据块，从而使重复数据删除在密文数据块上仍然可行。
 
 \paragraph*{Server-aided 消息锁加密（MLE）.} CE 易受 \textit{ 离线暴力攻击}，因为它的 消息锁加密（MLE） 密钥（即明文数据块的哈希）可以公开派生。具体来说，攻击者通过枚举所有可能的明文数据块的 消息锁加密（MLE） 密钥来从目标密文数据块（不知道 消息锁加密（MLE） 密钥）推断输入明文数据块，以检查是否有任何明文数据块被加密到目标密文数据块。
 
@@ -43,7 +43,7 @@ enclave 提供了一个接口，即 \textit{安全区call (ECall)}，以便外�
 
 \paragraph*{Sealing.} SGX 通过密封将安全区内容存储在安全区外部时对其进行保护。它使用秘密 \textit{ 密封密钥} 在被驱逐之前加密数据。密封密钥可以从 \textit{ 测量散列}（即安全区内容的 SHA256 散列）或安全区的作者身份派生，因此只有相应的安全区才能访问密封密钥并解密密封数据.由于远程证明会导致显着延迟（Exp\#7），本文使用密封来消除安全区第一次引导后的远程证明（\S\ref{subsec:sgxdedup-enclave-management}）。
 
-\paragraph*{Remarks.} 本文不考虑基于内存加密的 TEE（例如 AMD SEV \cite{AMDSEV} 和 MK-TME \cite{Mktem}），因为它们需要大型可信计算基础并暴露出广泛的攻击面\cite{mofrad18}。此外，AMD SEV \cite{AMDSEV} 不保护内存完整性，并且容易受到特权对手可以操纵加密内存页 \cite{mofrad18} 的攻击。
+\paragraph*{Remarks.} 本文不考虑基于内存加密的 TEE（例如 AMD SEV \cite{AMDSEV} 和 MK-TME \cite{MK-TME}），因为它们需要大型可信计算基础并暴露出广泛的攻击面\cite{mofrad18}。此外，AMD SEV \cite{AMDSEV} 不保护内存完整性，并且容易受到特权对手可以操纵加密内存页 \cite{mofrad18} 的攻击。
 
 \subsection{威胁模型}
 \label{subsec:sgxdedup-threat}
@@ -56,4 +56,4 @@ enclave 提供了一个接口，即 \textit{安全区call (ECall)}，以便外�
 \end{itemize}
 
 \paragraph*{假设。}
-本文做出以下威胁假设。 (i) 客户端、密钥管理器和云之间的所有通信都受到保护以防篡改（例如，通过 SSL/TLS）。 (ii) 新交所值得信赖且可靠；针对 SGX \cite{bulck18, oleksenko18} 的拒绝服务或侧信道攻击超出了本文的范围。 (iii) 本文可以通过远程审计 \cite{ateniese2007provable, juels07} 和 \textit{ 容错} 通过多云方法 \cite{li15} 实现 \textit{ 完整性}。 (iv) 本文不考虑流量分析 \cite{zuo2018mitigating}、频率分析 \cite{li20b} 和块大小泄漏 \cite{ritzdorf16}，而相关的防御 \cite{zuo2018mitigating,li20b,ritzdorf16} 与本文的设计兼容。
+本文做出以下威胁假设。 (i) 客户端、密钥管理器和云之间的所有通信都受到保护以防篡改（例如，通过 SSL/TLS）。 (ii) 新交所值得信赖且可靠；针对 SGX \cite{bulck2018FORESHADOW, oleksenko18} 的拒绝服务或侧信道攻击超出了本文的范围。 (iii) 本文可以通过远程审计 \cite{ateniese2007provable, juels07} 和 \textit{ 容错} 通过多云方法 \cite{li15} 实现 \textit{ 完整性}。 (iv) 本文不考虑流量分析 \cite{zuo2018mitigating}、频率分析 \cite{li20b} 和块大小泄漏 \cite{ritzdorf16}，而相关的防御 \cite{zuo2018mitigating,li20b,ritzdorf16} 与本文的设计兼容。

@@ -28,7 +28,7 @@
     \label{fig:Cloud-based-deduplication-storage-logic}
 \end{figure} 
 
-近年来，研究者提出加密后重复数据删除\cite{bellare2013MLE}以保护重复数据删除过程中的数据安全。图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}描述了加密后重复数据删除系统框架，其包括客户端和云服务端两个主要组成部分。为了防止云服务商获取外包数据内容，加密后重复数据删除系统在客户端部署消息锁加密（MLE：message-locked encryption）\cite{bellare2013MLE}以加密明文数据块（简称为明文数据块），同时确保重复数据删除仍然能够作用于密文数据块（简称为密文数据块）以节约存储空间。传统对称加密算法为每个客户端或每个数据块分配不同加密密钥，导致相同的明文数据块被加密为不同的密文数据块，无法通过重复数据删除进行冗余消除。消息锁加密的核心思路时基于数据块内容产生密钥（称为MLE密钥，例如MLE密钥为明文数据块的哈希值\cite{douceur02}），从而将相同明文数据块加密为相同的密文数据块，以兼容直接针对密文数据块的重复数据删除。现有消息锁加密采用服务器辅助密钥生成方式（称为服务器辅助消息锁加密（Server-aided MLE）
+近年来，研究者提出加密后重复数据删除\cite{bellare2013MLE}以保护重复数据删除过程中的数据安全。图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}描述了加密后重复数据删除系统框架，其包括客户端和云服务端两个主要组成部分。为了防止云服务商获取外包数据内容，加密后重复数据删除系统在客户端部署消息锁加密（MLE：message-locked encryption）\cite{bellare2013MLE}以加密明文数据块（简称为明文数据块），同时确保重复数据删除仍然能够作用于密文数据块（简称为密文数据块）以节约存储空间。传统对称加密算法为每个客户端或每个数据块分配不同加密密钥，导致相同的明文数据块被加密为不同的密文数据块，无法通过重复数据删除进行冗余消除。消息锁加密的核心思路时基于数据块内容产生密钥（称为MLE密钥，例如MLE密钥为明文数据块的哈希值\cite{douceur2002reclaiming}），从而将相同明文数据块加密为相同的密文数据块，以兼容直接针对密文数据块的重复数据删除。现有消息锁加密采用服务器辅助密钥生成方式（称为服务器辅助消息锁加密（Server-aided MLE）
 \cite{bellare2013DupLESS}），即部署第三方密钥服务器管理全局秘密，同时基于明文数据块哈希值以及密钥服务器的全局秘密共同生成MLE密钥，以防止攻击者针对MLE密钥实施离线暴力破解攻击。
 
 \begin{figure}[!htb]
@@ -110,7 +110,7 @@
 \subsection{研究意义}
 \label{subsec:intro-meaning}
 
-在学术界，自收敛加密\cite{douceur02}提出以来，安全重复数据删除已有20余年研究历史，但由于一些本质问题（例如效率、侧信道攻击、密钥管理等，见\S\ref{subsec:intro-problem}）未能得到妥善解决而难以落地推广；并且，目前的学术研究聚焦于解决某一方面本质问题，同时以牺牲另一方面性能为代价（\S\ref{subsubsec:intro-problem-performance}）。本文的学术研究意义在于，\textbf{突破现有安全重复数据删除方法局限，同时妥善解决效率、安全、存储多个本质问题，推动安全重复数据删除理论到实践的转化。并且，本文作为TEE在数据存储领域的应用范例，所提出的系统和方法对TEE在其他领域研究具有参考价值。}
+在学术界，自收敛加密\cite{douceur2002reclaiming}提出以来，安全重复数据删除已有20余年研究历史，但由于一些本质问题（例如效率、侧信道攻击、密钥管理等，见\S\ref{subsec:intro-problem}）未能得到妥善解决而难以落地推广；并且，目前的学术研究聚焦于解决某一方面本质问题，同时以牺牲另一方面性能为代价（\S\ref{subsubsec:intro-problem-performance}）。本文的学术研究意义在于，\textbf{突破现有安全重复数据删除方法局限，同时妥善解决效率、安全、存储多个本质问题，推动安全重复数据删除理论到实践的转化。并且，本文作为TEE在数据存储领域的应用范例，所提出的系统和方法对TEE在其他领域研究具有参考价值。}
 
 在工业界，本文研究的安全、效率、成本问题是云服务商关注的焦点问题。一方面，数据安全隐私和服务使用体验，是决定用户是否选择云服务的关键因素；另一方面，重复数据删除有助于降低设备购置和维护成本，提升云服务商的经济效益。因此，本文的应用实践价值在于，\textbf{在服务商关注的安全、效率、成本维度，研究的系统和方法将全面领先于现有基于纯软件的安全存储解决方案，将推动未来基于TEE的云存储架构，对促进云服务产业发展具有积极意义。}
 
@@ -145,19 +145,19 @@
 \subsection{基于TEE的安全应用}
 \label{subsec:compare-tee}
 
-TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZone是ARM CPU指令集的安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\cite{rubinov2016automated}、用户输入口令\cite{ying2018truz}，以及监控安全区以外的程序执行\cite{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\cite{matetic19}、文件系统\cite{ahmad2018OBLIVIATE,shinde20}、外包数据库\cite{eskandarian17,priebe18,sun21}、键值存储\cite{mishra18,bailleu2019SPEICHER,kim19,bailleu2021Avocado}和数据分析平台\cite{schuster15, zheng2017Opaque, bowe2020ZEXE}等。
-%TODO
-此外，SGX\cite{sgx}已被广泛用于保护存储系统。PESOS\cite{krahn18} 使用SGX强制执行对象存储的访问策略。OBLIVIATE\cite{ahmad2018OBLIVIATE}增强了基于SGX的文件系统对特权侧信道攻击的安全性。EnclaveDB\cite{priebe18}和ObliDB\cite{eskandarian19}保护外包数据库免受SGX信息泄露。NEXUS\cite{djoko19}通过SGX对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik18}提出了减轻SGX实现的性能开销的指南。ShieldStore\cite{kim19}实现特定于应用程序的数据管理以限制安全区内存使用。SPEICHER\cite{bailleu2019SPEICHER}是一个基于SGX的基于LSM的键值存储，具有高效的I/O操作。\textbf{以上所有研究均未考虑重复数据删除。}
+TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZone是ARM CPU指令集的安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\cite{rubinov2016automated}、用户输入口令\cite{ying2018truz}，以及监控安全区以外的程序执行\cite{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\cite{matetic19}、文件系统\cite{ahmad2018OBLIVIATE,shinde20}、外包数据库\cite{eskandarian17,priebe18,sun21}、键值存储\cite{mishra2018Oblix,bailleu2019SPEICHER,kim19,bailleu2021Avocado}和数据分析平台\cite{schuster15, zheng2017Opaque, bowe2020ZEXE}等。
 
-Dang等人\cite{dang17}提出了基于代理的协议，用于带宽高效的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现。SPEED\cite{cui19}利用重复数据删除来提高SGX计算的效率，但本文使用SGX提高了加密后重复数据删除的性能。其他研究使用云端安全区进行PoW验证 \cite{you2020Proofs}和安全的基于文件的重复数据删除 \cite{fuhry20}，而本文 使用客户端安全区进行有效的PoW证明生成并支持更细粒度的块-基于重复数据删除。S2Dedup\cite{miranda21}管理一个云端安全区来执行安全的重复数据删除，但它依赖于客户端完全受信任的假设。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda21}在服务端部署安全区以重加密来自不同客户端的密文数据块，并在安全区外执行针对重加密后密文数据块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup导致严重的CPU环境切换开销（context-switching overhead）\cite{weisse2017regaining}。
+TEE已被广泛用于保护存储系统。PESOS\cite{krahn18}使用SGX强化对象存储中的访问策略。OBLIVIATE\cite{ahmad2018OBLIVIATE}增强了基于SGX的文件系统对特权侧信道攻击的安全性。EnclaveDB\cite{priebe18}和ObliDB\cite{eskandarian19}基于SGX保护外包数据库免受信息泄露威胁。NEXUS\cite{djoko2019NEXUS}通过SGX对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik18}提出了降低基于SGX系统的性能开销的指南。ShieldStore\cite{kim19}实现特定于应用程序的数据管理以减少安全区内存开销。SPEICHER\cite{bailleu2019SPEICHER}则是一个基于SGX及LSM树（Log-structured merge-tree）\cite{LSMT}的键值存储系统，具有高效的I/O操作能力。\textbf{然而，以上所有研究均未考虑重复数据删除。}
+
+Dang等人\cite{dang2017Privacy}提出了基于代理的加密后重复数据删除协议，用于低网络资源开销的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现相关原型系统。SPEED\cite{cui2019SPEED}利用重复数据删除来提高SGX的计算效率，但本文使用安全区提高了加密后重复数据删除的性能。其他研究使用云端安全区实现数据块所有权验证\cite{you2020Proofs}和基于文件的加密后重复数据删除\cite{fuhry20}，而本文使用客户端安全区进行有效的数据块所有权证明生成并支持更细粒度的基于数据块的重复数据删除。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda2021S2Dedup}在服务端部署安全区以重加密来自不同客户端的密文数据块，并在安全区外执行针对重加密后密文数据块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup产生了严重的CPU上下文切换开销（context-switching overhead）\cite{weisse2017regaining}。
 
 \section{本文的主要贡献与创新}
 
 \begin{enumerate}
-    \item 系统性研究如何使用TEE改进重复数据删除，为后续TEE应用起到一定启发作用。
-    尽管已有少量工作提出基于TEE的重复数据删除方法，但这些工作或者只支持粗粒度文件级重复数据删除[18]，或者由于持续访问安全区外索引导致巨大环境切换开销[30]。本项目明确了如何使用TEE改进现有加密后重复数据删除的密钥生成和所有权证明，以及实现对推测内容攻击的防御，并提供系统以论证实用性。本项目所提出的系统和方法对TEE在其他领域研究具有参考价值。
-    \item 研发高效实用的加密前和加密后重复数据删除原型系统，推动安全重复数据删除理论到实践的转化。
-    本项目研发的原型系统均能解决服务商关注的安全、效率、成本问题，并全面领先于现有基于纯软件的存储解决方案。同时，加密前和加密后重复数据删除系统在应用场景上形成互补，共同推动安全重复数据删除落地实践。
+    \item \textbf{系统性研究如何使用TEE改进重复数据删除，为后续TEE应用起到一定启发作用。}
+    尽管已有少量工作提出基于TEE的重复数据删除方法，但这些工作或者只支持粗粒度文件级重复数据删除\cite{fuhry2020segshare}，或者由于持续访问安全区外索引导致巨大环境切换开销\cite{miranda2021S2Dedup}。本项目明确了如何使用TEE改进现有加密后重复数据删除的密钥生成和所有权证明，以及实现对推测内容攻击的防御，并提供系统以论证实用性。本项目所提出的系统和方法对TEE在其他领域研究具有参考价值。
+    \item \textbf{研发高效实用的加密前和加密后重复数据删除原型系统，推动安全重复数据删除理论到实践的转化。}
+    本项目研发的原型系统均能解决服务商关注的安全、效率、成本问题，并全面领先于现有基于纯软件的存储解决方案，推动安全重复数据删除落地实践。
 \end{enumerate}
 
 \section{本论文的结构安排}

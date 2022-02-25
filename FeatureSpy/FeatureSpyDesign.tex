@@ -71,7 +71,7 @@ N-transform 通过将多个（例如，默认情况下为四个）连续的子�
 \sysnameF 基于 {\em SGX-based PoW} \cite{ren21} 构建，以防止客户端逃避检测过程。具体来说，基于 SGX 的 PoW 方法 \cite{ren21} 将每个密文数据块作为输入并进入 SGX 安全区以计算密文数据块的指纹以及指纹的签名。只有当签名被成功验证时，云才会继续检查指纹是否对应于存储的密文数据块（即重复数据删除）。由于云根据 SGX安全区处理的 {\em authenticated} 指纹进行响应，因此客户端无法识别未经授权访问的块的存在。
 
 因此，一种天真的方法是在稻草人设计中扩大 enclave，以在安全区中完全执行检测、密钥生成、加密和基于 SGX 的 PoW。在这种情况下，只有程序处理的块SGX安全区中的数据被云接受重复数据删除（由于基于 SGX 的 PoW），恶意客户端无法绕过任何程序。
-然而，该方法会产生巨大的 TCB 并引入潜在的性能 \cite{arnautov2016SCONE, harnik18, dinhngoc19} 和安全 \cite{lie05} 问题。
+然而，该方法会产生巨大的 TCB 并引入潜在的性能 \cite{arnautov2016SCONE, harnik18, dinhngoc2019Everything} 和安全 \cite{lie05} 问题。
 
 \begin{figure}
   \centering
@@ -86,7 +86,7 @@ N-transform 通过将多个（例如，默认情况下为四个）连续的子�
 \paragraph*{挑战。}
 然而，{\em 基于密文数据块检测相似性} 提出了一个新的挑战，因为安全区现在只查看加密数据。在 MLE 之后检测相似性是不可能的，因为 MLE 密钥是从明文数据块 (\S\ref{subsec:featurespy-basics}) 的 {\em whole contents} 派生的。这会将相似（但不同）的明文数据块映射到完全不同的密文数据块，从而破坏相似性。
 
-另一种加密原语是 {\em 基于特征的加密 (FBE)}，它基于从每个明文数据块的内容特征派生的密钥（称为 {\em 特征密钥}）执行加密/解密。由于相似的块仅在少数数据区域中有所不同，因此它们可能具有相同的特征密钥，以及前几个数据块（在 AES 中每个数据块占用 16 个字节）。考虑到加密后重复数据删除 \cite{douceur02, shah15} 需要一个固定的 {\em 初始化向量 (IV)}（以保持确定性加密），FBE 保持了相似块的前几个数据块的相等性（由于 {\ em block-chaining encryption} 分组密码模式的属性，例如 {\em cipher block chaining (CBC)} 和 {\em cipher feedback (CFB)} \cite{dworkin01})，并且可以通过比较进行相似性检测每个密文数据块中的此类数据块。
+另一种加密原语是 {\em 基于特征的加密 (FBE)}，它基于从每个明文数据块的内容特征派生的密钥（称为 {\em 特征密钥}）执行加密/解密。由于相似的块仅在少数数据区域中有所不同，因此它们可能具有相同的特征密钥，以及前几个数据块（在 AES 中每个数据块占用 16 个字节）。考虑到加密后重复数据删除 \cite{douceur2002reclaiming, shah15} 需要一个固定的 {\em 初始化向量 (IV)}（以保持确定性加密），FBE 保持了相似块的前几个数据块的相等性（由于 {\ em block-chaining encryption} 分组密码模式的属性，例如 {\em cipher block chaining (CBC)} 和 {\em cipher feedback (CFB)} \cite{dworkin01})，并且可以通过比较进行相似性检测每个密文数据块中的此类数据块。
 
 
 然而，FBE 容易受到密钥泄露的影响，因为一个特征密钥对应于一组具有相同内容特征的块。恶意客户端可以使用其受损的功能密钥来完全解密许多块，甚至其中一些是 {\em 超出其访问范围}。
@@ -106,7 +106,7 @@ N-transform 通过将多个（例如，默认情况下为四个）连续的子�
 \paragraph*{功能密钥生成。}
 回想一下，本文通过 N 变换（\S\ref{subsec:featurespy-basic}）为每个明文数据块提取三个内容特征，一个基本的密钥生成方法（称为 {\tt allFeature}）是连接所有特征，并计算基于连接结果的加密哈希的特征密钥。但是，{\tt allFeature} 无法为许多相似的块生成相同的特征键。具体来说，如果相似块的内容差异恰好在产生子特征（\S\ref{subsec:featurespy-basic}）的滑动窗口中，则块将具有不同的特征键，并且无法检测到相似度即使剩余的原始内容相同。
 
-本文基于 {\em 基于采样的方法} \cite{bhagwat2009extreme, dong11, qin17} 来放宽密钥生成标准。这个想法是为每个明文数据块采样一个{\em 代表}特征，并根据采样的特征计算特征密钥。这可以容忍内容差异，并为各种明文数据块生成相同的特征密钥。
+本文基于 {\em 基于采样的方法} \cite{bhagwat2009extreme, dong2011Tradeoffs, qin17} 来放宽密钥生成标准。这个想法是为每个明文数据块采样一个{\em 代表}特征，并根据采样的特征计算特征密钥。这可以容忍内容差异，并为各种明文数据块生成相同的特征密钥。
 
 本文考虑了两种选择代表性特征的方法。具体来说，{\tt firstFeature} 根据每个明文数据块的 {\em first} 特征生成特征密钥。优点是本文不需要计算后续的子特征和特征（\S\ref{subsec:featurespy-basic}），并减轻 N-transform 的计算开销 \cite{zhang2019Finesse}。
 

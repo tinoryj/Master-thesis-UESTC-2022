@@ -138,7 +138,7 @@
         "**/.factorypath": true
     },
     "redhat.telemetry.enabled": true,
-    "workbench.colorTheme": "Monokai",
+    "workbench.colorTheme": "Monokai Dimmed",
     "clang-format.executable": "/usr/bin/clang-format",
     "[cpp]": {
         "editor.defaultFormatter": "xaver.clang-format"
