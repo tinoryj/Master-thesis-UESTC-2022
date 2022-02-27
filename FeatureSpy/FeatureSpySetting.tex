@@ -30,5 +30,5 @@ SGX 使用一组与安全相关的指令扩展 Intel CPU 以实现 TEE。它在�
     \item
           SGX安全区是受信任和经过身份验证的（例如，在首次引导时通过远程证明），以便诚实地执行攻击检测以防止篡改。此外，与之前的作品 \cite{shinde20, ren21} 一样，SGX安全区只为加密密钥（即 \S\ref{sec:featurespy-implementation} 中的证明密钥）而不是所有安全区内的内容保留机密性；鉴于针对 SGX 的侧信道攻击，这一点很重要（例如，请参阅 \cite{fei21} 进行调查）。
     \item
-          恶意云可能会破坏外包数据以损害完整性。 \sysnameF 没有解决威胁，但它与 \textit{  (proof data prosession,PDP)} \cite{ateniese2007provable} 和 \textit{  (proof of retrievability,PoR)} \cite{juels07} 兼容，以执行定期的完整性验证外包数据，以及容错存储，以从损坏 \cite{li15} 中恢复数据。
+          恶意云可能会破坏外包数据以损害完整性。 \sysnameF 没有解决威胁，但它与 \textit{  (proof data prosession,PDP)} \cite{ateniese2007provable} 和 \textit{  (proof of retrievability,PoR)} \cite{juels2007pors} 兼容，以执行定期的完整性验证外包数据，以及容错存储，以从损坏 \cite{li15} 中恢复数据。
 \end{itemize}

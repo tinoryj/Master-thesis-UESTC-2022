@@ -6,7 +6,7 @@
 \subsection{加密后重复数据删除}
 \label{subsec:sgxdedup-encrypted-dedup}
 
-{\bf } 本文考虑\textit{基于数据块的重复数据删除} \cite{zhu2008avoiding,wallace12,meyer11}，它广泛部署在现代存储系统中以消除内容冗余。它通过将输入文件划分为不重叠的 \textit{数据块} 来工作。对于每个块，它计算块内容的加密哈希（称为 \textit{指纹}）。它在\textit{指纹索引} 中跟踪所有当前存储的块的指纹。如果指纹是指纹索引的新指纹，它只存储块的物理副本，或者如果指纹已被跟踪，则将块视为副本，假设指纹冲突在实践中极不可能 \cite{black2006compare}。
+{\bf } 本文考虑\textit{基于数据块的重复数据删除} \cite{zhu2008avoiding,wallace12,meyer2011deduplication}，它广泛部署在现代存储系统中以消除内容冗余。它通过将输入文件划分为不重叠的 \textit{数据块} 来工作。对于每个块，它计算块内容的加密哈希（称为 \textit{指纹}）。它在\textit{指纹索引} 中跟踪所有当前存储的块的指纹。如果指纹是指纹索引的新指纹，它只存储块的物理副本，或者如果指纹已被跟踪，则将块视为副本，假设指纹冲突在实践中极不可能 \cite{black2006compare}。
    
 加密后重复数据删除通过加密扩展了基于数据块的重复数据删除，为外包云存储提供数据机密性和存储效率。 \textit{ 客户端} 使用一些对称密钥将输入文件的每个 \textit{ 明文数据块} 加密成一个 \textit{ 密文数据块}，并将所有密文数据块存储在 \textit{ 云}（或任何远程存储站点）中，它管理密文数据块的重复数据删除存储。为了支持文件重建，客户端创建了一个 \textit{ file recipe}，其中列出了密文数据块的指纹、大小和密钥。它使用自己的主密钥加密文件元数据，并将加密的文件元数据存储在云中。
 
@@ -16,26 +16,26 @@
 
 服务器辅助消息锁加密（Server-aided MLE）\cite{bellare2013DupLESS} 是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。
 
-它为消息锁加密（MLE） 中的密钥生成步骤部署了一个专用的 \textit{ 密钥管理器（key server）}。为了加密明文数据块，客户端首先将明文数据块的指纹发送到密钥管理器，密钥管理器通过指纹和密钥管理器维护的\textit{ global secret}返回 消息锁加密（MLE） 密钥。如果全局机密是安全的，则对手无法发起离线暴力攻击；否则，如果全局机密被泄露，则安全性会降低到原始 消息锁加密（MLE） 的安全性。服务器辅助 消息锁加密（MLE） 进一步建立在两种安全机制之上。首先，它使用 \textit{ oblivious pseudorandom function (OPRF)} \cite{naor2004Number} 允许客户端发送明文数据块的“盲”指纹，这样密钥管理器仍然可以返回相同的 消息锁加密（MLE） 密钥用于相同指纹无需学习原始指纹。其次，它对来自客户端的密钥生成请求进行速率限制，以防止恶意客户端向密钥管理器发出许多密钥生成请求，以找到目标 消息锁加密（MLE） 密钥。
+它为消息锁加密（MLE） 中的密钥生成步骤部署了一个专用的 \textit{ 密钥服务器（key server）}。为了加密明文数据块，客户端首先将明文数据块的指纹发送到密钥服务器，密钥服务器通过指纹和密钥服务器维护的\textit{ global secret}返回 消息锁加密（MLE） 密钥。如果全局秘密是安全的，则对手无法发起离线暴力攻击；否则，如果全局秘密被泄露，则安全性会降低到原始 消息锁加密（MLE） 的安全性。服务器辅助 消息锁加密（MLE） 进一步建立在两种安全机制之上。首先，它使用 \textit{ oblivious pseudorandom function (OPRF)} \cite{naor2004Number} 允许客户端发送明文数据块的“盲”指纹，这样密钥服务器仍然可以返回相同的 消息锁加密（MLE） 密钥用于相同指纹无需学习原始指纹。其次，它对来自客户端的密钥生成请求进行速率限制，以防止恶意客户端向密钥服务器发出许多密钥生成请求，以找到目标 消息锁加密（MLE） 密钥。
 
 \paragraph*{Proof-of-ownership.} 为了节省带宽，加密后重复数据删除可以应用源端重复数据删除，而不是基于存储目标的重复数据删除，以在客户端删除重复的密文数据块，而无需上传到云（\S\ref{sec:sgxdedup-introduction}）。客户端将密文数据块的指纹发送到云端，云端检查指纹是否被指纹索引跟踪（即对应的密文数据块已被存储）。然后，客户端仅将非重复密文数据块上传到云端。
 
 
-但是，当某些客户端受到威胁时，源端重复数据删除很容易受到 \textit{ side-channel attack} \cite{harnik10,halevi11} 的攻击。一种侧信道攻击是，受感染的客户端可以通过将密文数据块的指纹发送到云来查询任何目标密文数据块的存在（例如，如果密文数据块对应于某个可能的密码 \cite{harnik10}），因此以识别来自其​​他客户端的敏感信息。另一种侧信道攻击是受感染的客户端可以未经授权访问其他客户端的存储块。具体来说，它可以使用任何目标密文数据块的指纹来说服云它是具有完全访问权限 \cite{halevi11} 的相应密文数据块的所有者。
+但是，当某些客户端受到威胁时，源端重复数据删除很容易受到 \textit{ side-channel attack} \cite{harnik2010side,halevi11} 的攻击。一种侧信道攻击是，受感染的客户端可以通过将密文数据块的指纹发送到云来查询任何目标密文数据块的存在（例如，如果密文数据块对应于某个可能的密码 \cite{harnik2010side}），因此以识别来自其​​他客户端的敏感信息。另一种侧信道攻击是受感染的客户端可以未经授权访问其他客户端的存储块。具体来说，它可以使用任何目标密文数据块的指纹来说服云它是具有完全访问权限 \cite{halevi11} 的相应密文数据块的所有者。
 
 
 \textit{ 所有权证明 (PoW)} \cite{halevi11} 是一种加密方法，可增强源端重复数据删除，防止侧信道攻击，同时保持源端重复数据删除的带宽节省。
 
 它的想法是让云验证客户端确实是密文数据块的所有者，并被授权完全访问密文数据块。这确保了受感染的客户端无法查询其他客户端的块是否存在。具体来说，在基于 PoW 的源端重复数据删除中，客户端将发送到云的每个指纹都附加一个 \textit{ PoW 证明}，云可以通过它验证客户端是否是相应密文数据块的真正所有者。云仅对成功的证明验证做出响应，从而防止任何受感染的客户端识别其他客户端拥有的密文数据块。 
 
-\paragraph*{Limitations.} 回想一下 \S\ref{sec:sgxdedup-introduction}，现有的加密后重复数据删除实现需要昂贵的加密保护。服务器辅助 消息锁加密（MLE） 需要 OPRF 协议 \cite{naor2004Number} 来保护指纹信息免受密钥管理器的影响，但 OPRF 协议涉及昂贵的公钥加密操作。例如，本文的评估 (\S\ref{subsec:sgxdedup-synthetic}) 表明，基于 OPRF 的 消息锁加密（MLE） 密钥生成只能达到 25\,MB/s (Exp\#1) 并将整体加密后重复数据删除性能限制在 20 \,MB/s (Exp\#4)。此外，现有的 PoW 实现基于 Merkle-tree 协议 \cite{halevi11}，由于块级 PoW 的频繁哈希计算，该协议仅实现 37\,MB/s (Exp\#3)。在 1\,GbE LAN 环境中，PoW 的计算开销甚至抵消了在源端重复数据删除中消除重复数据上传的性能增益。虽然本文可以通过基于每个文件应用 PoW 来减轻 PoW 计算（即，客户端证明其对文件的所有权），但云无法验证块是否属于基于数据块的重复数据删除下的文件。提高服务器辅助 消息锁加密（MLE） 或 PoW 性能的现有解决方案通常会牺牲安全性 \cite{li20b,xu2013weak,pietro12}、带宽效率 \cite{harnik10,li15} 或存储效率 \cite{zhou2015secdep,qin17,li20b} (\S\ref{sec:sgxdedup-related_work})。
+\paragraph*{Limitations.} 回想一下 \S\ref{sec:sgxdedup-introduction}，现有的加密后重复数据删除实现需要昂贵的加密保护。服务器辅助 消息锁加密（MLE） 需要 OPRF 协议 \cite{naor2004Number} 来保护指纹信息免受密钥服务器的影响，但 OPRF 协议涉及昂贵的公钥加密操作。例如，本文的评估 (\S\ref{subsec:sgxdedup-synthetic}) 表明，基于 OPRF 的 消息锁加密（MLE） 密钥生成只能达到 25\,MB/s (Exp\#1) 并将整体加密后重复数据删除性能限制在 20 \,MB/s (Exp\#4)。此外，现有的 PoW 实现基于 Merkle-tree 协议 \cite{halevi11}，由于块级 PoW 的频繁哈希计算，该协议仅实现 37\,MB/s (Exp\#3)。在 1\,GbE LAN 环境中，PoW 的计算开销甚至抵消了在源端重复数据删除中消除重复数据上传的性能增益。虽然本文可以通过基于每个文件应用 PoW 来减轻 PoW 计算（即，客户端证明其对文件的所有权），但云无法验证块是否属于基于数据块的重复数据删除下的文件。提高服务器辅助 消息锁加密（MLE） 或 PoW 性能的现有解决方案通常会牺牲安全性 \cite{li2020TED,xu2013weak,pietro12}、带宽效率 \cite{harnik2010side,li15} 或存储效率 \cite{zhou2015secdep,qin17,li2020TED} (\S\ref{sec:sgxdedup-related_work})。
 
 \subsection{Intel SGX}
 \label{subsec:sgxdedup-sgx} 
 
 本文探索硬件辅助可信执行以减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。在这项工作中，本文专注于Intel SGX \cite{sgx}，这是一套内置于现代Intel CPU 中的安全相关指令。 SGX 在称为 \textit{ enclave} 的硬件保护环境中屏蔽代码和数据的执行。在下文中，本文将重点介绍与本文的工作相关的安全区的三个安全特性:隔离、证明和密封。
 
-\paragraph*{Isolation.}安全区驻留在称为 \textit{安全区page cache (EPC)} 的硬件保护内存区域中，用于托管任何受保护的代码和数据。一个 EPC 包含 4KB 页面，任何 in-enclave 应用程序最多可占用 96\,MB \cite{harnik18}。如果安全区的大小比 EPC 大，它会加密未使用的页面并将它们驱逐到未受保护的内存中。在这项工作中，本文在每个客户端和密钥管理器中部署安全区以保护敏感操作 (\S\ref{subsec:sgxdedup-arch})。本文还限制了 in-enclave 内容的大小以减轻分页开销 (\S\ref{subsec:sgxdedup-encryption})。
+\paragraph*{Isolation.}安全区驻留在称为 \textit{安全区page cache (EPC)} 的硬件保护内存区域中，用于托管任何受保护的代码和数据。一个 EPC 包含 4KB 页面，任何 in-enclave 应用程序最多可占用 96\,MB \cite{harnik18}。如果安全区的大小比 EPC 大，它会加密未使用的页面并将它们驱逐到未受保护的内存中。在这项工作中，本文在每个客户端和密钥服务器中部署安全区以保护敏感操作 (\S\ref{subsec:sgxdedup-arch})。本文还限制了 in-enclave 内容的大小以减轻分页开销 (\S\ref{subsec:sgxdedup-encryption})。
 
 enclave 提供了一个接口，即 \textit{安全区call (ECall)}，以便外部应用程序可以发出 ECall 以安全地访问安全区内的内容。请注意，ECall 会产生访问安全区内存 \cite{harnik18} 的上下文切换开销。本文通过批量处理内容来减少 ECall 的数量（\S\ref{sec:sgxdedup-implementation}）。
 
@@ -48,12 +48,12 @@ enclave 提供了一个接口，即 \textit{安全区call (ECall)}，以便外�
 \subsection{威胁模型}
 \label{subsec:sgxdedup-threat}
 
-\noindent{\bf 对抗能力。} 本文从具有多个客户端、密钥管理器和云的服务器辅助 消息锁加密（MLE） 架构 \cite{bellare2013DupLESS} 开始。本文的主要安全目标是实现外包云存储 \cite{bellare2013DupLESS} 的数据机密性，以对抗通过以下恶意行为推断原始明文数据块的 \textit{ semi-honest} 对手:
+\noindent{\bf 对抗能力。} 本文从具有多个客户端、密钥服务器和云的服务器辅助 消息锁加密（MLE） 架构 \cite{bellare2013DupLESS} 开始。本文的主要安全目标是实现外包云存储 \cite{bellare2013DupLESS} 的数据机密性，以对抗通过以下恶意行为推断原始明文数据块的 \textit{ semi-honest} 对手:
 
 \begin{itemize}[leftmargin=*]
-\item 攻击者可以破坏密钥管理器并了解每个客户端发出的 消息锁加密（MLE） 密钥生成请求。它还可以通过离线暴力攻击 \cite{bellare2013DupLESS} 访问全局机密来推断外包存储中的原始块。
-    \item 攻击者可以破坏一个或多个客户端并发送任意 消息锁加密（MLE） 密钥生成请求来查询某些目标块 \cite{bellare2013DupLESS} 的 消息锁加密（MLE） 密钥。它还可以对某些目标块 \cite{harnik10} (\S\ref{subsec:sgxdedup-encrypted-dedup}) 发起侧信道攻击，从而推断出其他未受损客户端拥有的原始明文数据块。
+\item 攻击者可以破坏密钥服务器并了解每个客户端发出的 消息锁加密（MLE） 密钥生成请求。它还可以通过离线暴力攻击 \cite{bellare2013DupLESS} 访问全局秘密来推断外包存储中的原始块。
+    \item 攻击者可以破坏一个或多个客户端并发送任意 消息锁加密（MLE） 密钥生成请求来查询某些目标块 \cite{bellare2013DupLESS} 的 消息锁加密（MLE） 密钥。它还可以对某些目标块 \cite{harnik2010side} (\S\ref{subsec:sgxdedup-encrypted-dedup}) 发起侧信道攻击，从而推断出其他未受损客户端拥有的原始明文数据块。
 \end{itemize}
 
 \paragraph*{假设。}
-本文做出以下威胁假设。 (i) 客户端、密钥管理器和云之间的所有通信都受到保护以防篡改（例如，通过 SSL/TLS）。 (ii) 新交所值得信赖且可靠；针对 SGX \cite{bulck2018FORESHADOW, oleksenko18} 的拒绝服务或侧信道攻击超出了本文的范围。 (iii) 本文可以通过远程审计 \cite{ateniese2007provable, juels07} 和 \textit{ 容错} 通过多云方法 \cite{li15} 实现 \textit{ 完整性}。 (iv) 本文不考虑流量分析 \cite{zuo2018mitigating}、频率分析 \cite{li20b} 和块大小泄漏 \cite{ritzdorf16}，而相关的防御 \cite{zuo2018mitigating,li20b,ritzdorf16} 与本文的设计兼容。
+本文做出以下威胁假设。 (i) 客户端、密钥服务器和云之间的所有通信都受到保护以防篡改（例如，通过 SSL/TLS）。 (ii) 新交所值得信赖且可靠；针对 SGX \cite{bulck2018FORESHADOW, oleksenko18} 的拒绝服务或侧信道攻击超出了本文的范围。 (iii) 本文可以通过远程审计 \cite{ateniese2007provable, juels2007pors} 和 \textit{ 容错} 通过多云方法 \cite{li15} 实现 \textit{ 完整性}。 (iv) 本文不考虑流量分析 \cite{zuo2018mitigating}、频率分析 \cite{li2020TED} 和块大小泄漏 \cite{ritzdorf16}，而相关的防御 \cite{zuo2018mitigating,li2020TED,ritzdorf16} 与本文的设计兼容。
