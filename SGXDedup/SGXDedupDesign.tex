@@ -3,7 +3,7 @@
 
 
 \sysnameS 是一种基于Intel SGX的高性能加密后重复数据删除系统。它专为外包数据存储而设计，尤其适用于具有高内容冗余的备份工作负载。它旨在实现以下三个主要设计目标:
-\begin{enumerate}
+\begin{enumerate}[leftmargin=*]
     \item \textit{数据机密性保障}: 与DpuLESS\cite{bellare2013DupLESS}中采用的服务器辅助消息锁加密以及支持所有权证明\cite{halevi11}能力的源端重复数据删除具有相同的安全性，即使密钥服务器或任何客户端受到攻击，\sysnameS 也能避免外包数据块和密钥受到未授权访问。
     \item \textit{低带宽开销/高存储效率}: 与源端重复数据删除一致，\sysnameS 在上传前将进行跨客户端的重复数据删除，仅上传非重复的密文数据块。
     \item \textit{高计算效率}: 相较于现有基于软件的加密后重复数据删除方案，\sysnameS 显著降低数据加密等密码学操作的计算开销。

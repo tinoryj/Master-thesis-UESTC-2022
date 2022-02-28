@@ -71,7 +71,7 @@ N-transform 通过将多个（例如，默认情况下为四个）连续的子�
 \sysnameF 基于 {\em SGX-based PoW} \cite{ren21} 构建，以防止客户端逃避检测过程。具体来说，基于 SGX 的 PoW 方法 \cite{ren21} 将每个密文数据块作为输入并进入 SGX 安全区以计算密文数据块的指纹以及指纹的签名。只有当签名被成功验证时，云才会继续检查指纹是否对应于存储的密文数据块（即重复数据删除）。由于云根据 SGX安全区处理的 {\em authenticated} 指纹进行响应，因此客户端无法识别未经授权访问的块的存在。
 
 因此，一种天真的方法是在稻草人设计中扩大 enclave，以在安全区中完全执行检测、密钥生成、加密和基于 SGX 的 PoW。在这种情况下，只有程序处理的块SGX安全区中的数据被云接受重复数据删除（由于基于 SGX 的 PoW），恶意客户端无法绕过任何程序。
-然而，该方法会产生巨大的 TCB 并引入潜在的性能 \cite{arnautov2016SCONE, harnik18, dinhngoc2019Everything} 和安全 \cite{lie2005TCB} 问题。
+然而，该方法会产生巨大的 TCB 并引入潜在的性能 \cite{arnautov2016SCONE, harnik2018SGX, dinhngoc2019Everything} 和安全 \cite{lie2005TCB} 问题。
 
 \begin{figure}
   \centering

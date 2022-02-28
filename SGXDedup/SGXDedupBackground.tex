@@ -1,59 +1,37 @@
-\section{背景和问题}
+\section{问题与安全模型}
 \label{sec:sgxdedup-background}
 
-本文介绍了加密后重复数据删除 (\S\ref{subsec:sgxdedup-encrypted-dedup}) 和Intel SGX (\S\ref{subsec:sgxdedup-sgx}) 的背景细节和正式定义。本文还介绍了本文中提到的威胁模型 (\S\ref{subsec:sgxdedup-threat})。
+本节介绍了加密后重复数据删除中存在的性能问题（\S\ref{subsec:sgxdedup-problem}）和以Intel SGX为代表的可信执行环境（\S\ref{subsec:sgxdedup-sgx}）在应用时所需的考量。本节还介绍了本章的威胁模型和与之对应的安全性假设（\S\ref{subsec:sgxdedup-threat}）。
 
-\subsection{加密后重复数据删除}
-\label{subsec:sgxdedup-encrypted-dedup}
+\subsection{加密重复数据删除中的性能问题}
+\label{subsec:sgxdedup-problem}
 
-{\bf } 本文考虑\textit{基于数据块的重复数据删除} \cite{zhu2008avoiding,wallace12,meyer2011deduplication}，它广泛部署在现代存储系统中以消除内容冗余。它通过将输入文件划分为不重叠的 \textit{数据块} 来工作。对于每个块，它计算块内容的加密哈希（称为 \textit{指纹}）。它在\textit{指纹索引} 中跟踪所有当前存储的块的指纹。如果指纹是指纹索引的新指纹，它只存储块的物理副本，或者如果指纹已被跟踪，则将块视为副本，假设指纹冲突在实践中极不可能 \cite{black2006compare}。
-   
-加密后重复数据删除通过加密扩展了基于数据块的重复数据删除，为外包云存储提供数据机密性和存储效率。 \textit{ 客户端} 使用一些对称密钥将输入文件的每个 \textit{ 明文数据块} 加密成一个 \textit{ 密文数据块}，并将所有密文数据块存储在 \textit{ 云}（或任何远程存储站点）中，它管理密文数据块的重复数据删除存储。为了支持文件重建，客户端创建了一个 \textit{ file recipe}，其中列出了密文数据块的指纹、大小和密钥。它使用自己的主密钥加密文件元数据，并将加密的文件元数据存储在云中。
-
-\textit{ 消息锁加密 (消息锁加密（MLE）)} \cite{bellare2013MLE} 将加密原语形式化用于加密后重复数据删除。它指定了对称密钥（称为 \textit{ 消息锁加密（MLE） 密钥}）如何从明文数据块的 \textit{ content}（例如，其流行的实例化 \textit{ convergent encryption (CE)} \cite{douceur2002reclaiming}使用明文数据块的加密哈希作为 消息锁加密（MLE） 密钥）。因此，它将重复的明文数据块加密为重复的密文数据块，从而使重复数据删除在密文数据块上仍然可行。
-
-\paragraph*{Server-aided 消息锁加密（MLE）.} CE 易受 \textit{ 离线暴力攻击}，因为它的 消息锁加密（MLE） 密钥（即明文数据块的哈希）可以公开派生。具体来说，攻击者通过枚举所有可能的明文数据块的 消息锁加密（MLE） 密钥来从目标密文数据块（不知道 消息锁加密（MLE） 密钥）推断输入明文数据块，以检查是否有任何明文数据块被加密到目标密文数据块。
-
-服务器辅助消息锁加密（Server-aided MLE）\cite{bellare2013DupLESS} 是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。
-
-它为消息锁加密（MLE） 中的密钥生成步骤部署了一个专用的 \textit{ 密钥服务器（key server）}。为了加密明文数据块，客户端首先将明文数据块的指纹发送到密钥服务器，密钥服务器通过指纹和密钥服务器维护的\textit{ global secret}返回 消息锁加密（MLE） 密钥。如果全局秘密是安全的，则对手无法发起离线暴力攻击；否则，如果全局秘密被泄露，则安全性会降低到原始 消息锁加密（MLE） 的安全性。服务器辅助 消息锁加密（MLE） 进一步建立在两种安全机制之上。首先，它使用 \textit{ oblivious pseudorandom function (OPRF)} \cite{naor2004Number} 允许客户端发送明文数据块的“盲”指纹，这样密钥服务器仍然可以返回相同的 消息锁加密（MLE） 密钥用于相同指纹无需学习原始指纹。其次，它对来自客户端的密钥生成请求进行速率限制，以防止恶意客户端向密钥服务器发出许多密钥生成请求，以找到目标 消息锁加密（MLE） 密钥。
-
-\paragraph*{Proof-of-ownership.} 为了节省带宽，加密后重复数据删除可以应用源端重复数据删除，而不是基于存储目标的重复数据删除，以在客户端删除重复的密文数据块，而无需上传到云（\S\ref{sec:sgxdedup-introduction}）。客户端将密文数据块的指纹发送到云端，云端检查指纹是否被指纹索引跟踪（即对应的密文数据块已被存储）。然后，客户端仅将非重复密文数据块上传到云端。
+现有源端加密后重复数据删除的实现需要昂贵的密码学机制保护。服务器辅助消息锁加密（\S\ref{subsec:background-encrypted-deduplication-key}）需要OPRF协议\cite{naor2004Number}来保护明文数据块指纹免受密钥服务器的影响，但OPRF协议涉及到高昂的公钥密码学操作。例如，本文的评估（\S\ref{subsec:sgxdedup-synthetic}）表明基于OPRF的消息锁加密密钥生成速率仅能达到25\,MB/s (Exp\#1)，并导致整体加密后重复数据删除性能被限制在20\,MB/s (Exp\#4)；安全的数据块所有权证明技术基于默克尔树协议，由于数据块级所有权证明需要频繁的进行哈希计算，该协议仅能实现37\,MB/s (Exp\#3)的证明速率。在1\,Gbps带宽的局域网环境中，所有权证明技术的计算开销甚至抵消了在源端重复数据删除中避免了重复数据上传带来的性能增益。虽然可通过基于每个文件应用所有权证明技术来减轻所有权证明计算（即，客户端证明其对文件的所有权），但服务端无法验证某一数据块是否属于已被证明的文件。现有提高服务器辅助消息锁加密或所有权证明性能的解决方案通常会牺牲安全性\cite{li2020TED,xu2013weak,pietro12}、带宽效率\cite{harnik2010side,li15}或存储效率\cite{zhou2015secdep,qin17,li2020TED}。
 
 
-但是，当某些客户端受到威胁时，源端重复数据删除很容易受到 \textit{ side-channel attack} \cite{harnik2010side,halevi11} 的攻击。一种侧信道攻击是，受感染的客户端可以通过将密文数据块的指纹发送到云来查询任何目标密文数据块的存在（例如，如果密文数据块对应于某个可能的密码 \cite{harnik2010side}），因此以识别来自其​​他客户端的敏感信息。另一种侧信道攻击是受感染的客户端可以未经授权访问其他客户端的存储块。具体来说，它可以使用任何目标密文数据块的指纹来说服云它是具有完全访问权限 \cite{halevi11} 的相应密文数据块的所有者。
-
-
-\textit{ 所有权证明 (PoW)} \cite{halevi11} 是一种加密方法，可增强源端重复数据删除，防止侧信道攻击，同时保持源端重复数据删除的带宽节省。
-
-它的想法是让云验证客户端确实是密文数据块的所有者，并被授权完全访问密文数据块。这确保了受感染的客户端无法查询其他客户端的块是否存在。具体来说，在基于 PoW 的源端重复数据删除中，客户端将发送到云的每个指纹都附加一个 \textit{ PoW 证明}，云可以通过它验证客户端是否是相应密文数据块的真正所有者。云仅对成功的证明验证做出响应，从而防止任何受感染的客户端识别其他客户端拥有的密文数据块。 
-
-\paragraph*{Limitations.} 回想一下 \S\ref{sec:sgxdedup-introduction}，现有的加密后重复数据删除实现需要昂贵的加密保护。服务器辅助 消息锁加密（MLE） 需要 OPRF 协议 \cite{naor2004Number} 来保护指纹信息免受密钥服务器的影响，但 OPRF 协议涉及昂贵的公钥加密操作。例如，本文的评估 (\S\ref{subsec:sgxdedup-synthetic}) 表明，基于 OPRF 的 消息锁加密（MLE） 密钥生成只能达到 25\,MB/s (Exp\#1) 并将整体加密后重复数据删除性能限制在 20 \,MB/s (Exp\#4)。此外，现有的 PoW 实现基于 Merkle-tree 协议 \cite{halevi11}，由于块级 PoW 的频繁哈希计算，该协议仅实现 37\,MB/s (Exp\#3)。在 1\,GbE LAN 环境中，PoW 的计算开销甚至抵消了在源端重复数据删除中消除重复数据上传的性能增益。虽然本文可以通过基于每个文件应用 PoW 来减轻 PoW 计算（即，客户端证明其对文件的所有权），但云无法验证块是否属于基于数据块的重复数据删除下的文件。提高服务器辅助 消息锁加密（MLE） 或 PoW 性能的现有解决方案通常会牺牲安全性 \cite{li2020TED,xu2013weak,pietro12}、带宽效率 \cite{harnik2010side,li15} 或存储效率 \cite{zhou2015secdep,qin17,li2020TED} (\S\ref{sec:sgxdedup-related_work})。
-
-\subsection{Intel SGX}
+\subsection{可信执行环境TEE}
 \label{subsec:sgxdedup-sgx} 
 
-本文探索硬件辅助可信执行以减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。在这项工作中，本文专注于Intel SGX \cite{sgx}，这是一套内置于现代Intel CPU 中的安全相关指令。 SGX 在称为 \textit{ enclave} 的硬件保护环境中屏蔽代码和数据的执行。在下文中，本文将重点介绍与本文的工作相关的安全区的三个安全特性:隔离、证明和密封。
+本文以Intel SGX\cite{sgx}（\S\ref{subsec:background-tee-sgx}）为例，在每个客户端和密钥服务器中部署安全区以保护敏感操作，减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。本文不考虑仅采用内存加密技术的TEE（例如AMD SEV\cite{AMDSEV}和MK-TME\cite{MK-TME}），因为它们需要大型可信计算基（\S\ref{subsec:background-tee-sgx}）并暴露出广泛的可攻击面\cite{mofrad18}。此外，AMD SEV\cite{AMDSEV}不保护内存完整性，并且容易受到特权攻击者可以操纵加密内存页\cite{mofrad18}的攻击。
 
-\paragraph*{Isolation.}安全区驻留在称为 \textit{安全区page cache (EPC)} 的硬件保护内存区域中，用于托管任何受保护的代码和数据。一个 EPC 包含 4KB 页面，任何 in-enclave 应用程序最多可占用 96\,MB \cite{harnik18}。如果安全区的大小比 EPC 大，它会加密未使用的页面并将它们驱逐到未受保护的内存中。在这项工作中，本文在每个客户端和密钥服务器中部署安全区以保护敏感操作 (\S\ref{subsec:sgxdedup-arch})。本文还限制了 in-enclave 内容的大小以减轻分页开销 (\S\ref{subsec:sgxdedup-encryption})。
 
-enclave 提供了一个接口，即 \textit{安全区call (ECall)}，以便外部应用程序可以发出 ECall 以安全地访问安全区内的内容。请注意，ECall 会产生访问安全区内存 \cite{harnik18} 的上下文切换开销。本文通过批量处理内容来减少 ECall 的数量（\S\ref{sec:sgxdedup-implementation}）。
+针对Intel SGX中影响性能的各项因素（\S\ref{subsec:background-tee-sgx}），本文使用密封来避免安全区第一次认证启动后再次启动时的远程证明（\S\ref{subsec:sgxdedup-enclave-management}）；限制了安全区中内容的大小以减轻安全区分页开销（\S\ref{subsec:sgxdedup-encryption}）；通过批量处理数据块来减少安全区ECall的数量（\S\ref{sec:sgxdedup-implementation}）以降低安全区调用时产生CPU上下文切换开销的频率。
 
-\paragraph*{Attestation.} SGX 支持 \textit{ 远程认证} 通过远程实体（例如云）对目标安全区进行身份验证。在远程证明过程中（详见\cite{sgx}），远程实体需要联系Intel运营的证明服务来检查目标enclave提供的enclave信息的完整性。然后，远程实体通过将其安全区信息与目标安全区中预期的可信配置进行比较来验证目标 enclave。本文使用远程证明来确保在第一个引导程序中将正确的代码和数据加载到每个安全区中。
-
-\paragraph*{Sealing.} SGX 通过密封将安全区内容存储在安全区外部时对其进行保护。它使用秘密 \textit{ 密封密钥} 在被驱逐之前加密数据。密封密钥可以从 \textit{ 测量散列}（即安全区内容的 SHA256 散列）或安全区的作者身份派生，因此只有相应的安全区才能访问密封密钥并解密密封数据.由于远程证明会导致显着延迟（Exp\#7），本文使用密封来消除安全区第一次引导后的远程证明（\S\ref{subsec:sgxdedup-enclave-management}）。
-
-\paragraph*{Remarks.} 本文不考虑基于内存加密的 TEE（例如 AMD SEV \cite{AMDSEV} 和 MK-TME \cite{MK-TME}），因为它们需要大型可信计算基础并暴露出广泛的攻击面\cite{mofrad18}。此外，AMD SEV \cite{AMDSEV} 不保护内存完整性，并且容易受到特权对手可以操纵加密内存页 \cite{mofrad18} 的攻击。
-
-\subsection{威胁模型}
+\subsection{威胁模型与安全假设}
 \label{subsec:sgxdedup-threat}
 
-\noindent{\bf 对抗能力。} 本文从具有多个客户端、密钥服务器和云的服务器辅助 消息锁加密（MLE） 架构 \cite{bellare2013DupLESS} 开始。本文的主要安全目标是实现外包云存储 \cite{bellare2013DupLESS} 的数据机密性，以对抗通过以下恶意行为推断原始明文数据块的 \textit{ semi-honest} 对手:
+\sysnameS 所针对的威胁模型基于具有多个客户端、密钥服务器和云的服务器辅助消息锁加密架构\cite{bellare2013DupLESS}。其主要安全目标是实现外包数据存储\cite{bellare2013DupLESS}的数据机密性保障，以对抗通过以下恶意行为推断原始明文数据块的半诚实（semi-honest）的攻击者:
 
 \begin{itemize}[leftmargin=*]
-\item 攻击者可以破坏密钥服务器并了解每个客户端发出的 消息锁加密（MLE） 密钥生成请求。它还可以通过离线暴力攻击 \cite{bellare2013DupLESS} 访问全局秘密来推断外包存储中的原始块。
-    \item 攻击者可以破坏一个或多个客户端并发送任意 消息锁加密（MLE） 密钥生成请求来查询某些目标块 \cite{bellare2013DupLESS} 的 消息锁加密（MLE） 密钥。它还可以对某些目标块 \cite{harnik2010side} (\S\ref{subsec:sgxdedup-encrypted-dedup}) 发起侧信道攻击，从而推断出其他未受损客户端拥有的原始明文数据块。
+    \item 攻击者可以攻击并控制密钥服务器以了解每个客户端发出的 消息锁加密密钥生成请求，并且可以访问全局秘密来发动离线暴力破解攻击\cite{bellare2013DupLESS}，进而推断外包存储中密文数据块所对应的原始明文数据块。
+    \item 攻击者可以攻击一个或多个客户端并发送任意消息锁加密密钥生成请求来获得目标数据块的消息锁加密密钥\cite{bellare2013DupLESS}。它还可以对某些目标块 \cite{harnik2010side} (\S\ref{subsec:intro-background}) 发起侧信道攻击，从而推断出其他未受损客户端拥有的原始明文数据块。
 \end{itemize}
 
-\paragraph*{假设。}
-本文做出以下威胁假设。 (i) 客户端、密钥服务器和云之间的所有通信都受到保护以防篡改（例如，通过 SSL/TLS）。 (ii) 新交所值得信赖且可靠；针对 SGX \cite{bulck2018FORESHADOW, oleksenko18} 的拒绝服务或侧信道攻击超出了本文的范围。 (iii) 本文可以通过远程审计 \cite{ateniese2007provable, juels2007pors} 和 \textit{ 容错} 通过多云方法 \cite{li15} 实现 \textit{ 完整性}。 (iv) 本文不考虑流量分析 \cite{zuo2018mitigating}、频率分析 \cite{li2020TED} 和块大小泄漏 \cite{ritzdorf16}，而相关的防御 \cite{zuo2018mitigating,li2020TED,ritzdorf16} 与本文的设计兼容。
+针对以上威胁模型，本章做出以下安全假设：
+
+\begin{enumerate}[leftmargin=*]
+    \item 客户端、密钥服务器和云之间的所有通信都受到保护（例如，通过 SSL/TLS）以防止篡改。
+    \item Intel SGX完全可信且可靠，针对SGX的拒绝服务攻击或侧信道攻击\cite{bulck2018FORESHADOW, oleksenko18}不在本文研究范围之内。
+    \item 本文提出的方案可以通过附加远程审计\cite{ateniese2007provable, juels2007pors}实现完整性保障，并通过多服务端方式\cite{li15}实现系统容错。
+    \item 本文不考虑流量分析\cite{zuo2018mitigating}、频率分析\cite{li2020TED}和数据块大小泄漏\cite{ritzdorf16}等威胁。针对这些威胁的相关防御机制\cite{zuo2018mitigating,li2020TED,ritzdorf16}与本文的设计完全兼容。
+\end{enumerate}
