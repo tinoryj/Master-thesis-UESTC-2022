@@ -4,7 +4,7 @@
 
 \paragraph*{Trusted execution.} 本文建立在 {\em Intel Software Guarded Extensions (SGX)} \cite{sgx} 上来实现 TEE，因为 SGX 得到了当今商品计算机的广泛支持。除了 SGX，本文的设计 (\S\ref{sec:featurespy-design}) 可以扩展到其他支持 TEE 的可信计算技术 \cite{AMDSEV, pinto19}。
 
-SGX 使用一组与安全相关的指令扩展 Intel CPU 以实现 TEE。它在硬件保护的内存区域（称为 {\em 安全区页面缓存 (EPC)}）中分配一个 {\em 安全区}，以便在具有机密性和完整性保证的情况下托管（in-enclave）内容。创建安全区后，SGX 提供 {\em 远程认证} 以通过远程实体（例如，云）对安全区进行身份验证，以及 {\em 安全密封} 在（经过身份验证的）enclave 和云端。此外，SGX 为安全区和未受保护的内存之间的交互提供了两个接口。程序可以通过 {\em 安全区调用 (ECalls)} 进入安全区执行安全区内部函数。在 ECall 中，它可以暂时退出安全区并通过 {\em 安全区外部调用 (OCalls)} 在不受保护的内存中调用不受信任的函数。
+SGX 使用一组与安全相关的指令扩展 Intel CPU 以实现 TEE。它在硬件保护的内存区域（称为 {\em 安全区页面缓存 (EPC)}）中分配一个 {\em 安全区}，以便在具有机密性和完整性保证的情况下托管（in-enclave）内容。创建安全区后，SGX 提供 {\em 远程认证} 以通过远程实体（例如，云）对安全区进行身份验证，以及 {\em 安全密封} 在（经过身份验证的）enclave 和云端。此外，SGX 为安全区和未受保护的内存之间的交互提供了两个接口。程序可以通过 {\em 安全区内部调用 (ECalls)} 进入安全区执行安全区内部函数。在 ECall 中，它可以暂时退出安全区并通过 {\em 安全区外部调用 (OCalls)} 在不受保护的内存中调用不受信任的函数。
 
 
 
@@ -28,7 +28,7 @@ SGX 使用一组与安全相关的指令扩展 Intel CPU 以实现 TEE。它在�
     \item
           每个客户端与云之间的通信通道受 SSL/TLS 保护以防窃听。
     \item
-          SGX安全区是受信任和经过身份验证的（例如，在首次引导时通过远程证明），以便诚实地执行攻击检测以防止篡改。此外，与之前的作品 \cite{shinde20, ren21} 一样，SGX安全区只为加密密钥（即 \S\ref{sec:featurespy-implementation} 中的证明密钥）而不是所有安全区内的内容保留机密性；鉴于针对 SGX 的侧信道攻击，这一点很重要（例如，请参阅 \cite{fei21} 进行调查）。
+          SGX安全区是受信任和经过身份验证的（例如，在首次启动时通过远程证明），以便诚实地执行攻击检测以防止篡改。此外，与之前的作品 \cite{shinde20, ren21} 一样，SGX安全区只为加密密钥（即 \S\ref{sec:featurespy-implementation} 中的证明密钥）而不是所有安全区内的内容保留机密性；鉴于针对 SGX 的侧信道攻击，这一点很重要（例如，请参阅 \cite{fei21} 进行调查）。
     \item
           恶意云可能会破坏外包数据以损害完整性。 \sysnameF 没有解决威胁，但它与 \textit{  (proof data prosession,PDP)} \cite{ateniese2007provable} 和 \textit{  (proof of retrievability,PoR)} \cite{juels2007pors} 兼容，以执行定期的完整性验证外包数据，以及容错存储，以从损坏 \cite{li15} 中恢复数据。
 \end{itemize}

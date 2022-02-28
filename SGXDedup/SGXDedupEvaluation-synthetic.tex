@@ -99,7 +99,6 @@ PlainDedup & 11.6 $\pm$ 0.1 & 120.1 $\pm$ 1.4 & 11.3 $\pm$ 0.3 \\
 {\em DupLESS} & \multicolumn{2}{c}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1 \\
 \bottomrule
 \end{tabular}
-\vspace{-3pt}
 \caption{(Exp\#5) Real-cloud upload and download (unit: MB/s).} 
 \label{tab:sgxdedup-real-cloud}
 \vspace{-6pt}
@@ -109,7 +108,7 @@ PlainDedup & 11.6 $\pm$ 0.1 & 120.1 $\pm$ 1.4 & 11.3 $\pm$ 0.3 \\
 
 图~\ref{fig:sgxdedup-multiClientThroughput} 显示了多达 10 个客户端的结果。第二轮的总上传速度随着客户端数量的增加而增加，达到1277.1\,MB/s。另一方面，由于客户端之间的写竞争，第一轮的总上传速度增加了七个客户端的 637.0MB/s，随后下降到 10 个客户端的 620.3MB/s。同样，由于多个客户端的读取竞争，总下载速度最终下降到 408.8\,MB/s。
 
-\paragraph*{Exp\#7（时间分解）。} 本文提供 \sysnameS 的时间分解来研究不同步骤的性能。假设key enclave已经启动，本文关注单个客户端的初始化和上传过程。初始化过程引导客户端的所有权证明安全区。上传过程包括以下步骤: (i) \textit{ chunking}，将输入文件划分为明文数据块； (ii) \textit{ fingerprinting-p}，计算明文数据块的指纹； (iii) \textit{ key generation}，从密钥安全区生成 消息锁加密（MLE） 密钥； (iv) \textit{ encryption}，加密明文数据块； (v) \textit{ fingerprinting-c}，所有权证明安全区计算密文数据块的指纹； (vi) \textit{ 签名}，所有权证明安全区计算指纹的签名； (vii) \textit{ 验证}，其中云验证接收到的指纹的真实性； (viii) \textit{ deduplication}，云检测重复的密文数据块并通知客户端； (ix) \textit{ transfer}，上传非重复密文数据块和文件元数据。
+\paragraph*{Exp\#7（时间分解）。} 本文提供 \sysnameS 的时间分解来研究不同步骤的性能。假设key enclave已经启动，本文关注单个客户端的初始化和上传过程。初始化过程启动客户端的所有权证明安全区。上传过程包括以下步骤: (i) \textit{ chunking}，将输入文件划分为明文数据块； (ii) \textit{ fingerprinting-p}，计算明文数据块的指纹； (iii) \textit{ key generation}，从密钥安全区生成 消息锁加密（MLE） 密钥； (iv) \textit{ encryption}，加密明文数据块； (v) \textit{ fingerprinting-c}，所有权证明安全区计算密文数据块的指纹； (vi) \textit{ 签名}，所有权证明安全区计算指纹的签名； (vii) \textit{ 验证}，其中云验证接收到的指纹的真实性； (viii) \textit{ deduplication}，云检测重复的密文数据块并通知客户端； (ix) \textit{ transfer}，上传非重复密文数据块和文件元数据。
 
 
 \begin{table}[t]
@@ -141,7 +140,6 @@ $\pm$ 0.01\,ms                                                                  
                       \multicolumn{2}{|c|}{Deduplication}  & \multicolumn{1}{c|}{0.38 $\pm$ 0.03\,ms } & 0.48 $\pm$ 0.03\,ms  \\ \hline
                       \multicolumn{2}{|c|}{Transfer}  & \multicolumn{1}{c|}{1.29 $\pm$ 0.09\,ms } & 0.05 $\pm$ 0.01\,ms  \\ \hline
 \end{tabular}
-\vspace{-3pt}
 \caption{(Exp\#7) Time breakdown per 1\,MB of file data processed: fingerprinting-p and fingerprinting-c are operated on plaintext and ciphertext chunks, respectively.}
 \label{tab:sgxdedup-system-breakdown}
 \vspace{-6pt}
@@ -152,7 +150,7 @@ $\pm$ 0.01\,ms                                                                  
 
 密钥生成步骤是高效的，最多占用整个上传时间的 2.1\%。通过推测性加密，\sysnameS 进一步将第一次上传的密钥生成时间减少了 41.9\%。此外，整个 PoW 步骤占用了总上传时间的 24.4\%，而 PoW 中的主要计算是密文数据块的指纹识别，这对于在加密后重复数据删除中查找重复项是必要的。通过轻量级的签名和验证步骤（最多占用总上传时间的 0.1\%），本文可以保护源端重复数据删除免受侧通道攻击，同时将首次上传的传输时间减少 96.1\%。
 
-\paragraph*{Exp\#10（指纹批量大小的影响）。} 本文首先使用 Exp\#1 的方法来评估指纹批量大小对密钥生成速度的影响。图~\ref{fig:sgxdedup-exp-keygen-breakdown}(a) 显示了两轮密钥生成速度与指纹批量大小的关系。当本文将指纹批量大小从 1 更改为 $2^{15}$ 时，第一轮和第二轮的密钥生成速度从 0.0086\,GB/s 增加到 3.3\,GB/s 和从 0.0091\,GB/ s 到 6.5\,GB/s，分别。图~\ref{fig:sgxdedup-exp-keygen-breakdown}(b) 进一步显示了客户端的计算时间分解以及每个生成 1MB 数据的 消息锁加密（MLE） 密钥的密钥安全区。客户端的消耗时间随着指纹批量大小而减少，因为更大的批量大小意味着要为所有指纹批次计算的 MAC 更少。此外，key安全区的消耗时间在第一轮从 2.0\,ms 减少到 0.2\,ms，在第二轮从 1.8\,ms 减少到 0.1\,ms。原因是较大的指纹批大小避免了对 key安全区的过多 ECall，并减少了 CPU 上下文切换开销。
+\paragraph*{Exp\#10（指纹批量大小的影响）。} 本文首先使用 Exp\#1 的方法来评估指纹批量大小对密钥生成速度的影响。图~\ref{fig:sgxdedup-exp-keygen-breakdown}(a) 显示了两轮密钥生成速度与指纹批量大小的关系。当本文将指纹批量大小从 1 更改为 $2^{15}$ 时，第一轮和第二轮的密钥生成速度从 0.0086\,GB/s 增加到 3.3\,GB/s 和从 0.0091\,GB/ s 到 6.5\,GB/s，分别。图~\ref{fig:sgxdedup-exp-keygen-breakdown}(b) 进一步显示了客户端的计算时间分解以及每个生成 1MB 数据的 消息锁加密（MLE） 密钥的密钥安全区。客户端的消耗时间随着指纹批量大小而减少，因为更大的批量大小意味着要为所有指纹批次计算的 MAC 更少。此外，密钥安全区的消耗时间在第一轮从 2.0\,ms 减少到 0.2\,ms，在第二轮从 1.8\,ms 减少到 0.1\,ms。原因是较大的指纹批大小避免了对 密钥安全区的过多 ECall，并减少了 CPU 上下文切换开销。
 
 
 \begin{figure}
