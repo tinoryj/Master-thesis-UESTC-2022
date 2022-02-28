@@ -32,7 +32,7 @@
 
 \paragraph*{Exp\#1（单客户端 消息锁加密（MLE） 密钥生成）。} 本文在两轮中评估 消息锁加密（MLE） 密钥生成。首先，客户端通过 Rabin 指纹 (\S\ref{sec:sgxdedup-implementation}) 创建 2\,GB 文件的明文数据块并发出 消息锁加密（MLE） 密钥生成请求。然后它为不同的 2\,GB 文件的块重复 消息锁加密（MLE） 密钥生成过程。不同之处在于第二轮使用预先计算的掩码生成 消息锁加密（MLE） 密钥 (\S\ref{subsec:sgxdedup-encryption})。
 
-本文将 \sysnameS 的单客户端 消息锁加密（MLE） 密钥生成速度与最新技术进行了比较。本文考虑两种基于 OPRF 的密钥生成方法，即 \textit{ OPRF-BLS} \cite{armknecht2015transparent} 和 \textit{ OPRF-RSA} \cite{bellare2013DupLESS}，它们实现了 OPRF 原语（\S\ref{subsec:sgxdedup-problem}）分别基于盲 BLS 和盲 RSA 签名。本文还考虑了两种宽松的密钥生成方法，即 \textit{ MinHash encryption} \cite{qin17} 和 \textit{ TED} \cite{li2020TED}，它们以存储效率和安全性换取性能。具体来说，MinHash 加密使用 OPRF-RSA 在每个段的基础上生成 消息锁加密（MLE） 密钥，其中平均段大小配置为 1\,MB。 TED 根据块的短散列的基于草图的频率计数为每个块生成 消息锁加密（MLE） 密钥（参见 \cite{li2020TED} 中的 \S3.3）。
+本文将 \sysnameS 的单客户端 消息锁加密（MLE） 密钥生成速度与最新技术进行了比较。本文考虑两种基于 OPRF 的密钥生成方法，即 \textit{ OPRF-BLS} \cite{armknecht2015transparent} 和 \textit{ OPRF-RSA} \cite{bellare2013DupLESS}，它们实现了 OPRF 原语（\S\ref{subsec:sgxdedup-problem}）分别基于盲 BLS 和盲 RSA 签名。本文还考虑了两种宽松的密钥生成方法，即 \textit{ MinHash encryption} \cite{qin17} 和 \textit{ TED} \cite{li2020TED}，它们以存储效率和安全性换取性能。具体来说，MinHash 加密使用 OPRF-RSA 在每个段的基础上生成 消息锁加密（MLE） 密钥，其中平均段大小配置为 1\,MB。 TED 根据块的短哈希的基于草图的频率计数为每个块生成 消息锁加密（MLE） 密钥（参见 \cite{li2020TED} 中的 \S3.3）。
 
 图~\ref{fig:sgxdedup-keygen-comparison} 显示了结果。 \sysnameS 通过避免 OPRF-BLS、OPRF-RSA 和 MinHash 加密中昂贵的密码原语以及 TED 中的频率计数计算，优于所有基线方法。它的第一轮分别比 OPRF-BLS 和 OPRF-RSA 实现了 1,583$\times$ 和 131.9$\times$ 的加速。与 MinHash 加密和 TED 相比，加速分别为 9.4$\times$ 和 3.7$\times$，尽管后两者牺牲了存储效率和安全性。第二轮投机加密将第一轮的 消息锁加密（MLE） 密钥生成速度提高了 67.8\%。
 
@@ -45,7 +45,7 @@
 
 \paragraph*{Exp\#3 (Computational PoW).} 本文评估 PoW 的性能。本文考虑一个对 2GB 文件执行 PoW 的客户端。客户端从文件中创建明文数据块，加密每个明文数据块，并向云端发出 PoW 请求。本文根据客户端（所有权证明安全区对密文数据块执行指纹识别并签署结果指纹）和云（验证数据的真实性）中所有块的总计算时间来测量 \textit{ 计算 PoW 速度}指纹）；请注意，本文在速度计算中排除了客户端和云端之间的网络传输时间（本文在附录中的 Exp\#11 中考虑了网络传输时间）。
 
-本文将 \sysnameS 与两种最先进的 PoW 方法进行比较:(i) \textit{ PoW-MT} \cite{halevi11}（又名 \cite{halevi11} 中的基本版本）， PoW 方法使用纠删码对块进行编码，并在 PoW 的编码内容上构建 Merkle 树； (ii) \textit{ PoW-UH} \cite{xu2013weak}，它建立在通用散列之上，但以安全性换取性能。为了公平比较，本文自己在 C++ 中实现了 PoW-MT 和 PoW-UH。请注意，有改进的 PoW 方法 \cite{halevi11}，但它们会因低内存使用而产生更高的性能开销。
+本文将 \sysnameS 与两种最先进的 PoW 方法进行比较:(i) \textit{ PoW-MT} \cite{halevi11}（又名 \cite{halevi11} 中的基本版本）， PoW 方法使用纠删码对块进行编码，并在 PoW 的编码内容上构建 Merkle 树； (ii) \textit{ PoW-UH} \cite{xu2013weak}，它建立在通用哈希之上，但以安全性换取性能。为了公平比较，本文自己在 C++ 中实现了 PoW-MT 和 PoW-UH。请注意，有改进的 PoW 方法 \cite{halevi11}，但它们会因低内存使用而产生更高的性能开销。
 
 
 图~\ref{fig:sgxdedup-pow-comparison} 显示了结果。 \sysnameS 显着优于 PoW-MT，因为它避免了客户端中的擦除编码和 Merkle 树构造，以及云中基于 Merkle 树的验证。 它比 PoW-MT 实现了 8.2$\times$ 的加速。 它还比 PoW-UH 实现了 2.2$\times$ 的加速。
@@ -188,7 +188,7 @@ $\pm$ 0.01\,ms                                                                  
 
 图~\ref{fig:sgxdedup-rekeyingLatency}(a) 显示了 \textit{ first} 更新密钥操作的延迟与密钥回归参数（即，可承受的最大更新密钥次数（\S\ref{subsec:sgxdedup-key-management}))。密钥安全区和云的密钥更新延迟随着密钥回归参数的增加而增加，因为更大的密钥回归参数意味着密钥更新的哈希计算更多。由于 SGX安全区处理密集计算 \cite{harnik2018SGX} 的能力较弱，因此密钥安全区的密钥更新延迟大约比云高 1.22-1.56$\times$。
 
-图~\ref{fig:sgxdedup-rekeyingLatency}(b) 显示了每个rekeying操作的延迟，而关键回归参数固定为2$^{20}$。随着执行更多的密钥更新操作，密钥更新延迟会减少，因为每个密钥更新操作通过一次散列计算降低了后续密钥更新操作的计算复杂度。平均而言，密钥安全区的密钥更新延迟为 0.040\,s。相比之下，云的约为 0.027\,s，这意味着密钥更新开销是有限的。
+图~\ref{fig:sgxdedup-rekeyingLatency}(b) 显示了每个rekeying操作的延迟，而关键回归参数固定为2$^{20}$。随着执行更多的密钥更新操作，密钥更新延迟会减少，因为每个密钥更新操作通过一次哈希计算降低了后续密钥更新操作的计算复杂度。平均而言，密钥安全区的密钥更新延迟为 0.040\,s。相比之下，云的约为 0.027\,s，这意味着密钥更新开销是有限的。
 
 \begin{figure}[t]
 \centering

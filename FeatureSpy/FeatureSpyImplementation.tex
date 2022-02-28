@@ -8,7 +8,7 @@
 
 
 \paragraph*{密钥生成。}
-\prototype 适用于通过 Rabin 指纹 \cite{rabin81} 生成的可变大小明文数据块，最小、平均和最大大小分别为 4\,KiB, 8\,KiB 和 16\,KiB。为了在特征键 (\S\ref{subsec:featurespy-spe}) 上提供足够的熵，它将滑动窗口大小和 N 变换中的模数分别配置为 64 字节和 $2^{64}$。它生成 12 个子特征（每个 8 个字节），并将四个子特征的串联散列以形成每个特征（32 个字节）。它根据来自密钥服务器（如 SGXDedup \cite{ren21}）的每个明文数据块的指纹请求 MLE 密钥，以及基于采样特征的特征密钥（根据 {\tt firstFeature}，{\ tt minFeature} 或 {\tt allFeature}）。
+\prototype 适用于通过 Rabin 指纹 \cite{rabin81} 生成的可变大小明文数据块，最小、平均和最大大小分别为 4\,KiB, 8\,KiB 和 16\,KiB。为了在特征键 (\S\ref{subsec:featurespy-spe}) 上提供足够的熵，它将滑动窗口大小和 N 变换中的模数分别配置为 64 字节和 $2^{64}$。它生成 12 个子特征（每个 8 个字节），并将四个子特征的串联哈希以形成每个特征（32 个字节）。它根据来自密钥服务器（如 SGXDedup \cite{ren21}）的每个明文数据块的指纹请求 MLE 密钥，以及基于采样特征的特征密钥（根据 {\tt firstFeature}，{\ tt minFeature} 或 {\tt allFeature}）。
 
 
 \paragraph*{安全区操作。}
