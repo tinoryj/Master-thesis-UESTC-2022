@@ -10,14 +10,14 @@
 \item {\bf Cloud.} 部署在 {\em 阿里云} \cite{Alibaba}。本文在两个区域租用了几台 {\em ecs.g7t.3xlarge} 虚拟机 (VM) 来分别运行云、关键服务器和多个客户端。同一地域和不同地域的虚拟机分别连接 10\,Gbps 和 100\,Mbps 网络。每个 VM 配备一个 12 核 3.5GHz CPU，由 Intel Xeon (Ice Lake) Platinum 8369B 和 48GiB 内存虚拟化，并安装阿里云 Linux 3.2104。本文另外挂载了以 {\em Alibaba General-Purpose NAS} 作为存储后端的云机。 NAS 可实现高达 15K\,IOPS 的 4\,K 次随机读写，带宽为 150\,MBps。
 \end{itemize}
 
-本文进行以下默认配置。对于底层\sysnameF，本文固定$W$ = 5\,K（即大约300\,KiB EPC使用量），$T$ = 3\%，相似性指标的大小为32\,bytes（即，两个块），通过 N 变换提取的特征数量为三个。对于 \prototype，本文配置了三个线程来提取明文数据块的内容特征（除了 Exp\#5，它在单个线程中对 \prototype 的性能进行微基准测试，而 Exp\#6 使用不同的数字来评估 \prototype 的性能用于提取内容特征的线程）和一个 1\,GiB 容器缓存以提高下载性能（\S\ref{sec:featurespy-implementation}）。
+本文进行以下默认配置。对于底层\sysnameF，本文固定$W$ = 5\,K（即大约300\,KiB EPC使用量），$T$ = 3\%，相似性指标的大小为32\,bytes（即，两个块），通过 N-transform提取的特征数量为三个。对于 \prototype，本文配置了三个线程来提取明文数据块的内容特征（除了 Exp\#5，它在单个线程中对 \prototype 的性能进行微基准测试，而 Exp\#6 使用不同的数字来评估 \prototype 的性能用于提取内容特征的线程）和一个 1\,GiB 容器缓存以提高下载性能（\S\ref{sec:featurespy-implementation}）。
 
 \subsubsection{Synthetic Workloads}
 \label{subsec:featurespy-syn}
 本文使用 SYNUnique 评估 \prototype，其中每个 2\,GiB 文件包括全局唯一的块 (\S\ref{subsec:featurespy-datasets})。为了避免磁盘 I/O，本文在每次测试之前将所有数据加载到每个客户端的内存中，并让云端将所有接收到的数据存储在内存中（相对于 Exp\#8 使磁盘 I/O 研究真实云部署） .本文的目标是在不影响重复数据删除和磁盘 I/O 的情况下了解 \prototype 可实现的最大性能，并表明 \prototype 与 SGXDedup \cite{ren21} 相比会产生有限的性能开销。本文将每个实验的结果平均超过 10 次，并将 {\em Student's t-Distribution} 的 95\% 置信区间包含在条形图中（为简洁起见，本文将它们从折线图中排除）。
 
 \paragraph*{Exp\#5（微基准测试）。}
-本文从微基准评估开始，在 LAN 测试平台的不同机器上部署客户端、关键服务器和云。本文让客户端在 SYNUnique 中两次上传相同的 2\,GiB 文件，并在单个线程中评估不同上传步骤的处理时间。考虑的步骤包括： (i) {\em chunking}，将输入文件划分为可变大小的明文数据块； (ii) {\em 特征生成}，提取每个明文数据块的内容特征，并根据 \sysnameF 实例对目标特征进行采样； (iii) {\em 指纹}，计算每个明文数据块的指纹； (iv) {\em key generation}，生成特征密钥和 MLE 密钥； (v) {\em encryption}，对每个明文数据块进行加密； (vi) {\em detection}，基于密文数据块检测学习内容攻击； (vii) {PoW}，证明每个密文数据块的所有权； (viii) {\em deduplication}，云检测重复块； (ix) {\em transfer}，它传输不重复的密文数据块和文件配方。
+本文从微基准评估开始，在 LAN 测试平台的不同机器上部署客户端、关键服务器和云。本文让客户端在 SYNUnique 中两次上传相同的 2\,GiB 文件，并在单个线程中评估不同上传步骤的处理时间。考虑的步骤包括： (i) {\em chunking}，将输入文件划分为可变大小的明文数据块； (ii) {\em 特征生成}，提取每个明文数据块的内容特征，并根据 \sysnameF 实例对目标特征进行采样； (iii) {\em 指纹}，计算每个明文数据块的指纹； (iv) {\em key generation}，生成特征密钥和 MLE 密钥； (v) {\em encryption}，对每个明文数据块进行加密； (vi) {\em detection}，基于密文数据块检测推测内容攻击； (vii) {PoW}，证明每个密文数据块的所有权； (viii) {\em deduplication}，云检测重复块； (ix) {\em transfer}，它传输不重复的密文数据块和文件元数据。
 
 
 
@@ -49,18 +49,18 @@
         \multicolumn{2}{|c|}{Transfer}  & \multicolumn{3}{c|}{$1.16 \pm 0.03$ ($0.04 \pm 0.001$)}\\ \hline
     \end{tabular}
     }
-    \caption{(Exp\#5) 处理合成文件数据每 1\,MiB 的时间分解（单位：ms）。 除括号中明确指定外，第二次上传的每一步所消耗的时间与第一次上传的相同。}
+    \caption{(Exp\#5) 处理随机文件数据每 1\,MiB 的时间分解（单位：ms）。 除括号中明确指定外，第二次上传的每一步所消耗的时间与第一次上传的相同。}
     \label{tab:featurespy-evaluation-syn-system-breakdown}
     \vspace{-6pt}
 \end{table}
-表~\ref{tab:featurespy-evaluation-syn-system-breakdown} 展示了结果（每 1\,MiB 文件数据处理）。由于 \prototype 建立在 SGXDedup \cite{ren21} 之上，它继承了在第二次上传中卸载密钥生成 (\S\ref{sec:featurespy-implementation}) 的计算开销以及避免传输重复块的性能优势.检测步骤是高效的，并且在上传过程中占用了总时间的 0.4\%。此外，由于 N 变换的计算开销，特征生成步骤很昂贵。例如，{\tt firstFeature} 在第一次上传时占用了总时间的 31.4\%； {\tt minFeature} 和 {\tt allFeature} 所消耗的时间分数分别进一步增加到 51.1\% 和 50.9\%，因为它们提取了所有三个特征（与只提取第一个特征的 {\tt firstFeature} 相反） ）。然而，本文认为本文可以通过多线程来减轻特征生成的性能开销（见下文）。
+表~\ref{tab:featurespy-evaluation-syn-system-breakdown} 展示了结果（每 1\,MiB 文件数据处理）。由于 \prototype 建立在 SGXDedup \cite{ren21} 之上，它继承了在第二次上传中卸载密钥生成 (\S\ref{sec:featurespy-implementation}) 的计算开销以及避免传输重复块的性能优势.检测步骤是高效的，并且在上传过程中占用了总时间的 0.4\%。此外，由于 N-transform的计算开销，特征生成步骤很昂贵。例如，{\tt firstFeature} 在第一次上传时占用了总时间的 31.4\%； {\tt minFeature} 和 {\tt allFeature} 所消耗的时间分数分别进一步增加到 51.1\% 和 50.9\%，因为它们提取了所有三个特征（与只提取第一个特征的 {\tt firstFeature} 相反） ）。然而，本文认为本文可以通过多线程来减轻特征生成的性能开销（见下文）。
 
 
 \paragraph*{Exp\#6（单客户端性能）。}
 本文考虑单个客户端，并将 \prototype 的性能与基本系统 SGXDedup 进行比较。本文让客户端两次上传相同的文件（如 Exp\#5）并进一步下载文件。
 
 
-图~\ref{fig:featurespy-singleClientThroughput}(a) 和Figure~\ref{fig:featurespy-singleClientThroughput}(b) 分别展示了当本文改变提取特征的线程数（\S\ref{sec:featurespy-implementation})。 SGXDedup 的速度在第一次上传时保持为 297.1\,MiB/s，在第二次上传时保持为 304.3\,MiB/s，因为它不提取特征。 \prototype 的上传速度首先随着线程数的增加而增加（例如，{\tt firstFeature} 为 265.3\,MiB/s，{\tt minFeature} 为 261.3\,MiB/s，{\tt minFeature} 为 262.6\,MiB/s {\tt allFeature} 当三个线程用于在第一次上传中提取特征时），然后减少（例如，在第一次上传中大约为 220\,MiB/s 和在第二次上传中为 225\,MiB/s 对于所有三个实例）由于资源争用。通过利用多线程，\prototype 仅在第一次上传时比 SGXDedup 产生 8.0-12.0\% 的性能开销，在第二次上传时为 6.6-7.5\%。此外，本文观察到第一次和第二次（不需要传输重复数据）上传之间的性能差异很小，因为本文的 LAN 测试平台具有高带宽来传输数据。本文认为源端重复数据删除在实际云部署中带来了显着的性能提升（Exp\#8），并减少了处理实际存储工作负载的网络流量（Exp\#10）。图~\ref{fig:featurespy-singleClientThroughput}(c)比较下载速度。 \prototype 会导致 1.3\% 的性能下降，因为它使用 MLE 密钥和功能密钥解密每个块。
+图~\ref{fig:featurespy-singleClientThroughput}(a) 和Figure~\ref{fig:featurespy-singleClientThroughput}(b) 分别展示了当本文改变提取特征的线程数（\S\ref{sec:featurespy-implementation})。 SGXDedup 的速度在第一次上传时保持为 297.1\,MiB/s，在第二次上传时保持为 304.3\,MiB/s，因为它不提取特征。 \prototype 的上传速度首先随着线程数的增加而增加（例如，{\tt firstFeature} 为 265.3\,MiB/s，{\tt minFeature} 为 261.3\,MiB/s，{\tt minFeature} 为 262.6\,MiB/s {\tt allFeature} 当三个线程用于在第一次上传中提取特征时），然后减少（例如，在第一次上传中大约为 220\,MiB/s 和在第二次上传中为 225\,MiB/s 对于所有三个实例）由于资源争用。通过利用多线程，\prototype 仅在第一次上传时比 SGXDedup 产生 8.0-12.0\% 的性能开销，在第二次上传时为 6.6-7.5\%。此外，本文观察到第一次和第二次（不需要传输重复数据）上传之间的性能差异很小，因为本文的 LAN 测试平台具有高带宽来传输数据。本文认为源端重复数据删除在实际云部署中带来了显着的性能提升（Exp\#8），并减少了处理实际存储工作负载的网络流量（Exp\#10）。图~\ref{fig:featurespy-singleClientThroughput}(c)比较下载速度。 \prototype 会导致 1.3\% 的性能下降，因为它使用 MLE 密钥和特征密钥解密每个块。
 
 
 \begin{figure}[t]
@@ -173,7 +173,7 @@
 
 
 \paragraph*{Exp\#10（网络流量分析）。}
-本文分析了 \prototype 的网络流量，并将其与三种可以抵御学习内容攻击的重复数据删除方法进行比较：(i) {\em target-based deduplication} \cite{harnik2010side}，强制客户端传输所有密文数据块到云端； (ii) {\em random-threshold deduplication} \cite{harnik2010side}，如果每个块的上传次数小于预定义的阈值，则执行基于存储目标的重复数据删除，或源端重复数据删除 (\S\ref{subsec:featurespy-basics}) 否则； (iii) {\em 两阶段重复数据删除} \cite{li15}，它对来自同一客户端的密文数据块执行源端重复数据删除，然后对跨不同客户端的密文数据块执行基于存储目标的重复数据删除。在这里，本文按照之前的工作 \cite{harnik2010side} 分别在 20 和 2 处选择随机阈值重复数据删除中阈值的上限和下限。本文专注于 FSL 和 MS。对于 FSL，本文每天合并每个用户的快照，并按时间顺序存储。对于 MS，本文认为每个快照都来自一个单独的客户端，并按照快照 ID 的顺序存储快照。本文不考虑文件配方导致的带宽开销。
+本文分析了 \prototype 的网络流量，并将其与三种可以抵御推测内容攻击的重复数据删除方法进行比较：(i) {\em target-based deduplication} \cite{harnik2010side}，强制客户端传输所有密文数据块到云端； (ii) {\em random-threshold deduplication} \cite{harnik2010side}，如果每个块的上传次数小于预定义的阈值，则执行基于存储目标的重复数据删除，或源端重复数据删除 (\S\ref{sec:background-enc-deduplication}) 否则； (iii) {\em 两阶段重复数据删除} \cite{li15}，它对来自同一客户端的密文数据块执行源端重复数据删除，然后对跨不同客户端的密文数据块执行基于存储目标的重复数据删除。在这里，本文按照之前的工作 \cite{harnik2010side} 分别在 20 和 2 处选择随机阈值重复数据删除中阈值的上限和下限。本文专注于 FSL 和 MS。对于 FSL，本文每天合并每个用户的快照，并按时间顺序存储。对于 MS，本文认为每个快照都来自一个单独的客户端，并按照快照 ID 的顺序存储快照。本文不考虑文件元数据导致的带宽开销。
 
 \begin{figure}[t]
     \centering

@@ -1,25 +1,22 @@
-\section{实现}
+\section{\prototype 实现}
 \label{sec:featurespy-implementation}
-本文使用 OpenSSL 1.1.1l \cite{openssl}、SGX SDK 2.15 \cite{sgxsdk} 和 SGX SSL \cite{sgxssl} 实现 \sysnameF，并将其部署到现有的基于 SGX 的加密后重复数据删除系统 {\em SGXDedup} \cite{ren21} 来提高其针对学习内容攻击的安全性。具体来说，SGXDedup除了每个客户端和云端之外，还维护一个{\em key server}来管理一个全局secret，并根据chunk指纹和全局secret生成每个明文chunk的MLE key，从而对 {\em 离线暴力攻击} 具有鲁棒性（即解决了不可预测的假设）\cite{bellare2013DupLESS}。为了加速基于数据源的加密后重复数据删除，它在密钥服务器中部署了一个 SGX 安全区，并执行 {\em 推测性加密} \cite{eduardo2019Speculative} 以减轻（服务器辅助）密钥生成的在线计算开销。此外，它还部署了一个客户端安全区来执行基于 SGX 的高效 PoW (\S\ref{subsec:featurespy-secure_design})。请注意，SGXDedup 无法抵御学习内容攻击（\S\ref{subsec:featurespy-attack}），本文的新原型（称为 \prototype）是为了增强 SGXDedup 以抵御学习内容攻击的安全性。目前，\prototype（包括底层的 SGXDedup）由 C++ 中的 16\,K LoC 组成。下面，本文重点介绍与 \prototype 相关的实现细节。
+本文基于OpenSSL 1.1.1l\cite{openssl}、SGX SDK 2.15\cite{sgxsdk}和Intel SGX SSL\cite{sgxssl}实现了\sysnameF，并将其部署到本文提出的基于TEE的加密后重复数据删除系统\sysnameS （参见\S\ref{sec:sgxdedup-implementation}）中（新原型系统称为\prototype）以提高其针对推测内容攻击的安全性。\prototype（包括底层的\sysnameS ）共计包含16,400行C++代码。
 
-
-\paragraph*{设置。}
-初始化后，\prototype 遵循 SGXDedup，通过 NIST P-256 椭圆曲线中的 {\em Diffie-Hellman 密钥交换 (DHKE)} 在云和每个客户端安全区之间共享一个 {\em proof key}。证明密钥在基于 SGX 的 PoW 中用于生成和验证签名（见下文）。
-
+\paragraph*{原型系统启动。}
+初始化后，\prototype 遵循\sysnameS，对每个客户端持有的所有全证明安全区基于NIST P-256椭圆曲线\cite{nist}实现DHKE，以与云服务端共享PoW密钥。
 
 \paragraph*{密钥生成。}
-\prototype 适用于通过 Rabin 指纹 \cite{rabin81} 生成的可变大小明文数据块，最小、平均和最大大小分别为 4\,KiB, 8\,KiB 和 16\,KiB。为了在特征键 (\S\ref{subsec:featurespy-spe}) 上提供足够的熵，它将滑动窗口大小和 N 变换中的模数分别配置为 64 字节和 $2^{64}$。它生成 12 个子特征（每个 8 个字节），并将四个子特征的串联哈希以形成每个特征（32 个字节）。它根据来自密钥服务器（如 SGXDedup \cite{ren21}）的每个明文数据块的指纹请求 MLE 密钥，以及基于采样特征的特征密钥（根据 {\tt firstFeature}，{\ tt minFeature} 或 {\tt allFeature}）。
-
+\prototype 采用基于Rabin指纹\cite{rabin81}的内容定义的数据块分块方案生成可变大小的数据块，其中最小、平均和最大数据块大小分别固定为4\,KiB，8\,KiB和16\,KiB。为了给特征密钥（\S\ref{subsec:featurespy-spe}）提供足够的信息熵，将Rabin指纹计算的滑动窗口大小和N-transform特征提取中的模数分别配置为64字节和$2^{64}$。在特征提取过程中，生成12个子特征（每个子特征大小为8个字节），并计算相临四个子特征的串联结果的SHA-256安全哈希作为特征（共计3个，每个32个字节）。除消息锁加密密钥之外，本文提出的特征密钥也采用服务器辅助密钥生成方案产生。服务器辅助特征密钥生成中，将数据块的{\tt firstFeature}，{\tt minFeature}或{\tt allFeature}作为密钥生成的输入。
 
 \paragraph*{安全区操作。}
-加密后（通过 AES-CFB-256 实现），\prototype 将 4,096 个密文数据块分批到安全区中进行处理，以减轻 SGX 上下文切换开销 \cite{arnautov2016SCONE}。它跟踪哈希表中相似性指标的出现，并将窗口大小 $W$ 和比率阈值 $T$ 的默认值分别配置为 5\,K 和 3\%。
+在数据块加密（AES-CFB-256）后，\prototype 将整合至多4,096个密文数据块为一批送入到安全区中进行处理，以减轻安全区上下文切换开销\cite{arnautov2016SCONE}。在安全区中，\prototype 使用哈希表记录数据块相似性指标的频率，并将检查窗口大小$W$和推测内容攻击检测阈值$T$的默认值分别配置为5\,K和3\%。
 
-\prototype 遵循 SGXDedup 将源端重复数据删除与基于 SGX 的 PoW 相结合。它通过证明密钥基于 4,096 个指纹（密文数据块）的串联生成签名（通过 AES-CMAC 实现），以便云使用相同的密钥验证这些指纹的真实性。云通过LevelDB\cite{leveldb}实现指纹索引（\S\ref{subsec:featurespy-basics}），并通知客户端只传输非重复密文数据块。
+此外，\prototype 遵循\sysnameS 将源端重复数据删除与基于TEE的数据所有权证明相结合。它基于PoW密钥和每批进入安全区的密文数据块指纹（至多4,096个）的串联结果生成签名（使用AES-CMAC签名算法），以便云服务端使用相同的PoW密钥验证这些指纹的真实性。云服务端基于LevelDB\cite{leveldb}实现数据块指纹索引（\S\ref{sec:background-enc-deduplication}），并通知客户端只传输非重复的密文数据块。
 
 \paragraph*{存储管理。}
-云端以 8\,MiB {\em 容器} 为单位管理非重复密文数据块，以减轻磁盘 I/O 开销。对于每个文件，它管理一个 {\em file recipe}，其中列出了密文数据块的指纹，以及相应的 MLE 密钥和特征密钥。为保护机密性，每个客户端在将其外包到云端之前，都会使用单独的主密钥对文件配方进行加密。
+云服务端以8\,MiB大小的容器为基本单位管理非重复密文数据块，以减轻磁盘I/O开销。对于每个文件，它管理一个文件元数据，其中列出了密文数据块的指纹，以及相应的消息锁加密密钥和特征密钥。为保护文件机密性，每个客户端在将该文件元数据外包存储到云服务端之前，都会使用各自的主密钥对其进行加密。
 
-要下载文件，客户端首先从云端检索文件配方，并使用相应的主密钥对其进行解密。然后，客户端根据文件配方检索密文数据块，并根据 MLE 密钥和功能密钥对其进行解密。
+若要下载文件，客户端首先从云服务端检索目标文件的文件元数据，并使用相应的主密钥对其进行解密。然后，客户端根据文件元数据在服务端检索密文数据块，并根据文件元数据中的消息锁加密密钥和特征密钥对其进行解密，最终整合为原始文件。
 
-\paragraph*{优化。}
-本文应用标准方法来提高 \prototype 的性能。每个客户端在不同线程中提取多个明文数据块的内容特征，并在管道中并行处理分块、密钥生成、加密、PoW和上传。此外，为了提高下载性能，云会在内存中维护一个最近最少使用的缓存 (1\,GiB) 来保存最近恢复的容器。对于每个下载请求，它首先在缓存中搜索容器，并且仅当容器不在缓存中时才从磁盘中检索容器。
+\paragraph*{系统优化。}
+本文采用常规多线程与缓存方式优化\prototype 的性能。每个客户端并行处理分块、明文数据块内容特征提取（在不同线程中同时提取多个明文数据块的内容特征）、密钥生成、加密、所有权证明和非重复数据块及文件元数据的上传。此外，为了提高下载性能，云服务端在内存中维护一个最近最少使用（LRU）缓存，大小为1\,GiB，用来保存最近访问的容器。对于每个下载请求，云服务端首先在缓存中搜索目标容器，并且仅当目标容器不在缓存中时才从磁盘中检索容器。

@@ -2,24 +2,24 @@
 \label{sec:featurespy-evaluation}
 
 
-本文进行了广泛的评估来研究 \sysnameF (\S\ref{subsec:featurespy-evaluation-detection}) 的攻击检测有效性，以及 \prototype 在合成 (\S\ref{subsec:featurespy-syn}) 和现实世界中的性能(\S\ref{subsec:featurespy-real}) 工作负载。本文将主要结果总结如下：
+本文进行了广泛的评估来研究 \sysnameF (\S\ref{subsec:featurespy-evaluation-detection}) 的攻击检测有效性，以及 \prototype 在随机 (\S\ref{subsec:featurespy-syn}) 和现实世界中的性能(\S\ref{subsec:featurespy-real}) 工作负载。本文将主要结果总结如下：
 
 \begin{itemize}[leftmargin=*]
 \item \sysnameF 根据相应的密文数据块有效地找到相似的明文数据块。例如，当它们彼此进行中等修改时，它会检测到多达 80.2\% 的相似块。
-\item \sysnameF 有效地检测到学习内容攻击，即使对手在普通内容快照中提交枚举内容。同时，它为现实世界的数据引入了低误判（例如，默认配置中的零）。
+\item \sysnameF 有效地检测到推测内容攻击，即使攻击者在普通内容快照中提交枚举内容。同时，它为现实世界的数据引入了低误判（例如，默认配置中的零）。
 \item \prototype 在处理大规模真实世界数据时，在 SGXDedup（即没有 \sysnameF）的情况下会产生有限的上传（例如，8.8\%）和下载（例如，0.8\%）的性能开销。
-\item 与现有的 \cite{harnik2010side, li15} 方法相比，可以安全抵御学习内容攻击，\prototype 具有带宽效率（例如，将网络流量节省高达 98.9\%）。
+\item 与现有的 \cite{harnik2010side, li15} 方法相比，可以安全抵御推测内容攻击，\prototype 具有带宽效率（例如，将网络流量节省高达 98.9\%）。
 \end{itemize}
 
 
 \subsection{数据集}
 \label{subsec:featurespy-datasets}
 
-\paragraph*{合成数据集。}
+\paragraph*{随机数据集。}
 
-本文考虑三种类型的合成数据集进行评估。通过以受控方式修改基本块来生成第一数据集。具体来说，本文首先创建一个 8\,KiB 基本块 $M$。每次，本文在 $M$ 中随机选择 $x$ 个位置，并在每个位置更改 $y$ 个字节，以创建一个修改过的块。经过 10\,K 次修改后，本文得到一个合成数据集 {\em SYNChunk}$(x, y)$，其中包括从同一个基本块 $M$ 修改的 10\,K 个块。本文使用 SYNChunk$(x, y)$ 作为（相似块的）基本事实来研究相似性检测的有效性（Exp\#1 和 Exp\#2）。
+本文考虑三种类型的随机数据集进行评估。通过以受控方式修改基本块来生成第一数据集。具体来说，本文首先创建一个 8\,KiB 基本块 $M$。每次，本文在 $M$ 中随机选择 $x$ 个位置，并在每个位置更改 $y$ 个字节，以创建一个修改过的块。经过 10\,K 次修改后，本文得到一个随机数据集 {\em SYNChunk}$(x, y)$，其中包括从同一个基本块 $M$ 修改的 10\,K 个块。本文使用 SYNChunk$(x, y)$ 作为（相似块的）基本事实来研究相似性检测的有效性（Exp\#1 和 Exp\#2）。
 
-此外，本文将 {\em SYNFile}$(x, y)$ 视为大小为 4\,KiB 的文件。本文假设 SYNFile$(x, y)$ 在文件内容中包含 $x$ 未知变量（其值将被推断），并且每个变量的值是从大小为 $y$ 的空间中选择的。本文使用 SYNFile$(x, y)$ 作为目标文件来研究 \sysnameF 在不同情况下的检测有效性（Exp\#4）。本文不考虑更大的目标文件，因为对手需要枚举更多相似的块（用于攻击）并且更有可能被 \sysnameF 捕获。
+此外，本文将 {\em SYNFile}$(x, y)$ 视为大小为 4\,KiB 的文件。本文假设 SYNFile$(x, y)$ 在文件内容中包含 $x$ 未知变量（其值将被推断），并且每个变量的值是从大小为 $y$ 的空间中选择的。本文使用 SYNFile$(x, y)$ 作为目标文件来研究 \sysnameF 在不同情况下的检测有效性（Exp\#4）。本文不考虑更大的目标文件，因为攻击者需要枚举更多相似的块（用于攻击）并且更有可能被 \sysnameF 捕获。
 
 此外，本文将 {\em SYNUnique} 生成为一组 2\,GiB 文件，每个文件都包含全局非重复块。本文使用 SYNUnique 对 \prototype (\S\ref{subsec:featurespy-syn}) 的性能进行压力测试。
 

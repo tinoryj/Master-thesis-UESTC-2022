@@ -27,7 +27,7 @@
   \label{fig:sgxdedup-tracePerformance}
 \end{figure}
 
-图~\ref{fig:sgxdedup-tracePerformance}(a) 显示了跨 FSL 快照的上传和下载速度。 \sysnameS 和 PlainDedup 都实现了很高的上传速度，尤其是在第一个快照（例如 148.8\,MB/s \sysnameS 为 ，PlainDedup 为 157.5\,MB/s）。原因是 FSL 数据集跨快照的冗余度很高，两个系统都可以为后续快照上传较少的数据。与 PlainDedup 相比，\sysnameS 平均会导致上传性能下降 22.0\%。请注意，在本文使用合成工作负载的性能评估 (Exp\#4) 中，开销略大于 (17.5-21.4\%)。原因是现在在跟踪驱动评估中禁用了分块，\sysnameS 的瓶颈切换到 PoW（参见表~\ref{tab:sgxdedup-system-breakdown}），而 PlainDedup 的瓶颈是指纹。 \sysnameS 的下载速度从 41.3\,MB/s 下降到 36.4\,MB/s，PlainDedup 的下载速度从 45.0\,MB/s 下降到 37.9\,MB/s，主要是由于块碎片 \cite{lillibridge13} .本文可以通过重写和缓存 \cite{lillibridge13,cao2018ALACC} 来减轻块碎片。
+图~\ref{fig:sgxdedup-tracePerformance}(a) 显示了跨 FSL 快照的上传和下载速度。 \sysnameS 和 PlainDedup 都实现了很高的上传速度，尤其是在第一个快照（例如 148.8\,MB/s \sysnameS 为 ，PlainDedup 为 157.5\,MB/s）。原因是 FSL 数据集跨快照的冗余度很高，两个系统都可以为后续快照上传较少的数据。与 PlainDedup 相比，\sysnameS 平均会导致上传性能下降 22.0\%。请注意，在本文使用随机工作负载的性能评估 (Exp\#4) 中，开销略大于 (17.5-21.4\%)。原因是现在在跟踪驱动评估中禁用了分块，\sysnameS 的瓶颈切换到 PoW（参见表~\ref{tab:sgxdedup-system-breakdown}），而 PlainDedup 的瓶颈是指纹。 \sysnameS 的下载速度从 41.3\,MB/s 下降到 36.4\,MB/s，PlainDedup 的下载速度从 45.0\,MB/s 下降到 37.9\,MB/s，主要是由于块碎片 \cite{lillibridge13} .本文可以通过重写和缓存 \cite{lillibridge13,cao2018ALACC} 来减轻块碎片。
 
 图~\ref{fig:sgxdedup-tracePerformance}(b) 显示了跨 MS 快照的上传和下载速度。这两个系统的上传速度都低于 FSL 数据集，因为 MS 数据集有更多的非重复块（例如，MS 为 28.7\,M 而 FSL 为 18.3\,M）并加重了指纹索引的访问开销。与 PlainDedup 相比，\sysnameS 平均会导致 21\% 的上传速度下降。请注意，下载速度会波动（例如，\sysnameS 为 24.3-57.5\,MB/s，PlainDedup 为 25.6-60.3\,MB/s），因为某些 MS 快照具有更多非重复块，并且可能存储在可以通过顺序读取快速访问的连续区域（即更少的块碎片 \cite{lillibridge13}）。
 

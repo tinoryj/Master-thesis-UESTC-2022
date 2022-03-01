@@ -91,7 +91,7 @@ TEE全名为可信执行环境（Trusted Execution Environment）是计算平台
 
 \begin{itemize}[leftmargin=*]
     \item \textbf{隔离性}：
-    TEE通过隔离的程序执行环境，提供一个可信的执行空间，为其中运行的程序和存储的数据提供了机密性和完整性保护。X86架构的隔离机制从Intel 80286处理器开始，Intel提出了CPU的两种运行模式，并且逐步衍生出后来的不同的特权界别，再后来提出了安全区域范围更小的SGX机制实现可信执行环境TEE；同样的，ARM架构通过TrustZone技术实现了相关软硬件的隔离性，实现了安全世界（Secure World）与非安全世界（Normal World）的隔离。
+    TEE通过隔离的程序执行环境，提供一个可信的执行空间，为其中运行的程序和存储的数据提供了机密性和完整性保护。X86架构的隔离机制从Intel 80286处理器开始，Intel提出了CPU的两种运行模式，并且逐步衍生出后来的不同的特权界别，再后来提出了安全区域范围更小的SGX机制实现可信执行环境（TEE）；同样的，ARM架构通过TrustZone技术实现了相关软硬件的隔离性，实现了安全世界（Secure World）与非安全世界（Normal World）的隔离。
     \item \textbf{软硬协同性}：
     虽然标准定义可以通过单独软件方式或单独硬件方式实现TEE，但实际应用场景下，行业内更多选择通过软硬件结合的方式进行TEE的设计。
     \item \textbf{富表达性}：
@@ -142,7 +142,7 @@ ARM TrustZone\cite{trustzone}是ARM公司为Cortex-A微架构\cite{cortex-a}设�
 
 除了Cortex-A微架构外，ARM发布的新一代Cortex-M微架构\cite{cortex-m}同样为TrustZone提供了硬件支持。与Cortex-A相同的是，Cortex-M依旧将处理器运行状态划分为安全世界和非安全世界，并阻止运行于非安全世界的软件直接访问安全资源。不同的是，Cortex-M针对更快的上下文切换和低功耗应用进行了优化。具体来说，Cortex-M中世界之间的划分是基于内存映射的，并且转换是在异常处理代码中自动发生的（如图~\ref{fig:ARM-TZ-base}（b）所示）。这意味着，当从安全内存运行代码时，处理器处于安全世界，而当从非安全内存运行代码时，处理器处于非安全世界。Cortex-M中的TrustZone技术排除了监视模式，也不需要任何安全的监视软件，这大大减少了安全世界与非安全世界的切换延迟，使得世界之间的转换为更高效。
 
-各芯片产商根据ARM公司对于TrustZone的硬件设计在各自具体的芯片上进行设计和实现，基于TrustZone技术，可以搭建一个可信执行环境TEE，并在TEE内运行基于TrustZone的操作系统，如高通的QSEE、开源的OP-TEE等。
+各芯片产商根据ARM公司对于TrustZone的硬件设计在各自具体的芯片上进行设计和实现，基于TrustZone技术，可以搭建一个可信执行环境（TEE），并在TEE内运行基于TrustZone的操作系统，如高通的QSEE、开源的OP-TEE等。
 
 \section{本章小结}
 

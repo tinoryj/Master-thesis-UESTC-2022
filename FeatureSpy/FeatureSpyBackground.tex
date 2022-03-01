@@ -1,52 +1,25 @@
-\section{背景和问题}
-\label{sec:featurespy-background}
+\section{推测内容攻击}
+\label{sec:featurespy-attack}
 
-\subsection{加密后重复数据删除}
-\label{subsec:featurespy-basics}
+除了伪造所有权攻击（参见\S\ref{subsec:background-encrypted-deduplication-pow}），源端加密后重复数据删除还面临另一种侧通道攻击（仍然由恶意客户端发起），称为推测内容攻击（{\em learning-content attack}）\cite{harnik2010side, zuo2018mitigating}，它利用了源端重复数据删除泄露的重复数据删除结果（即，数据块是否已由任何其他客户端上传）。推测内容攻击假设攻击者先验地知道某些受害客户端拥有某个文件，其内容遵循公开的内容模板（即文件大部分内容已知）。攻击者的目标是识别文件中的私有部分。具体来说，攻击者会枚举私有部分的所有可能值，并生成许多伪造的文件（每个文件包含一种可能的值）。攻击者上传每个伪造的文件，如果被告知不需要传输某个文件的任意数据块（即伪造的文件不包含任何未被上传的数据块），则推断目标文件与当前伪造的文件相同。
 
-\paragraph*{重复数据删除。}
-重复数据删除是一种冗余消除技术，可以有效节省存储空间 \cite{wallace12, meyer2011deduplication}。它将每个输入文件划分为固定大小或可变大小的 {\em 块}。每个块由相应内容的加密哈希（称为 {\em 指纹}）标识，并且假设不同块映射到同一指纹的概率可以忽略不计 \cite{black2006compare}。重复数据删除存储系统仅在其指纹与现有存储指纹唯一时才存储块，以实现存储效率。本文重点介绍 {\em 外包环境}（例如云存储）中的重复数据删除，其中许多客户将数据外包到云中。云对来自相同或不同客户端的数据执行重复数据删除，以节省维护成本 \cite{harnik2010side}。
-
-
-\paragraph*{加密后重复数据删除。}
-加密后重复数据删除在外包环境中增强了重复数据删除的安全性。具体来说，一个威胁是受感染的云可以窃听外包数据并了解敏感信息。为了击败受损的云，加密后重复数据删除在将预先重复数据删除的块（称为 {\em 明文数据块}）外包给云之前执行 {\em 消息锁加密 (MLE)} \cite{bellare2013MLE, bellare2013DupLESS}。具体来说，每个明文数据块都使用从明文数据块的内容派生的对称密钥（称为 {\em MLE 密钥}）加密，这样跨不同客户端的相同明文数据块总是映射到相同的加密块（称为 {\em ciphertext chunks}) 可以通过重复数据删除删除。 MLE 的一个实例是 {\em 收敛加密 (CE)}，它使用每个明文数据块的加密哈希作为 MLE 密钥 \cite{douceur2002reclaiming}。
-
-另一个威胁是恶意客户端可以发起 {\em side-channel attack} \cite{harnik2010side, halevi11} 以从其他客户端获得对数据的未经授权的访问。具体来说，为了执行 {\em 源端重复数据删除} \cite{harnik2010side}，客户端将每个密文数据块的指纹提交给云，云维护一个 {\em 指纹索引} 以跟踪现有存储的密文数据块。如果目标密文数据块的指纹已经存储在指纹索引中（即重复），则客户端不需要传输密文数据块。否则（即不重复），云通知客户端传输密文数据块。一种侧信道攻击 \cite{mulazzani11, halevi11} 是恶意客户端可以使用任何目标密文数据块的指纹来欺骗云，使其成为相应的块，从而获得未来下载块 \cite{mulazzani11} 的全部权利。
-
-
-加密后重复数据删除将源端重复数据删除与 {\em 所有权证明 (PoW)} \cite{halevi11} 相结合，以防止上述边信道攻击。具体来说，除了区块指纹外，客户端还需要上传一个{\em proof}，云端会根据这个证明来验证客户端是否完全{\em 持有对应的密文区块}（而不仅仅是一个指纹） .云只有在相应密文数据块的所有权被成功验证时才会响应，这样恶意客户端就无法识别其他客户端拥有的密文数据块。
-
-\subsection{内容学习攻击(Learning-content Attack)}
-\label{subsec:featurespy-attack}
-除了虚假所有权之外，加密后重复数据删除还面临另一种侧通道攻击（仍然由恶意客户端发起），称为 {\em learning-content attack} \cite{harnik2010side, zuo2018mitigating}，它利用了 {\em 重复数据删除的泄漏模式}（即，块是否由任何其他客户端上传）。学习内容攻击假设攻击者先验地知道某些受害者客户端拥有一个单独的文件，其内容遵循公开的内容模式（即已知部分）。它的目标是识别文件的私有部分。具体来说，攻击者会枚举私有部分的所有可能值，并生成许多假文件。它上传每个假文件，如果被告知不要传输某个文件的任何块（即假文件是整个副本），则推断目标文件。
-
-本文认为 PoW \cite{halevi11} 不足以防止学习内容攻击，因为对手枚举了块的全部内容并且能够说服其对它们的所有权。换句话说，PoW 无法检测到这些块是完全由客户拥有还是只是一些伪造品。
+本文认为数据所有权证明\cite{halevi11}（参见\S\ref{subsec:background-encrypted-deduplication-pow}）不足以防范推测内容攻击，因为攻击者枚举了数据块的全部内容并且能够说服云服务端其对这些数据块的所有权。换句话说，数据所有权证明无法检测到这些数据块是完全由客户真实拥有的还是刻意伪造的。
 
 \paragraph*{案例研究。}
-本文通过案例研究强调学习内容攻击的严重性。本文认为 Alice 和 Bob 是一所大学的高年级学生，他们租用云（启用跨用户重复数据删除）来备份注册学生的计算机。求职后，Alice 和 Bob 都会收到一家公司的 offer，这些 offer 最初存储在各自的计算机中，然后自动备份到云端。
-本文假设 Alice 是旨在推断 Bob 的报价信息的对手。
+本文扩展现有工作\cite{harnik2010side,zuo2018mitigating}对推测内容攻击的场景分析，设计案例验证推测内容攻击的可行性。考虑Alice和Bob为应届毕业学生，同时收到某公司的雇佣合同。他们将各自合同备份至云端。假设Alice为攻击者，通过推测内容攻击推断Bob合同中的薪水和签字费。
 
-
-在这里，本文通过 Google 的 offer letter \cite{GoogleOffer} 模拟 offer，并更改 \textit{姓名}，\textit{年薪}（假设是 6\,K \cite{harnik2010side} 的倍数，介于204\,K 和 804\,K) 和 \textit{签到红利}（假设是 10\,K 的倍数并且介于 300\,K 和 600\,K 之间）生成 Alice 和 Bob 的报价，每个大约需要 18.5\,KiB。此外，本文实施了一个加密后重复数据删除存储系统，以将优惠存储在云中。具体来说，客户端将录取通知书作为输入，执行分块、加密和源端重复数据删除，并且仅将非重复的密文数据块传输到云（\S\ref{subsec:featurespy-basics}）。最初，本文将 Bob 的报价存储在云中，这样 Alice 可以通过学习内容攻击推断 Bob 的实际工资和签约奖金。具体来说，Alice 建立在自己的 offer 之上，枚举 Bob 的所有可能的年薪和签约奖金，并在存储一些虚假 offer 时，如果没有转移任何块，则推断 Bob 的 offer。
-
-
-本文随机生成 Bob 的工资和签约奖金，并评估两个 LAN 中的学习内容攻击（在本文的本地测试平台中部署客户端和云，请参阅 \S\ref{subsec:featurespy-evaluation-performance} 以了解测试平台配置) 和云（将客户端部署在本文的本地测试平台和云在阿里云 \cite{Alibaba}，请参阅 \S\ref{subsec:featurespy-evaluation-performance} 以了解云配置）测试平台。表~\ref{tab:featurespy-attack} 显示了识别正确报价的平均成本。 Alice 需要上传大约 841 个虚假报价，这些报价转换为消耗 7.4\,MiB 网络流量（包括非重复密文数据块和元数据的传输）。也就是说，在局域网和云测试台上分别推断出 Bob 的隐私信息只需要 105.0\,s 和 475.5\,s。
-
-
-\begin{table}
-  \centering
+\begin{table}[!htb]
     \small
-  \begin{tabular}{|c|c@{\hspace{.2em}}|@{\hspace{.2em}}c@{\hspace{.2em}}|@{\hspace{.2em}}c@{\hspace{.2em}}|}
-    \hline
-    {\bf Testbeds} & {\bf Upload Attempts} & {\bf Network Traffic} & {\bf Time}\\
-    \hline
-    \hline
-    LAN & \multirow{2}{*}{841.0 $\pm$ 608.3} & \multirow{2}{*}{7.4 $\pm$ 5.4\,MiB} & 105.0 $\pm$ 76.1\,s \\
-    \cline{1-1}\cline{4-4}
-    Cloud & & & 475.5 $\pm$ 339.8\,s   \\
-    \hline
-  \end{tabular}
-  \caption{学习内容攻击的平均成本。 本文在 10 次运行中评估结果，并包括来自 {\em Student's t-Distribution} 的 95\% 置信区间.}
-  \label{tab:featurespy-attack}
-  \vspace{-6pt}
+    \centering
+    \begin{tabular}{@{}cccc@{}}
+    \toprule
+    测试环境 & 上传次数                            & 上传流量（MiB）                       & 攻击时间（秒）        \\ \midrule
+    局域网  & \multirow{2}{*}{841.0 $\pm$ 608.3} & \multirow{2}{*}{7.4 $\pm$ 5.4} & 105.0 $\pm$ 76.1 \\
+    阿里云  &                                 &                                 & 475.5 $\pm$ 339.8 \\
+    \bottomrule
+    \end{tabular}
+    \caption{推测内容攻击开销：以上结果包含十次测试的平均值和基于T分布（Student's t-Distribution）的95\%置信区间}
+    \label{tab:LRI-verify}
 \end{table}
+
+为了实现以上推测内容攻击案例，本文基于Google合同模版\cite{GoogleOffer}，更改其中姓名、年薪（假设为6K的倍数\cite{harnik2010side}，介于204K和804K之间）和签字费（假设为10K的倍数，介于300K和600K之间）以生成Alice和Bob的合同，每个合同约占18.5KiB。本文随机生成Bob的薪水和签字费，并通过基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}设计实现的基础原型将Bob的合同存储至服务端。令Alice基于自身合同作为内容模版，枚举Bob所有可能的薪水和签字费，以实施推测内容攻击。本文分别在本地局域网（客户端、密钥服务器和服务端均部署在本地测试平台中，请参阅\S\ref{subsec:featurespy-evaluation-performance}以了解测试平台详细配置）和阿里云（将客户端和密钥服务器部署在本地测试平台并将云服务端部署在阿里云\cite{Alibaba}，请参阅 \S\ref{subsec:featurespy-evaluation-performance}以了解测试环境详细配置）实现上述攻击。如表~\ref{tab:LRI-verify}所示，Alice需上传大约841份伪造合同，消耗7.4MiB网络流量（包括传输非重复密文数据块和元数据），在本地局域网和阿里云环境中推断Bob的隐私信息分别只需105.0秒和475.5秒。

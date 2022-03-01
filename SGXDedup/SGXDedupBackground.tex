@@ -11,7 +11,7 @@
 安全的数据块所有权证明技术基于默克尔树协议，由于数据块级所有权证明需要频繁的进行哈希计算，该协议仅能实现37\,MB/s (Exp\#3)的证明速率。在1\,Gbps带宽的局域网环境中，所有权证明技术的计算开销甚至抵消了在源端重复数据删除中避免了重复数据上传带来的性能增益。虽然可通过基于每个文件应用所有权证明技术来减轻所有权证明计算（即，客户端证明其对文件的所有权），但服务端无法验证某一数据块是否属于已被证明的文件。现有提高服务器辅助消息锁加密或所有权证明性能的解决方案通常会牺牲安全性\cite{li2020TED,xu2013weak,pietro12}、带宽效率\cite{harnik2010side,li15}或存储效率\cite{zhou2015secdep,qin17,li2020TED}。
 
 
-\subsection{可信执行环境TEE}
+\subsection{可信执行环境（TEE）}
 \label{subsec:sgxdedup-sgx} 
 
 本文以Intel SGX\cite{sgx}（\S\ref{subsec:background-tee-sgx}）为例，在每个客户端和密钥服务器中部署安全区以保护敏感操作，减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。本文不考虑仅采用内存加密技术的TEE（例如AMD SEV\cite{AMDSEV}和MK-TME\cite{MK-TME}），因为它们需要大型可信计算基（\S\ref{subsec:background-tee-sgx}）并暴露出广泛的可攻击面\cite{mofrad18}。此外，AMD SEV\cite{AMDSEV}不保护内存完整性，并且容易受到特权攻击者可以操纵加密内存页\cite{mofrad18}的攻击。
