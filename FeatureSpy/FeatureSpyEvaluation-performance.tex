@@ -14,7 +14,7 @@
 
 \subsubsection{Synthetic Workloads}
 \label{subsec:featurespy-syn}
-本文使用 SYNUnique 评估 \prototype，其中每个 2\,GiB 文件包括全局唯一的块 (\S\ref{subsec:featurespy-datasets})。为了避免磁盘 I/O，本文在每次测试之前将所有数据加载到每个客户端的内存中，并让云端将所有接收到的数据存储在内存中（相对于 Exp\#8 使磁盘 I/O 研究真实云部署） .本文的目标是在不影响重复数据删除和磁盘 I/O 的情况下了解 \prototype 可实现的最大性能，并表明 \prototype 与 SGXDedup \cite{ren21} 相比会产生有限的性能开销。本文将每个实验的结果平均超过 10 次，并将 {\em Student's t-Distribution} 的 95\% 置信区间包含在条形图中（为简洁起见，本文将它们从折线图中排除）。
+本文使用 SYNUnique 评估 \prototype，其中每个 2\,GiB 文件包括全局唯一的块 (\S\ref{subsec:featurespy-datasets})。为了避免磁盘 I/O，本文在每次测试之前将所有数据加载到每个客户端的内存中，并让云服务端将所有接收到的数据存储在内存中（相对于 Exp\#8 使磁盘 I/O 研究真实云部署） .本文的目标是在不影响重复数据删除和磁盘 I/O 的情况下了解 \prototype 可实现的最大性能，并表明 \prototype 与 SGXDedup \cite{ren21} 相比会产生有限的性能开销。本文将每个实验的结果平均超过 10 次，并将 {\em Student's t-Distribution} 的 95\% 置信区间包含在条形图中（为简洁起见，本文将它们从折线图中排除）。
 
 \paragraph*{Exp\#5（微基准测试）。}
 本文从微基准评估开始，在 LAN 测试平台的不同机器上部署客户端、关键服务器和云。本文让客户端在 SYNUnique 中两次上传相同的 2\,GiB 文件，并在单个线程中评估不同上传步骤的处理时间。考虑的步骤包括： (i) {\em chunking}，将输入文件划分为可变大小的明文数据块； (ii) {\em 特征生成}，提取每个明文数据块的内容特征，并根据 \sysnameF 实例对目标特征进行采样； (iii) {\em 指纹}，计算每个明文数据块的指纹； (iv) {\em key generation}，生成特征密钥和 MLE 密钥； (v) {\em encryption}，对每个明文数据块进行加密； (vi) {\em detection}，基于密文数据块检测推测内容攻击； (vii) {PoW}，证明每个密文数据块的所有权； (viii) {\em deduplication}，云检测重复块； (ix) {\em transfer}，它传输不重复的密文数据块和文件元数据。
@@ -123,11 +123,11 @@
                 \hline
             \end{tabular}
         \vspace{2pt}
-        \captionof{table}{(Exp\#7) 实云部署（单位：MiB/s）。 本文使用 {\tt scp} 将 2\,GiB 文件从客户端上传到云端，以提供环境中的传输基准。}
+        \captionof{table}{(Exp\#7) 实云部署（单位：MiB/s）。 本文使用 {\tt scp} 将 2\,GiB 文件从客户端上传到云服务端，以提供环境中的传输基准。}
         \label{tab:featurespy-expCloudTest}
 \end{table}
 
-图~\ref{fig:featurespy-expMultiClientThroughput} 最多显示 10 个客户端的结果。本文不考虑更多的客户端，因为总体上传速度已经基本稳定。具体来说，第一次和第二次上传的速度都随着客户端数量的增加而增加，然后由于云端的写入竞争而逐渐降低。本文观察到 SGXDedup 比 \prototype 更早达到峰值性能（例如，四个客户端在第一次上传时达到 924.9\,MiB/s）（例如，在第一次上传中，六个客户端达到 882.2\,MiB/s），因为它实现了高性能并且云很容易饱和。类似地，由于读取云中的争用。
+图~\ref{fig:featurespy-expMultiClientThroughput} 最多显示 10 个客户端的结果。本文不考虑更多的客户端，因为总体上传速度已经基本稳定。具体来说，第一次和第二次上传的速度都随着客户端数量的增加而增加，然后由于云服务端的写入竞争而逐渐降低。本文观察到 SGXDedup 比 \prototype 更早达到峰值性能（例如，四个客户端在第一次上传时达到 924.9\,MiB/s）（例如，在第一次上传中，六个客户端达到 882.2\,MiB/s），因为它实现了高性能并且云很容易饱和。类似地，由于读取云中的争用。
 
 
 \paragraph*{Exp\#8（实云部署）。}
@@ -173,7 +173,7 @@
 
 
 \paragraph*{Exp\#10（网络流量分析）。}
-本文分析了 \prototype 的网络流量，并将其与三种可以抵御推测内容攻击的重复数据删除方法进行比较：(i) {\em target-based deduplication} \cite{harnik2010side}，强制客户端传输所有密文数据块到云端； (ii) {\em random-threshold deduplication} \cite{harnik2010side}，如果每个块的上传次数小于预定义的阈值，则执行基于存储目标的重复数据删除，或源端重复数据删除 (\S\ref{sec:background-enc-deduplication}) 否则； (iii) {\em 两阶段重复数据删除} \cite{li15}，它对来自同一客户端的密文数据块执行源端重复数据删除，然后对跨不同客户端的密文数据块执行基于存储目标的重复数据删除。在这里，本文按照之前的工作 \cite{harnik2010side} 分别在 20 和 2 处选择随机阈值重复数据删除中阈值的上限和下限。本文专注于 FSL 和 MS。对于 FSL，本文每天合并每个用户的快照，并按时间顺序存储。对于 MS，本文认为每个快照都来自一个单独的客户端，并按照快照 ID 的顺序存储快照。本文不考虑文件元数据导致的带宽开销。
+本文分析了 \prototype 的网络流量，并将其与三种可以抵御推测内容攻击的重复数据删除方法进行比较：(i) {\em target-based deduplication} \cite{harnik2010side}，强制客户端传输所有密文数据块到云服务端； (ii) {\em random-threshold deduplication} \cite{harnik2010side}，如果每个块的上传次数小于预定义的阈值，则执行目标端重复数据删除，或源端重复数据删除 (\S\ref{sec:background-enc-deduplication}) 否则； (iii) {\em 两阶段重复数据删除} \cite{li15}，它对来自同一客户端的密文数据块执行源端重复数据删除，然后对跨不同客户端的密文数据块执行目标端重复数据删除。在这里，本文按照之前的工作 \cite{harnik2010side} 分别在 20 和 2 处选择随机阈值重复数据删除中阈值的上限和下限。本文专注于 FSL 和 MS。对于 FSL，本文每天合并每个用户的快照，并按时间顺序存储。对于 MS，本文认为每个快照都来自一个单独的客户端，并按照快照 ID 的顺序存储快照。本文不考虑文件元数据导致的带宽开销。
 
 \begin{figure}[t]
     \centering
@@ -192,6 +192,6 @@
     \label{fig:featurespy-expNetworkTraffic}
 \end{figure}
 
-图~\ref{fig:featurespy-expNetworkTraffic} 展示了结果。由于 \prototype 执行纯源端重复数据删除，因此它优于其他方法。例如，在存储最后一个快照后，\prototype 将基于存储目标的重复数据删除的网络流量在 FSL 中减少了 98.9\%，在 MS 中减少了 83.1\%。两阶段重复数据删除在 ​​FSL 中表现良好（例如，只有 3.7\% 的带宽开销超过 \prototype），因为 FSL 包含大量用户内冗余。但是，在 MS 中，两级重复数据删除的网络流量最终是 \prototype 的 3.1$\times$。随机阈值重复数据删除会在 FSL（例如，\prototype 的 72.5$\times$）和 MS（例如，\prototype 的 2.6$\times$）中产生不同的网络流量。
+图~\ref{fig:featurespy-expNetworkTraffic} 展示了结果。由于 \prototype 执行纯源端重复数据删除，因此它优于其他方法。例如，在存储最后一个快照后，\prototype 将目标端重复数据删除的网络流量在 FSL 中减少了 98.9\%，在 MS 中减少了 83.1\%。两阶段重复数据删除在 ​​FSL 中表现良好（例如，只有 3.7\% 的带宽开销超过 \prototype），因为 FSL 包含大量用户内冗余。但是，在 MS 中，两级重复数据删除的网络流量最终是 \prototype 的 3.1$\times$。随机阈值重复数据删除会在 FSL（例如，\prototype 的 72.5$\times$）和 MS（例如，\prototype 的 2.6$\times$）中产生不同的网络流量。
 
 由于 Linux 和 CouchDB 数据集的每个版本几乎没有冗余，并且需要大量源端重复数据删除查询，对于 Linux，它仅带来 $1.05\%$ 的流量节省，而对于 CouchDB，它甚至导致 $0.31 \%$ 额外的流量开销。随机阈值重复数据删除带来的流量节省是完全不同的。在 MS 中，它带来了 $55.75\%$ 的流量节省，而在 FSL 和 Linux 中，只有 $21.60\%$ 和 $26.68\%$。然而，它甚至在 CouchDB 中引入了 $0.0016\%$ 的额外流量开销。另外，本文发现在CouchDB的前35个版本中，几个方案的网络流量几乎是一样的，而对于后面的版本，\prototype 的累计网络流量几乎保持在一个水平。这是因为这 35 个版本是通用版本，几乎没有冗余。并且这些通用版本和社区/企业版本之间存在大量冗余，使得\prototype 不再需要上传大量数据。

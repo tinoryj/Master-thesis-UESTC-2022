@@ -1,21 +1,21 @@
 \section{实验分析}
 \label{sec:sgxdedup-evaluation}
 
-本文为多个客户端、密钥服务器和云配置了一个 LAN 机器集群。每台机器都有一个四核 3.0\,GHz Intel Core i5-7400 CPU，一个 1\,TB 7200 RPM SATA 硬盘和 8\,GB RAM。所有机器都运行 Ubuntu 18.04 并通过 10\,GbE 连接。本文使用随机 (\S\ref{subsec:sgxdedup-synthetic}) 和真实世界 (\S\ref{subsec:sgxdedup-real-world}) 工作负载来评估 \sysnameS。本文将主要结果总结如下。
+本文以多个客户端、密钥服务器和云服务端配置了一个局域网本地验证集群。集群中每台设备均使用四核3.0\,GHz的Intel Core i5-7400 CPU，1\,TB 7200转SATA机械硬和8\,GB DDR4内存。所有设备均运行Ubuntu 18.04 LTS操作系统并通过万兆网络（10\,GbE）连接。本文使用随机（\S\ref{subsec:sgxdedup-synthetic}）和真实世界（\S\ref{subsec:sgxdedup-real-world}）工作负载来评估\sysnameS 的性能表现。本文将主要结果总结如下：
 
-\begin{itemize}[leftmargin=*]
-\item \sysnameS 在单客户端 (Exp\#1) 和多客户端 (Exp\#2) 情况下均实现了高 消息锁加密（MLE） 密钥生成性能。例如，在单客户端情况下，它比 {\em DupLESS} 的 消息锁加密（MLE） 密钥生成 \cite{bellare2013DupLESS} 采用的 OPRF-RSA 实现了 131.9$\times$ 的加速。
-\item \sysnameS 与基于通用哈希的 PoW \cite{xu2013weak}（仅实现较弱的安全性）和基于 Merkle 树的 PoW \cite{halevi11} 相比，具有 2.2$\times$ 和 8.2$\times$ 的计算 PoW 加速 (Exp\#3)。
-\item \sysnameS 在单客户端（Exp\#4 和 Exp\#5）和多客户端（Exp\#6）情况下具有较高的整体性能。本文还提供了上传中 \sysnameS 的时间细分 (Exp\#7)。例如，在 10\,GbE LAN 测试平台中，与没有任何安全保护的普通重复数据删除系统相比，\sysnameS 的上传速度仅降低了 17.5\%；在真实云部署（Exp\#5）中，\sysnameS 会导致 13.2\% 的减速，并且其性能受 Internet 带宽的限制。
-\item 在上传时间细分中，\sysnameS 将第二次上传的客户端初始化时间减少了 91.5\%，并将第二次上传的密钥生成时间减少了 41.9\% (Exp\#7)。
-\item \sysnameS 对于处理实际工作负载（Exp\#8 和 Exp\#9）非常有效。例如其上传性能开销相对于普通重复数据删除（无安全保护）在22.0\%以内；与现有方法 \cite{li15,harnik2010side} 相比，它还实现了高带宽节省，绝对差异高达 91.4\%。
+\begin{itemize}
+    \item \sysnameS 在单客户端（Exp\#1）和多客户端并发（Exp\#2）的条件下均实现了高消息锁加密密钥生成性能。例如，在单客户端情况下，相较于{\em DupLESS}\cite{bellare2013DupLESS}中基于OPRF-RSA的消息锁加密密钥生成实现了131.9倍的性能提升。
+    \item \sysnameS 与仅实现较弱的安全性的基于通用哈希的数据所有权证明方案（PoW-UH）\cite{xu2013weak}和实现较高安全性的基于默克尔树的数据所有权证明方案（PoW-MT）\cite{halevi11}相比，分别实现了2.2倍和8.2倍的计算性能提升（Exp\#5）。
+    \item \sysnameS 在单客户端（Exp\#5和Exp\#7）和多客户端（Exp\#8）情况下具有较高的整体性能。本文还提供了上传中 \sysnameS 各个步骤的时间开销分析（Exp\#9）。例如，在10\,GbE本地局域网测试平台中，与没有任何安全保护的普通重复数据删除系统（PlainDedup）相比，\sysnameS 的上传速度仅降低了17.5\%；在真实云环境部署（Exp\#7）中，相较于普通重复数据删除系统，\sysnameS 仅产生了13.2\%的性能下降（两者上传性能均受到网络带宽限制）。
+    \item 在上传过程的各个步骤时间开销分析中，\sysnameS 将第二次上传（完全重复数据）的客户端初始化时间减少了91.5\%，并将第二次上传的密钥生成时间开销减少了41.9\%（Exp\#9）。
+    \item \sysnameS 对于处理实际工作负载（Exp\#11和Exp\#12）非常有效。例如其上传的额外性能开销相对于普通重复数据删除（无安全保护）在22.0\%以内；与现有方法\cite{li15,harnik2010side} 相比，它还实现了高带宽节省，网络流量开销绝对差异高达91.4\%。
 \end{itemize}
 
+如表~\ref{tab:sgxdedup-summary}所示，总结了本文提出的基于TEE的高性能加密重复数据删除系统\sysnameS 中各项关键技术以及整体性能相较于现有方案的优劣。
 
 \begin{table}
   \centering
   \small
-    % \begin{tabular}{|@{\hspace{.1em}}c@{\hspace{.2em}}|c@{\hspace{.2em}}|c@{\hspace{.2em}}|@{\hspace{.2em}}c@{\hspace{.2em}}|}
   \begin{tabular}{cccc}
     \toprule
     \multicolumn{2}{c}{\bf 对比对象} & {\bf 基础方案/系统} & {\bf 优势} \\
@@ -35,7 +35,6 @@
 \multicolumn{2}{c}{} & Randomized-threshold dedup \cite{harnik2010side} & 91.4\% $\uparrow$ \\
     \bottomrule
   \end{tabular}
-    \vspace{-6pt}
     \caption{Summary of main results.}
   \label{tab:sgxdedup-summary}
 \end{table}

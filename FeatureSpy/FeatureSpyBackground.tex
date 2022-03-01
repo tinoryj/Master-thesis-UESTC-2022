@@ -6,7 +6,7 @@
 本文认为数据所有权证明\cite{halevi11}（参见\S\ref{subsec:background-encrypted-deduplication-pow}）不足以防范推测内容攻击，因为攻击者枚举了数据块的全部内容并且能够说服云服务端其对这些数据块的所有权。换句话说，数据所有权证明无法检测到这些数据块是完全由客户真实拥有的还是刻意伪造的。
 
 \paragraph*{案例研究。}
-本文扩展现有工作\cite{harnik2010side,zuo2018mitigating}对推测内容攻击的场景分析，设计案例验证推测内容攻击的可行性。考虑Alice和Bob为应届毕业学生，同时收到某公司的雇佣合同。他们将各自合同备份至云端。假设Alice为攻击者，通过推测内容攻击推断Bob合同中的薪水和签字费。
+本文扩展现有工作\cite{harnik2010side,zuo2018mitigating}对推测内容攻击的场景分析，设计案例验证推测内容攻击的可行性。考虑Alice和Bob为应届毕业学生，同时收到某公司的雇佣合同。他们将各自合同备份至云服务端。假设Alice为攻击者，通过推测内容攻击推断Bob合同中的薪水和签字费。
 
 \begin{table}[!htb]
     \small

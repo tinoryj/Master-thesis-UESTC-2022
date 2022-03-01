@@ -1,0 +1,14 @@
+BatchSize Type Performance
+0	Enclave 4.075408529	
+3	Enclave 3.075283203	
+6	Enclave 2.843579102	
+9	Enclave 2.781529948	
+12	Enclave 2.767705078	
+15	Enclave 2.74742513	
+0	Server  0.152032227
+3	Server  0.048382975
+6	Server  0.026726563
+9	Server  0.015471029
+12	Server  0.013934733
+15	Server  0.009023112
+

@@ -1,0 +1,22 @@
+NSize type time
+0	Enclave 0.0204913
+1	Enclave 0.04087
+2	Enclave 0.0816919
+3	Enclave 0.1631588
+4	Enclave 0.3259616
+5	Enclave 0.6539046
+6	Enclave 1.306642
+7	Enclave 2.609561
+8	Enclave 5.216644
+9	Enclave 10.42548
+0	Server 0.0167874
+1	Server 0.0299144
+2	Server 0.0561422
+3	Server 0.1082128
+4	Server 0.2124052
+5	Server 0.4215034
+6	Server 0.8391243
+7	Server 1.673812
+8	Server 3.344071
+9	Server 6.68445
+

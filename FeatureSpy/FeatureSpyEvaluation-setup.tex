@@ -1,8 +1,7 @@
 \section{实验分析}
 \label{sec:featurespy-evaluation}
 
-
-本文进行了广泛的评估来研究 \sysnameF (\S\ref{subsec:featurespy-evaluation-detection}) 的攻击检测有效性，以及 \prototype 在随机 (\S\ref{subsec:featurespy-syn}) 和现实世界中的性能(\S\ref{subsec:featurespy-real}) 工作负载。本文将主要结果总结如下：
+本文进行了广泛的评估来研究\sysnameF 对攻击检测的有效性及相关影响因素（\S\ref{subsec:featurespy-evaluation-detection}）；原型系统\prototype 在随机数据集（\S\ref{subsec:featurespy-syn}）和真实世界数据集工作负载下的性能（\S\ref{subsec:featurespy-real}）。本文将主要实验结果总结如下：
 
 \begin{itemize}[leftmargin=*]
 \item \sysnameF 根据相应的密文数据块有效地找到相似的明文数据块。例如，当它们彼此进行中等修改时，它会检测到多达 80.2\% 的相似块。

@@ -1,0 +1,34 @@
+clients type throughput
+1	1stUpload 193.5905277	 
+2	1stUpload 339.2266791 
+3	1stUpload 514.5806218 
+4	1stUpload 592.8121526 
+5	1stUpload 631.2068157 
+6	1stUpload 636.9969905 
+7	1stUpload 623.3483345 
+8	1stUpload 623.8541905 
+9	1stUpload 620.299691	
+10	1stUpload 607.6599212 
+1	2ndUpload 201.7079781
+2	2ndUpload 380.9246761
+3	2ndUpload 475.6058478
+4	2ndUpload 588.9336972
+5	2ndUpload 692.3267947
+6	2ndUpload 855.5103696
+7	2ndUpload 925.5802728
+8	2ndUpload 1016.229087
+9	2ndUpload 1211.960376
+10	2ndUpload 1277.120572
+1	Download 323.051606
+2	Download 448.8295914
+3	Download 465.9788776
+4	Download 417.0445369
+5	Download 421.6150334
+6	Download 403.7387761
+7	Download 412.2578618
+8	Download 409.167418
+9	Download 414.9454751
+10	Download 408.7844342
+
+	
+

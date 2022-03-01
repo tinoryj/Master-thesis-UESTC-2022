@@ -1,0 +1,7 @@
+BatchSize Type Performance
+0	Overall 6.207672093
+3	Overall 18.46669893
+6	Overall 166.2468105
+9	Overall 300.448766
+12	Overall 355.7297149
+15	Overall 360.9260008

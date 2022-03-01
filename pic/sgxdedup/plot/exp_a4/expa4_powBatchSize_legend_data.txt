@@ -1,0 +1,7 @@
+ID TypeName Performance
+0	OverallPoW 0
+1	OverallPoW 0
+0	PoWEnclave 0
+1	PoWEnclave 0
+0	Cloud 0
+1	Cloud 0

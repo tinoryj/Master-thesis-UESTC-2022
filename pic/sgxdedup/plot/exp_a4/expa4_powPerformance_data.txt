@@ -1,0 +1,9 @@
+type   snapshot  interval fraction 
+TEEDedup  SYN    305.4031336	6.351383726
+POW-MT   SYN   36.93363047	0.086064457
+POW-UH   SYN   138.6128995	0.039105871
+
+
+
+
+
