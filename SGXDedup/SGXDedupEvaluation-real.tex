@@ -10,7 +10,7 @@
 
 \paragraph*{Exp\#11（真实工作负载性能测试）。} 本文对\sysnameS 在真实世界数据集作为工作负载情况下的上传和下载性能进行了评估。实验从FSL和MS数据集中分别选择了10个快照。如下所示，对于FSL数据集，本文选择来自同一用户的快照以确保数据集具有较高的跨快照冗余；对于MS数据集，本文选择具有最多单个快照内冗余的10个快照。选择的FSL和MS快照分别包含1.3\,TB和1.0\,TB的原始数据。由于两个数据集提供的快照只包含数据块指纹等信息而不包含数据块内容，本文通过重复将其数据块指纹写入缓冲区直到达到指定的数据块大小为止来重构每个明文数据块，可确保相同（不同）指纹产生相同（不同）数据块。本文使用单个客户逐个快照进行上传，然后以与上传相同的顺序连续下载10个快照。本文将\sysnameS 与PlainDedup（Exp\#5）进行比较。
 
-\begin{figure}[t]
+\begin{figure}[!htb]
   \centering
   \begin{tabular}{@{\ }c@{\ }c}
   \multicolumn{2}{c}{\includegraphics[width=\textwidth]{pic/sgxdedup/expb2_trace_legend.pdf}} \\
@@ -30,7 +30,7 @@
 
 \paragraph*{Exp\#12（网络带宽开销）。} 本文评估\sysnameS 的网络带宽开销，由于\sysnameS 采用源端重复数据删除（Source-based deduplication），即客户端执行重复数据删除并仅将非重复的密文数据块上传到云服务端。因此主要对比以下三种重复数据删除方式：（1）目标端重复数据删除（Target-based deduplication），即客户端上传所有密文数据块到云服务端，云服务端对收到的密文数据块执行重复数据删除；（2）两阶段重复数据删除（Two-stage deuduplication）\cite{li15}，对单个用户内执行源端重复数据删除，随后在云服务端执行目标端重复数据删除； （3）随机阈值重复数据删除（Random-threshold deduplication）\cite{harnik2010side}，基于随机选择的阈值执行源端重复数据删除或目标端重复数据删除。参照\cite{harnik2010side}的默认参数，本文将随机阈值重复数据删除中选择阈值的上限和下限分别为20和2。对于FSL数据集，本文将不同用户同一天的快照聚合为单日快照，并将每个单日快照按照创建时间顺序添加到重复数据删除系统中。对于MS数据集，本文根据其快照编号由小到大添加每个快照（本文假设每个MS快照均来自不同的用户）到重复数据删除系统中。本文将实际传输数据量与原始数据量相比减少的比例定义为网络带宽节省量。这里，本文将目标端重复数据删除作为基准（传输全部数据），并且不考虑传输元数据产生的网络带宽开销。
 
-\begin{figure}[t]
+\begin{figure}[!htb]
     \centering
     \begin{tabular}{@{\ }c@{\ }c}
     \multicolumn{2}{c}{\includegraphics[width=0.9\textwidth]{pic/sgxdedup/upload_traffic_legend.pdf}} \\

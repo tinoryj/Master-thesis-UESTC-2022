@@ -1,7 +1,7 @@
 \subsection{随机工作负载下的性能评估}
 \label{subsec:sgxdedup-synthetic}
 
-本文使用一组随机文件组成一个随机工作负载数据集，其中每个文件均仅包含全数据集范围内非重复的数据块（完全随机）。 默认情况下，本文将随机文件大小设置为2\,GB（Exp\#2除外，本文在其中对消息锁加密密钥生成性能进行了压力测试）。 客户端通过云服务端上传或下载文件。为了避免磁盘I/O对性能的影响，本文将随机文件存储在内存中而不是磁盘上（Exp\#7除外，本文在真实云环境部署中使用磁盘处理随机文件数据集）。本文的结果为10次运行的平均结果以及T分布（\textit{ Student's t-Distribution}）下的95\%置信区间包含在条形图中（为简洁起见，本文在折线图中不标注置信区间）。
+本文使用一组随机文件组成一个随机工作负载数据集，其中每个文件均仅包含全数据集范围内非重复的数据块（完全随机）。 默认情况下，本文将随机文件大小设置为2\,GB（Exp\#2除外，本文在其中对消息锁加密密钥生成性能进行了压力测试）。 客户端通过云服务端上传或下载文件。为了避免磁盘I/O对性能的影响，本文将随机文件存储在内存中而不是磁盘上（Exp\#8除外，本文在真实云环境部署中使用磁盘处理随机文件数据集）。本文的结果为10次运行的平均结果以及T分布（\textit{ Student's t-Distribution}）下的95\%置信区间包含在条形图中（为简洁起见，本文在折线图中不标注置信区间）。
 
 \paragraph*{Exp\#1（单客户端消息锁加密密钥生成）。}本文评估\sysnameS 中两轮消息锁加密密钥生成的效率。首先，客户端基于Rabin指纹（\S\ref{sec:sgxdedup-implementation}）对2\,GB随机文件进行可变长度分块，并产生数据块指纹，发出消息锁加密密钥生成请求。然后，客户端为另一个2\,GB随机执行相同步骤进行密钥生成。不同之处在于第二轮密钥生成将使用预先计算的加解密掩码加速密钥安全区处理（\S\ref{subsec:sgxdedup-encryption}）。
 
@@ -53,17 +53,15 @@
 \end{figure}
 
 
-\paragraph*{Exp\#4（自会话密钥的更新延迟）。} 
-
-在自更新会话密钥管理中，密钥安全区和云服务端通过密钥回归独立地执行密钥更新，其方法是从旧密钥状态导出新密钥状态（\S\ref{subsec:sgxdedup-key-management}）。本文评估密钥安全区和云服务端中的密钥更新延迟。
+\paragraph*{Exp\#4（自会话密钥的更新延迟）。}在自更新会话密钥管理中，密钥安全区和云服务端通过密钥回归独立地执行密钥更新，其方法是从旧密钥状态导出新密钥状态（\S\ref{subsec:sgxdedup-key-management}）。本文评估密钥安全区和云服务端中的密钥更新延迟。
 
 \begin{figure}[!htb]
     \centering
     \begin{tabular}{@{\ }c@{\ }c}
     \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa5_keyRegression_time.pdf} &
     \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa5_keyRegression_time_default.pdf} \\
-    \mbox{\small （a） For different parameters} &
-    \mbox{\small （b） For different occurrences}
+    \mbox{\small （a）不同密钥回归参数} &
+    \mbox{\small （b）不同密钥回归次数}
     \end{tabular}
     \caption{（Exp\#4）会话密钥更新延迟}
     \label{fig:sgxdedup-rekeyingLatency}
@@ -88,123 +86,114 @@
     \begin{minipage}[t]{0.47\textwidth}
         \centering
         \includegraphics[width=\linewidth]{pic/sgxdedup/expb1_multiple_client.pdf}  
-        \caption{（Exp\#8） Multi-client uploads and downloads.}
+        \caption{（Exp\#9） 多客户端上传/下载性能}
         \label{fig:sgxdedup-multiClientThroughput}
     \end{minipage}%
 \end{figure}
 
 图~\ref{fig:sgxdedup-pow-comparison}显示了性能测试结果。由于\sysnameS 避免了客户端中的纠删码编码和默克尔树构造，其实现了相较于PoW-MT高达8.2倍的性能提升。此外，\sysnameS 相较于安全性较弱的PoW-UH实现了2.2倍的性能提升。
 
-
-%TODO
-\paragraph*{Exp\#10 （密文数据块批量大小对性能的影响）。} 本文现在评估密文数据块批大小对 \sysnameS 的 PoW 性能的影响。与 Exp\#5 中考虑的计算 PoW 速度相反，本文测量 \textit{ 有效 PoW 速度}，作为文件大小（即 2\,GB）与从 所有权证明安全区开始的总时间的比率计算密文数据块的指纹，直到云验证所有指纹。本文禁用客户端的上传操作和云服务端的重复数据删除操作，以减轻性能噪音。
-
-图~\ref{fig:sgxdedup-exp-pow-impact}（a） 显示了有效 PoW 速度与不同批量大小的关系。本文看到有效 PoW 速度随着密文批量大小从 6.2\,MB/s 到 360.9\,MB/s 的增加而增加。图~\ref{fig:sgxdedup-exp-pow-impact}（b） 显示了所有权证明安全区和云在 PoW 中每次操作 1\,MB 数据时的相应计算时间。云的消耗时间很低（例如，低于 0.05\,ms），而 所有权证明安全区的时间随着批量大小从 4.1\,ms 减少到 2.7\,ms，因为减少了上下文切换开销（见 Exp \#10）。请注意，即使批量密文数据块的总大小超过 EPC 大小，所有权证明安全区仍保持高计算性能，因为它不需要将数据内容复制到安全区（\S\ref{sec:sgxdedup-implementation}）。
-
-\begin{figure}[!htb]
-\centering
-\begin{tabular}{@{\ }c@{\ }c}
-\includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa4_powBatchSize_overall.pdf} &
-\includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa4_powBatchSize_breakdown.pdf}                 \\
-\mbox{\parbox{0.48\textwidth}{\small （a） Effective PoW speed vs. ciphertext batch size
-}}                                                                 &
-\mbox{\parbox{0.48\textwidth}{\small （b） Computational time per processing 1\,MB data}}
-\end{tabular}
-\caption{（Exp\#10） Impact of ciphertext batch size to PoW performance.}
-\label{fig:sgxdedup-exp-pow-impact}
-\end{figure}
-
-
-\paragraph*{Exp\#6 （单客户端上传及下载性能）} 本文考虑单个客户端，并将 \sysnameS 的上传和下载性能与两个基线系统进行比较:（i） \textit{ PlainDedup}，禁用 \sysnameS 的密钥生成、加密和PoW操作，从而实现源端重复数据删除，无需任何安全保护； （ii） \textit{ {\em DupLESS}} \cite{bellare2013DupLESS}，它通过 OPRF-RSA 生成每块 消息锁加密 密钥，执行加密并将所有密文数据块上传到云以进行重复数据删除。由于 {\em DupLESS} 的原始实现不提供重复数据删除存储后端（假设使用了 Dropbox），本文根据 \cite{bellare2013DupLESS} 中描述的设计在 C++ 中实现 {\em DupLESS}。请注意，PlainDedup 基于未加密的文件元数据检索文件，并且不同于加密后重复数据删除系统中的两轮下载（即 \sysnameS 和 {\em DupLESS}）；在后者中，客户端首先下载并解密文件元数据，然后下载块以重建文件 （\S\ref{subsec:sgxdedup-problem}）。
-
-本文分三个步骤评估上传和下载速度: （i） 客户端首先上传 2\,GB 文件； （ii） 客户端重新启动，然后上传另一个与前一个相同的 2\,GB 文件； （iii） 客户端下载文件。请注意，第二次上传执行源端重复数据删除（对于 PlainDedup 和 \sysnameS），并利用预先计算的掩码来加速密钥生成（仅适用于 \sysnameS）。
-
+\paragraph*{Exp\#6（密文数据块批量大小对基于TEE的所有权证明的性能影响）。}本文评估密文数据块批量大小对\sysnameS 的数据所有权证明性能的影响。与Exp\#5中仅考虑数据所有权的整体计算速度相反，本实验评估数据所有权证明的有效性能。有效性能的定义为输入的2\,GB随机文件的大小与从密文数据块输入安全区开始到全部完成指纹和证明生成、云端验证（包含网络传输开销）的总时间的比率。本文禁用了客户端上传数据块和云服务端执行重复数据删除的操作，以减少性能测量噪声。
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.64\textwidth]{pic/sgxdedup/upload_network_speed_bar.pdf} \ \ 
-    \includegraphics[width=0.32\textwidth]{pic/sgxdedup/download_network_speed_bar.pdf}
-    \vspace{-3pt}\\
-      \hspace{1.1in} {\small （a） Upload} \hspace{1.9in}
-    {\small （b） Download}
-    \vspace{-6pt}\\
-    \caption{（Exp\#5） Single-client uploads and downloads. We exclude the second upload speed of {\em DupLESS} （which has the same performance in two uploads） and the download speed of {\em DupLESS} （which is identical to that of  \sysnameS）.}
+    \begin{tabular}{@{\ }c@{\ }c}
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa4_powBatchSize_overall.pdf} &
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa4_powBatchSize_breakdown.pdf} \\
+        \mbox{\parbox{0.48\textwidth}{\small （a） 所有权证明有效速度vs.批量大小}} &
+        \mbox{\parbox{0.48\textwidth}{\small （b） 所有权证明的计算开销vs.批量大小}}
+    \end{tabular}
+    \caption{（Exp\#6）密文数据块批量大小对所有权证明的性能影响}
+    \label{fig:sgxdedup-exp-pow-impact}
+\end{figure}
+
+图~\ref{fig:sgxdedup-exp-pow-impact}（a）显示了数据所有权证明有效性能与不同密文数据块批量大小的关系，可以发现随着密文数据块批量大小增加，数据所有权证明性能从6.2\,MB/s提升到360.9\,MB/s。图~\ref{fig:sgxdedup-exp-pow-impact}（b）显示了所有权证明安全区和云服务端在数据所有权证明中每处理1\,MB数据时所需的计算时间。云服务端的计算时间开销很低（例如，低于0.05\,ms），而所有权证明安全区的计算时间随着批量大小增大从4.1\,ms减少到 2.7\,ms，这是因为批量增大使得访问所有权证明安全区的次数减少，进而减少了CPU的上下文切换开销（参见Exp\#3）。这里，即使批量的密文数据块的总大小超过安全区内存限制，所有权证明安全区仍可保持较高的计算性能，这是因为它不需要将数据块内容复制到安全区内（\S\ref{sec:sgxdedup-implementation}）。
+
+
+\paragraph*{Exp\#7 （单客户端上传及下载性能）。}本文考虑单个客户端的上传和下载峰值性能，并将\sysnameS 与两个基准系统进行比较：（1）\textit{PlainDedup}禁用\sysnameS 的密钥生成、加密和所有权证明操作，从而实现源端重复数据删除，但无需任何安全保护；（2）\textit{DupLESS}\cite{bellare2013DupLESS}基于OPRF-RSA生成数据块的消息锁加密密钥，并执行加密后源端重复数据删除，但不内包数据所有权证明。由于DupLESS的原始实现不提供重复数据删除存储后端（其使用Dropbox作为存储后端），本文根据\cite{bellare2013DupLESS}中描述的设计使用C++实现DupLESS。这里，PlainDedup基于未加密的文件元数据下载文件，并且不同于加密后重复数据删除系统中的两轮下载（即\sysnameS 和DupLESS）；在后者中，客户端首先下载并解密文件元数据，然后根据文件元数据下载数据块并解密后再重建文件（\S\ref{subsec:sgxdedup-problem}）。
+
+本文分三个步骤评估上传和下载速度：（1）客户端首先上传2\,GB随机文件；（2）客户端重新启动，然后上传与步骤1中相同的2\,GB随机文件（内容完全相同）；（3）客户端下载文件。这里，第二轮上传中PlainDedup及\sysnameS 执行源端重复数据删除，并利用推测性加密中离线计算的加解密掩码来加速密钥生成（仅适用于\sysnameS）。
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.646\textwidth]{pic/sgxdedup/upload_network_speed_bar.pdf} 
+    \includegraphics[width=0.324\textwidth]{pic/sgxdedup/download_network_speed_bar.pdf}
+    \\
+      \hspace{1.1in} {\small （a） 上传} \hspace{1.9in}
+    {\small （b） 下载}\\
+    \caption{（Exp\#7）单客户端在不同网络速度下的上传和下载性能（由于DupLESS两轮上传速度相当，且其下载速度与\sysnameS 相当，此处并未展示相关结果以便更清晰展示对比结果）}
     \label{fig:sgxdedup-singleClientThroughput}
 \end{figure}
 
-图~\ref{fig:sgxdedup-singleClientThroughput}（a） 显示了由 {\tt trickle} \cite{eriksen05} 控制的不同网络带宽的上传速度。第一次上传，当网络带宽为 1\,Gbps 时，\sysnameS （106.6\,MB/s） 和 PlainDedup （106.2\,MB/s） 的上传速度均受网速约束，而性能{\em DupLESS} （20.1\,MB/s） 的瓶颈是基于 OPRF-RSA 的密钥生成 （Exp\#1）。当网络带宽增加到 10\,Gbps（默认）时，\sysnameS 和 PlainDedup 的上传速度分别达到 193.6\,MB/s 和 242.0\,MB/s，而 {\em DupLESS} 的上传速度稳定在 20.0\, MB/秒。对于第二次上传，由于其密钥生成性能瓶颈，{\em DupLESS} 达到了与第一次上传相同的速度。 \sysnameS 和 PlainDedup 的上传速度受网络带宽的影响较小，因为它们不需要传输数据。平均而言，\sysnameS 在第一次和第二次上传中分别比 {\em DupLESS} 实现了 8.1$\times$ 和 9.6$\times$ 的加速。即使与不安全的 PlainDedup 相比，\sysnameS 也只会导致相应的上传速度下降约 17.5\% 和 21.4\%。开销来自 \sysnameS 的安全机制，包括密钥生成、加密和 PoW。
+图~\ref{fig:sgxdedup-singleClientThroughput}（a）显示了通过{\tt trickle}\cite{eriksen05}控制的不同网络带宽下的上传速度。在第一轮上传中，当网络带宽为1\,Gbps时，\sysnameS （106.6\,MB/s）和PlainDedup（106.2\,MB/s）的上传速度均受网络带宽制约，而DupLESS（20.1\,MB/s）的性能瓶颈在于基于OPRF-RSA的密钥生成（参见Exp\#1）。当网络带宽增加到10\,Gbps（本地局域网测试平台的默认带宽）时，\sysnameS 和PlainDedup的上传速度分别达到193.6\,MB/s和242.0\,MB/s，而DupLESS的上传速度稳定在20.0\,MB/s。对于第二轮上传，由于DupLESS性能瓶颈为数据块密钥生成，其上传速度与第一轮相同。而\sysnameS 和PlainDedup由于不再需要上传任何数据块，其上传速度受网络带宽的影响较小。平均而言，\sysnameS 在第一轮和第二轮上传中分别比DupLESS实现了8.1倍和9.6倍的性能提升。即使与不安全的PlainDedup相比，\sysnameS 也只会导致两轮上传速度分别下降约17.5\%和21.4\%。这些开销来自于\sysnameS 中的安全机制（包括密钥生成、数据块加密和所有权证明）。
 
-图~\ref{fig:sgxdedup-singleClientThroughput}（b） 显示了下载速度。随着网络带宽增加到 10\,Gbps，\sysnameS 和 {\em DupLESS} 均达到 323.1\,MB/s，比 PlainDedup 下降了 44.2\%。原因是他们连续检索和解密文件元数据，然后下载密文数据块。
+图~\ref{fig:sgxdedup-singleClientThroughput}（b）显示了不同网络带宽下的下载速度。随着网络带宽增加到10\,Gbps，\sysnameS 和DupLESS的下载性能均达到323.1\,MB/s。相较于PlainDedup下降了约44.2\%，其原因是作为加密后重复数据删除系统，它们首先下载并解密文件元数据然后再下载密文数据块（PlainDedup的可由云服务端直接读取文件元数据进行文件下载）。
 
-\paragraph*{Exp\#7（真实云上传和下载）。} 本文现在扩展 Exp\#5 并评估真实云部署中的上传和下载速度。具体来说，本文将客户端和密钥服务器部署在本文的局域网测试平台（\S\ref{sec:sgxdedup-evaluation}）中，并通过互联网将客户端连接到\textit{ 阿里云}，本文在其中租用了一个虚拟机\textit{ ecs.c6e.xlarge} 运行云。云机配备四核3.2GHz CPU（其主机平台为Intel Xeon Cascade Lake Platinum 8269CY），8GB内存。本文以 \textit{ Alibaba General Purpose NAS} 作为存储后端来挂载云。 NAS 可以实现高达 20000\,IOPS 的 4\,K 次随机读写。
+\paragraph*{Exp\#8（云环境上传和下载性能）。}本文扩展Exp\#7，评估在真实云环境部署中的\sysnameS 的上传和下载速度。具体来说，本文将客户端和密钥服务器部署在本地局域网测试平台（\S\ref{sec:sgxdedup-evaluation}）中，并通过互联网将客户端连接到部署在阿里云商的云服务端。本文使用阿里云\textit{ecs.c6e.xlarge}云服务器部署云服务端，其配备四核3.2GHz 虚拟CPU（其底层物理平台为Intel Xeon Cascade Lake Platinum 8269CY），以及8GB内存。本文以阿里云通用文件存储（\textit{Alibaba General Purpose NAS}）作为存储后端。该存储后端拥有20000\,IOPS的4\,K随机读写性能。
 
-本文使用磁盘上的数据文件进行上传（与 Exp\#5 相对，后者在上传之前将文件加载到客户端的内存中），并允许云服务端将接收到的数据文件存储在 NAS 中。本文还使用 {\tt scp} 将整个数据文件（即 2\,GB）从客户端上传到云服务端，以提供互联网环境下的数据传输基准。
-
-
-Table~\ref{tab:sgxdedup-real-cloud} 显示了结果。在第一次上传时，所有系统的性能（\sysnameS 为 11.4\,MB/s，PlainDedup 为 11.6\,MB/s，{\em DupLESS} 为 10.8\,MB/s）受限于 Internet 带宽（11.9\,MB/ s）。在第二次上传中，\sysnameS 实现了 104.3\,MB/s，与 {\em DupLESS} 相比加速了 9.7$\times$，与 PlainDedup 相比下降了 13.2\%。请注意，性能差异比 Exp\#5 中的要小，因为 \sysnameS 和 PlainDedup 现在受客户端磁盘 I/O 的限制。在下载中，这三个系统的性能再次受到 Internet 带宽的限制，而 \sysnameS 和 {\em DupLESS} 由于它们的串行检索和解密（Exp\#5），将 PlainDedup 的下载速度降低了 10.6\%。
+本文直接读取磁盘上的随机文件进行上传操作（与Exp\#7不同，后者在上传之前将文件加载到客户端的内存中），并在云服务端将收到的数据文件存储于通用文件存储中。本文使用最轻量化的{\tt scp}网络传输工具将测试的2\,GB随机文件上传到云服务端作为互联网环境下的网络传输速率基准。
 
 \begin{table}[!htb]
-\small
-\centering
-\renewcommand{\arraystretch}{1.05}
-\begin{tabular}{cccc}
-\toprule
-{\bf 方案} & {\bf 第一轮上传（非重复数据）} & {\bf 第二轮上传（重复数据）} & {\bf 下载} \\
-\midrule
-网络带宽 & \multicolumn{3}{c}{11.9 $\pm$ 0.03} \\  
-\sysnameS & 11.4 $\pm$ 0.3 & 104.3 $\pm$ 1.2 & 10.1 $\pm$ 0.1 \\ 
-PlainDedup & 11.6 $\pm$ 0.1 & 120.1 $\pm$ 1.4 & 11.3 $\pm$ 0.3 \\
-{\em DupLESS} & \multicolumn{2}{c}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1 \\
-\bottomrule
-\end{tabular}
-\caption{（Exp\#7） Real-cloud upload and download （unit: MB/s）.} 
-\label{tab:sgxdedup-real-cloud}
-\vspace{-6pt}
+    \small
+    \centering
+    \renewcommand{\arraystretch}{1.05}
+    \begin{tabular}{cccc}
+        \toprule
+        {\bf 方案} & {\bf 第一轮上传（非重复数据）} & {\bf 第二轮上传（重复数据）} & {\bf 下载} \\
+        \midrule
+        网络带宽 & \multicolumn{3}{c}{11.9 $\pm$ 0.03} \\  
+        \sysnameS & 11.4 $\pm$ 0.3 & 104.3 $\pm$ 1.2 & 10.1 $\pm$ 0.1 \\ 
+        PlainDedup & 11.6 $\pm$ 0.1 & 120.1 $\pm$ 1.4 & 11.3 $\pm$ 0.3 \\
+        DupLESS & \multicolumn{2}{c}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1 \\
+        \bottomrule
+    \end{tabular}
+    \caption{（Exp\#8）云环境部署下\sysnameS 的上传/下载性能（单位：MB/s）} 
+    \label{tab:sgxdedup-real-cloud}
 \end{table}
 
-\paragraph*{Exp\#8（多客户端上传和下载）。}本文现在考虑同时发布上传/下载的多个客户端。本文专注于 \sysnameS，并将密钥安全区配置为在第一次上传后为每个客户端同等地预先计算掩码。本文将网络带宽固定为 10\,Gbps，并评估所有客户端完成上传/下载的 \textit{ aggregate} 上传和下载速度。
+表~\ref{tab:sgxdedup-real-cloud}显示了测试结果。在第一轮上传中，所有系统的性能（\sysnameS 为11.4\,MB/s，PlainDedup为11.6\,MB/s，DupLESS为10.8\,MB/s）均受限于互联网网络带宽（11.9\,MB/s）。在第二轮上传中，\sysnameS 实现了104.3\,MB/s的上传速度，与DupLESS相比提升了9.7倍，与PlainDedup相比下降了13.2\%。这里的性能差异比Exp\#7中得到的结果要小，是因为\sysnameS 和PlainDedup受客户端磁盘I/O性能的限制。在下载中，这三个系统的性能再次受到互联网网络带宽的限制。此外，由于\sysnameS 和DupLESS先下载并处理文件元数据后再下载数据块并解密（参见Exp\#7），它们的下载性能相较于PlainDedup降低了10.6\%。
 
-图~\ref{fig:sgxdedup-multiClientThroughput} 显示了多达 10 个客户端的结果。第二轮的总上传速度随着客户端数量的增加而增加，达到1277.1\,MB/s。另一方面，由于客户端之间的写竞争，第一轮的总上传速度增加了七个客户端的 637.0MB/s，随后下降到 10 个客户端的 620.3MB/s。同样，由于多个客户端的读取竞争，总下载速度最终下降到 408.8\,MB/s。
+\paragraph*{Exp\#9（多客户端上传和下载性能）。}本文对\sysnameS 对多个客户端并发上传/下载的扩展性及其性能进行测试分析。本实验专注于\sysnameS，并将密钥安全区配置为在第一轮上传后为每个客户端同等的使用推测行加密（离线生成等量的加解密掩码）。本文将网络带宽固定为10\,Gbps，并评估所有客户端完成上传/下载的总体速度（即，所有客户端总操作数据量与从所有客户端开始上传/下载到最后一个客户端完成操作的时间的比值）。
 
-\paragraph*{Exp\#9（时间分解）。} 本文提供 \sysnameS 的时间分解来研究不同步骤的性能。假设key enclave已经启动，本文关注单个客户端的初始化和上传过程。初始化过程启动客户端的所有权证明安全区。上传过程包括以下步骤: （i） \textit{ chunking}，将输入文件划分为明文数据块； （ii） \textit{ fingerprinting-p}，计算明文数据块的指纹； （iii） \textit{ key generation}，从密钥安全区生成 消息锁加密 密钥； （iv） \textit{ encryption}，加密明文数据块； （v） \textit{ fingerprinting-c}，所有权证明安全区计算密文数据块的指纹； （vi） \textit{ 签名}，所有权证明安全区计算指纹的签名； （vii） \textit{ 验证}，其中云验证接收到的指纹的真实性； （viii） \textit{ deduplication}，云检测重复的密文数据块并通知客户端； （ix） \textit{ transfer}，上传非重复密文数据块和文件元数据。
+图~\ref{fig:sgxdedup-multiClientThroughput}显示了多达10个客户端的测试结果。在第一轮上传中，由于客户端对云服务端的资源竞争，总体上传速度在7个客户端时达到峰值（637.0\,MB/s），随后下降到10个客户端时的620.3\,MB/s。同样，由于多个客户端的读取竞争，总下载速度最终下降到408.8\,MB/s。而在第二轮上传中，由于不再需要向云服务端写入任何数据块，总体速度随着客户端数量增加而增加，最终在10个客户端时达到峰值1277.1\,MB/s。
 
+\paragraph*{Exp\#10（分步骤系统性能分析）。}本文将\sysnameS 中各个步骤的计算时间开销分解以探究不同步骤的性能。假设密钥服务器及密钥安全区已启动并完成初始化，本文关注单个客户端的初始化和上传过程中各个步骤的时间开销。初始化过程客户端装载并启动所有权证明安全区。上传过程包括以下步骤:（1）数据分块（\textit{chunking}），将输入文件划分为可变的小的明文数据块；（2）明文数据块指纹计算（\textit{fingerprinting-p}），计算明文数据块的指纹，用于消息锁加密密钥生成；（3）密钥生成（\textit{key generation}），客户端与密钥安全区生成消息锁加密密钥；（4）数据块加密（\textit{encryption}），使用步骤3生成的消息锁加密密钥加密明文数据块；（5）密文数据块指纹计算（\textit{fingerprinting-c}），所有权证明安全区计算密文数据块的指纹； （6）密文数据块指纹签名（\textit{signing}），所有权证明安全区计算密文数据块指纹的签名；（7）云服务端验证（\textit{verification}），云服务端基于签名验证接收到的指纹的真实性；（8）重复数据删除查询（\textit{deduplication}），云服务端检测重复的密文数据块并通知客户端；（9）数据传输（\textit{transfer}），上传非重复的密文数据块及文件元数据。
 
 \begin{table}[!htb]
 \small
 \centering
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.05}
+% \setlength{\tabcolsep}{5pt}
+% \renewcommand{\arraystretch}{1.05}
 \begin{tabular}{|c|c|c|c|}
-\hline
-  \multicolumn{2}{|@{\,}c|}{\textbf{Procedure/Step}} & \multicolumn{1}{l|}{\hspace{.5em}\textbf{First
-  Upload}} &
-\multicolumn{1}{c|}{\textbf{Second Upload}}                                                   \\ \hline \hline
-\multicolumn{2}{|@{\,}c|}{Initialization}                   & 9.38 $\pm$
-2.72\,s                                       & 0.80 $\pm$ 0.004\,s                       \\ \hline
-\hline
-                       \multicolumn{2}{|c|}{Chunking}                                 &
-\multicolumn{2}{c|}{3.77 $\pm$ 0.15\,ms }                                                \\ \hline 
-\multicolumn{2}{|c|}{Fingerprinting-p}
-                                                           &
-\multicolumn{2}{c|}{3.24 $\pm$ 0.28\,ms}                                                  \\ \hline
-\multicolumn{2}{|c|}{Key generation}                     &
-0.31 $\pm$ 0.01\,ms                           & 0.18
-$\pm$ 0.01\,ms                                                                            \\ \hline
-\multicolumn{2}{|c|}{Encryption} &
-\multicolumn{2}{c|}{2.47 $\pm$ 0.10\,ms }                                                 \\ \hline
-\multirow{3}{*}{PoW}  & Fingerprinting-c & \multicolumn{2}{c|}{3.28 $\pm$ 0.01\,ms }                                                 \\ \cline{2-4}
-                      & Signing & \multicolumn{2}{c|}{0.01 $\pm$ 0.00004\,ms }                                                                                 \\ \cline{2-4}
-                      & Verification & \multicolumn{2}{c|}{0.005 $\pm$ 0.00003\,ms } \\ \hline
-                      \multicolumn{2}{|c|}{Deduplication}  & \multicolumn{1}{c|}{0.38 $\pm$ 0.03\,ms } & 0.48 $\pm$ 0.03\,ms  \\ \hline
-                      \multicolumn{2}{|c|}{Transfer}  & \multicolumn{1}{c|}{1.29 $\pm$ 0.09\,ms } & 0.05 $\pm$ 0.01\,ms  \\ \hline
-\end{tabular}
-\caption{（Exp\#9） Time breakdown per 1\,MB of file data processed: fingerprinting-p and fingerprinting-c are operated on plaintext and ciphertext chunks, respectively.}
+    \hline
+      \multicolumn{2}{|@{\,}c|}{\textbf{Procedure/Step}} & \multicolumn{1}{l|}{\hspace{.5em}\textbf{First
+      Upload}} &
+    \multicolumn{1}{c|}{\textbf{Second Upload}}                                                   \\ \hline \hline
+    \multicolumn{2}{|@{\,}c|}{Initialization}                   & 9.38 $\pm$
+    2.72\,s                                       & 0.80 $\pm$ 0.004\,s                       \\ \hline
+    \hline
+                           \multicolumn{2}{|c|}{Chunking}                                 &
+    \multicolumn{2}{c|}{3.77 $\pm$ 0.15\,ms }                                                \\ \hline 
+    \multicolumn{2}{|c|}{Fingerprinting-p}
+                                                               &
+    \multicolumn{2}{c|}{3.24 $\pm$ 0.28\,ms}                                                  \\ \hline
+    \multicolumn{2}{|c|}{Key generation}                     &
+    0.31 $\pm$ 0.01\,ms                           & 0.18
+    $\pm$ 0.01\,ms                                                                            \\ \hline
+    \multicolumn{2}{|c|}{Encryption} &
+    \multicolumn{2}{c|}{2.47 $\pm$ 0.10\,ms }                                                 \\ \hline
+    \multirow{3}{*}{PoW}  & Fingerprinting-c & \multicolumn{2}{c|}{3.28 $\pm$ 0.01\,ms }                                                 \\ \cline{2-4}
+                          & Signing & \multicolumn{2}{c|}{0.01 $\pm$ 0.00004\,ms }                                                                                 \\ \cline{2-4}
+                          & Verification & \multicolumn{2}{c|}{0.005 $\pm$ 0.00003\,ms } \\ \hline
+                          \multicolumn{2}{|c|}{Deduplication}  & \multicolumn{1}{c|}{0.38 $\pm$ 0.03\,ms } & 0.48 $\pm$ 0.03\,ms  \\ \hline
+                          \multicolumn{2}{|c|}{Transfer}  & \multicolumn{1}{c|}{1.29 $\pm$ 0.09\,ms } & 0.05 $\pm$ 0.01\,ms  \\ \hline
+    \end{tabular}
+\caption{（Exp\#10）每处理1\,MB数据的分步骤时间开销（指纹识别-p和指纹识别-c分别对明文和密文数据块的指纹计算操作）。}
 \label{tab:sgxdedup-system-breakdown}
 \vspace{-6pt}
 \end{table}
 
-表~\ref{tab:sgxdedup-system-breakdown} 显示结果（每 1\,MB 处理的文件数据）。初始化过程在第一次上传时非常耗时，因为它需要联系Intel认证服务以检查所有权证明安全区的完整性。客户端再次重启时，不再需要执行远程认证，首轮设置时间减少91.5%。请注意，初始化过程的时间开销可以在多次上传和下载中分摊。
+表~\ref{tab:sgxdedup-system-breakdown}显示了每处理结1\,MB文件数据时各个步骤的时间开销结果。初始化过程在第一轮上传时非常耗时，这是因为它需要联系Intel认证服务以检查所有权证明安全区的完整性。当客户端再次重启时，由于不再需要执行远程认证（\S\ref{subsec:sgxdedup-enclave-management}），初始化时间减少91.5\%。
 
-
-密钥生成步骤是高效的，最多占用整个上传时间的 2.1\%。通过推测性加密，\sysnameS 进一步将第一次上传的密钥生成时间减少了 41.9\%。此外，整个 PoW 步骤占用了总上传时间的 24.4\%，而 PoW 中的主要计算是密文数据块的指纹识别，这对于在加密后重复数据删除中查找重复项是必要的。通过轻量级的签名和验证步骤（最多占用总上传时间的 0.1\%），本文可以保护源端重复数据删除免受侧通道攻击，同时将首次上传的传输时间减少 96.1\%。
+实验发现基于TEE的服务器辅助密钥生成步骤是高效的，且最多占用整个上传时间的2.1\%。通过推测性加密，\sysnameS 进一步将密钥生成时间减少了41.9\%（第二轮相较于第一轮）。此外，数据所有权证明步骤占用了总上传时间的24.4\%，而所有权证明中的主要计算开销是密文数据块的指纹计算，该步骤对于之后的基于密文数据块的重复数据删除查询时必要的。通过轻量级的签名和验证步骤（最多占用总上传时间的0.1\%），本文可以保护源端重复数据删除免受伪造所有权的侧信道攻击，同时将重复数据的上传时间开销降低96.1\%。
 
