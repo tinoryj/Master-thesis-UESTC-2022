@@ -167,7 +167,7 @@ Restart is required after the installation is finished. Then, check whether `isg
 }
 \end{lstlisting}
 
-Before starting, you need to fill the SPID and subscription keys in `./config.json` based on your registration information in Intel （如下代码段~\ref{lst:sgx-settings}所示）.
+Before starting, you need to fill the SPID and subscription keys in `./config.json` based on your registration information in Intel (如下代码段~\ref{lst:sgx-settings}所示).
 
 \begin{lstlisting}[style=json,caption={SGX安全区远程认证相关参数},label{lst:sgx-settings}]
 ...
@@ -196,7 +196,7 @@ Before starting, you need to fill the SPID and subscription keys in `./config.js
 
 Compile \sysnameS as follows.
 
-\begin{lstlisting}[style=shell,caption={\sysnameS 原型系统编译与清理（手动）},label{lst:sgxdedup-build-manual}]
+\begin{lstlisting}[style=shell,caption={\sysnameS 原型系统编译与清理(手动)},label{lst:sgxdedup-build-manual}]
 mkdir -p bin \&\& mkdir -p build \&\& mkdir -p lib \&\& cd build
 cmake -DCMAKE\_BUILD\_TYPE=Release .. \&\& make
 
@@ -211,7 +211,7 @@ mkdir -p bin/Containers \&\& mkdir -p bin/Recipes
 
 Alternatively, we provide a script for a quick build and clean-up, and you can use it.
 
-\begin{lstlisting}[style=shell,caption={\sysnameS 原型系统编译与清理（自动化脚本）},label{lst:sgxdedup-build-automatic}]
+\begin{lstlisting}[style=shell,caption={\sysnameS 原型系统编译与清理(自动化脚本)},label{lst:sgxdedup-build-automatic}]
 chmod +x ./Scripts/*.sh
 # Build \sysnameS in release mode
 ./Scripts/buildReleaseMode.sh

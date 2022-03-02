@@ -7,7 +7,7 @@ qSet=('4' '16' '32')
 # for p in ${pSet[@]}; do
 #     for q in ${qSet[@]}; do
 #         echo ${p}-${q}
-#         ./selectTargetOutput "./8K/Rand-8192-"${p}"Pos-16B-10K-128.csv" ${p} ${q} 3 1 2 4
+#         ./selectTargetOutput "./8K/Rand-8K-"${p}"Pos-32B-10000.csv" ${p} ${q} 3 1 2 4
 #         Rscript synBarPlotDetect.r syn-p${p}-q${q}-detect.data syn-p${p}-q${q}-detect.pdf "Indicator-1" "Indicator-2" "Indicator-4"
 #         Rscript synBarPlotSim.r syn-p${p}-q${q}-sim.data syn-p${p}-q${q}-sim.pdf
 #         pdfcrop syn-p${p}-q${q}-detect.pdf syn-p${p}-q${q}-detect.pdf
@@ -17,7 +17,7 @@ qSet=('4' '16' '32')
 # for p in ${pSet[@]}; do
 #     for q in ${qSet[@]}; do
 #         echo ${p}-${q}
-#         ./selectTargetOutput "./8K/Rand-8192-"${p}"Pos-16B-10K-128.csv" ${p} ${q} 3 1 2 4
+#         ./selectTargetOutput "./8K/Rand-8K-"${p}"Pos-32B-10000.csv" ${p} ${q} 3 1 2 4
 #         Rscript synBarPlotDetect.r syn-p${p}-q${q}-detect.data syn-p${p}-q${q}-detect.pdf "Indicator-1" "Indicator-2" "Indicator-4"
 #         # Rscript synBarPlotSim.r syn-p${p}-q${q}-sim.data syn-p${p}-q${q}-sim.pdf
 #         pdfcrop syn-p${p}-q${q}-detect.pdf syn-p${p}-q${q}-detect.pdf
@@ -27,6 +27,8 @@ qSet=('4' '16' '32')
 
 Rscript synBarPlotDetect.r syn-p1-q4-detect.data syn-p1-q4-detect.pdf "SPE(1)" "SPE(2)" "SPE(4)"
 pdfcrop syn-p1-q4-detect.pdf syn-p1-q4-detect.pdf
+Rscript synBarPlotDetect.r syn-p2-q8-detect.data syn-p2-q8-detect.pdf "SPE(1)" "SPE(2)" "SPE(4)"
+pdfcrop syn-p2-q8-detect.pdf syn-p2-q8-detect.pdf
 Rscript synBarPlotDetect.r syn-p4-q16-detect.data syn-p4-q16-detect.pdf "SPE(1)" "SPE(2)" "SPE(4)"
 pdfcrop syn-p4-q16-detect.pdf syn-p4-q16-detect.pdf
 Rscript synBarPlotDetect.r syn-p8-q32-detect.data syn-p8-q32-detect.pdf "SPE(1)" "SPE(2)" "SPE(4)"

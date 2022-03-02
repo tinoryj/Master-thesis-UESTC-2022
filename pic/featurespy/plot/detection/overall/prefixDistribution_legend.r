@@ -22,7 +22,7 @@ if(T){
     scale_size_manual(values=c(1.5, 1.5)) +
     coord_cartesian(ylim=c(0.0005, 0.15)) +
     scale_y_continuous(breaks=seq(0, 0.15, 0.05), labels=format(seq(0, 0.15, 0.05), scientific=FALSE)) +
-    ylab("Top-1 (%)") +
+    ylab("Frac. (%)") +
     xlab("Window ID") +
     theme_bw() +
     theme(

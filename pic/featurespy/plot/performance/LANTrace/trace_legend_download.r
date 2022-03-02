@@ -14,7 +14,7 @@ my_color=c("#a6d854", "#ffd92f")
 if(T){
     x1 <- read.table("legend_download.data",header=TRUE)
     cairo_pdf(file="trace_legend_download.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("SGXDedupDownload","AverageDownload"),labels=c("SGXDedup Download","SGXDedup+ Download"))
+    x1$Type <- factor(x1$Type, levels=c("TEEDedupDownload","AverageDownload"),labels=c("TEEDedup Download","TEEDedup+ Download"))
     my_hist = ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance,shape=Type, linetype=Type, colour=Type, group=Type)) +
     geom_line(size=1.5)  + 
     geom_point(size=4, stroke=1.5, fill="white") +

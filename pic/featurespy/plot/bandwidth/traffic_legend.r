@@ -17,7 +17,7 @@ abbrev_x <- c(1,expression(2^3), expression(2^6),expression(2^9),expression(2^12
 if(T){
     x1 <- read.table("traffic_fsl.data",header=TRUE)
     cairo_pdf(file="./upload_traffic_legend.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("Client-side", "Two-stage", "Random-threshold","Server-side"), labels=c("SGXDedup+", "Two-stage dedup", "Random-threshold dedup","Target-based dedup"))
+    x1$Type <- factor(x1$Type, levels=c("Client-side", "Two-stage", "Random-threshold","Server-side"), labels=c("TEEDedup+", "Two-stage dedup", "Random-threshold dedup","Target-based dedup"))
     my_hist = ggplot(data=x1, aes(x=as.factor(ID), y=Traffic/1073741824,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
     geom_line(size=2)  + 
     # geom_point(size=4, stroke=1.5, fill="white") +

@@ -6,7 +6,7 @@ require(scales)
 font_import()
 loadfonts()
 
-mywidth=4.5
+mywidth=9
 myheight=2.5
 my_value=c(1,10)
 my_line=c("longdash","solid")
@@ -25,7 +25,7 @@ if(T){
     coord_cartesian(ylim=c(0.00195, 0.042), xlim=c(2.5, 33)) +
     scale_x_continuous(breaks=c(1,10,20,30)) +
     scale_y_continuous(breaks=seq(0, 0.04, 0.02), labels=format(seq(0, 4, 2), scientific=FALSE)) +
-    ylab("Top-1 (%)") +
+    ylab("Frac. (%)") +
     xlab("Window ID") +
     theme_bw() +
     theme(

@@ -15,7 +15,7 @@ abbrev_x <- c(1,expression(2^3), expression(2^6),expression(2^9),expression(2^12
 if(T){
     x1 <- read.table("trace_fsl.data",header=TRUE)
     cairo_pdf(file="trace_fsl.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "DetFirstUpload", "DetMinUpload", "DetAllUpload","SGXDedupDownload","AverageDownload"))
+    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "DetFirstUpload", "DetMinUpload", "DetAllUpload","TEEDedupDownload","AverageDownload"))
     ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
     geom_line(size=1.5)  + 
     geom_point(size=4, stroke=1.5, fill="white") +

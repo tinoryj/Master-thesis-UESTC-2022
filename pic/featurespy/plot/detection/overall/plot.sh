@@ -4,14 +4,14 @@
 versionSet=('1000')
 tyeSet=('all' 'min' 'first')
 
-# for q in ${versionSet[@]}; do
-#     echo ${q}
-#     for type in ${tyeSet[@]}; do
-#     Rscript prefixDistribution-${q}-CouchDB-$type.r
-#     pdfcrop "prefixDistribution-${q}-CouchDB-$type.pdf" "prefixDistribution-${q}-CouchDB-$type.pdf"
-#     pdfcrop "prefixDistribution-${q}-CouchDB-$type.pdf" "prefixDistribution-${q}-CouchDB-$type.pdf"
-#     done
-# done
+for q in ${versionSet[@]}; do
+    echo ${q}
+    for type in ${tyeSet[@]}; do
+    Rscript prefixDistribution-${q}-CouchDB-$type.r
+    pdfcrop "prefixDistribution-${q}-CouchDB-$type.pdf" "prefixDistribution-${q}-CouchDB-$type.pdf"
+    pdfcrop "prefixDistribution-${q}-CouchDB-$type.pdf" "prefixDistribution-${q}-CouchDB-$type.pdf"
+    done
+done
 
 for q in ${versionSet[@]}; do
     echo ${q}

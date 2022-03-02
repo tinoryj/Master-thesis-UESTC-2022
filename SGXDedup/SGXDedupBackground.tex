@@ -1,28 +1,28 @@
 \section{问题与安全模型}
 \label{sec:sgxdedup-background}
 
-本节介绍了加密后重复数据删除中存在的性能问题（\S\ref{subsec:sgxdedup-problem}）和以Intel SGX为代表的可信执行环境（\S\ref{subsec:sgxdedup-sgx}）在应用时所需的考量。本节还介绍了本章的威胁模型和与之对应的安全性假设（\S\ref{subsec:sgxdedup-threat}）。
+本节介绍了加密后重复数据删除中存在的性能问题(\S\ref{subsec:sgxdedup-problem})和以Intel SGX为代表的可信执行环境(\S\ref{subsec:sgxdedup-sgx})在应用时所需的考量。本节还介绍了本章的威胁模型和与之对应的安全性假设(\S\ref{subsec:sgxdedup-threat})。
 
 \subsection{加密重复数据删除}
 \label{subsec:sgxdedup-problem}
 
-现有源端加密后重复数据删除的实现需要昂贵的密码学机制保护。服务器辅助消息锁加密（\S\ref{subsec:background-encrypted-deduplication-key}）需要OPRF协议\cite{naor2004Number}来保护明文数据块指纹免受密钥服务器的影响，但OPRF协议涉及到高昂的公钥密码学操作。例如，本文的评估（\S\ref{subsec:sgxdedup-synthetic}）表明基于OPRF的消息锁加密密钥生成速率仅能达到25\,MB/s (Exp\#1)，并导致整体加密后重复数据删除性能被限制在20\,MB/s (Exp\#7)。
+现有源端加密后重复数据删除的实现需要昂贵的密码学机制保护。服务器辅助消息锁加密(\S\ref{subsec:background-encrypted-deduplication-key})需要OPRF协议\cite{naor2004Number}来保护明文数据块指纹免受密钥服务器的影响，但OPRF协议涉及到高昂的公钥密码学操作。例如，本文的评估(\S\ref{subsec:sgxdedup-synthetic})表明基于OPRF的消息锁加密密钥生成速率仅能达到25\,MB/s (Exp\#1)，并导致整体加密后重复数据删除性能被限制在20\,MB/s (Exp\#7)。
 
-安全的数据块所有权证明技术基于默克尔树协议，由于数据块级所有权证明需要频繁的进行哈希计算，该协议仅能实现37\,MB/s (Exp\#5)的证明速率。在1\,Gbps带宽的局域网环境中，所有权证明技术的计算开销甚至抵消了在源端重复数据删除中避免了重复数据上传带来的性能增益。虽然可通过基于每个文件应用所有权证明技术来减轻所有权证明计算（即，客户端证明其对文件的所有权），但服务端无法验证某一数据块是否属于已被证明的文件。现有提高服务器辅助消息锁加密或所有权证明性能的解决方案通常会牺牲安全性\cite{li2020TED,xu2013weak,pietro12}、带宽效率\cite{harnik2010side,li15}或存储效率\cite{zhou2015secdep,qin17,li2020TED}。
+安全的数据块所有权证明技术基于默克尔树协议，由于数据块级所有权证明需要频繁的进行哈希计算，该协议仅能实现37\,MB/s (Exp\#5)的证明速率。在1\,Gbps带宽的局域网环境中，所有权证明技术的计算开销甚至抵消了在源端重复数据删除中避免了重复数据上传带来的性能增益。虽然可通过基于每个文件应用所有权证明技术来减轻所有权证明计算(即，客户端证明其对文件的所有权)，但服务端无法验证某一数据块是否属于已被证明的文件。现有提高服务器辅助消息锁加密或所有权证明性能的解决方案通常会牺牲安全性\cite{li2020TED,xu2013weak,pietro12}、带宽效率\cite{harnik2010side,li15}或存储效率\cite{zhou2015secdep,qin17,li2020TED}。
 
 
-\subsection{可信执行环境（TEE）}
+\subsection{可信执行环境(TEE)}
 \label{subsec:sgxdedup-sgx} 
 
-本文以Intel SGX\cite{sgx}（\S\ref{subsec:background-tee-sgx}）为例，在每个客户端和密钥服务器中部署安全区以保护敏感操作，减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。本文不考虑仅采用内存加密技术的TEE（例如AMD SEV\cite{AMDSEV}和MK-TME\cite{MK-TME}），因为它们需要大型可信计算基（\S\ref{subsec:background-tee-sgx}）并暴露出广泛的可攻击面\cite{mofrad18}。此外，AMD SEV\cite{AMDSEV}不保护内存完整性，并且容易受到特权攻击者可以操纵加密内存页\cite{mofrad18}的攻击。
+本文以Intel SGX\cite{sgx}(\S\ref{subsec:background-tee-sgx})为例，在每个客户端和密钥服务器中部署安全区以保护敏感操作，减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。本文不考虑仅采用内存加密技术的TEE(例如AMD SEV\cite{AMDSEV}和MK-TME\cite{MK-TME})，因为它们需要大型可信计算基(\S\ref{subsec:background-tee-sgx})并暴露出广泛的可攻击面\cite{mofrad18}。此外，AMD SEV\cite{AMDSEV}不保护内存完整性，并且容易受到特权攻击者可以操纵加密内存页\cite{mofrad18}的攻击。
 
 
-针对Intel SGX中影响性能的各项因素（\S\ref{subsec:background-tee-sgx}），本文使用密封来避免安全区第一次认证启动后再次启动时的远程证明（\S\ref{subsec:sgxdedup-enclave-management}）；限制了安全区中内容的大小以减轻安全区分页开销（\S\ref{subsec:sgxdedup-encryption}）；通过批量处理数据块来减少安全区ECall的数量（\S\ref{sec:sgxdedup-implementation}）以降低安全区内部调用时产生CPU上下文切换开销的频率。
+针对Intel SGX中影响性能的各项因素(\S\ref{subsec:background-tee-sgx})，本文使用密封来避免安全区第一次认证启动后再次启动时的远程证明(\S\ref{subsec:sgxdedup-enclave-management})；限制了安全区中内容的大小以减轻安全区分页开销(\S\ref{subsec:sgxdedup-encryption})；通过批量处理数据块来减少安全区ECall的数量(\S\ref{sec:sgxdedup-implementation})以降低安全区内部调用时产生CPU上下文切换开销的频率。
 
 \subsection{威胁模型与安全假设}
 \label{subsec:sgxdedup-threat}
 
-\sysnameS 所针对的威胁模型基于具有多个客户端、密钥服务器和云的服务器辅助消息锁加密架构\cite{bellare2013DupLESS}。其主要安全目标是实现外包数据存储\cite{bellare2013DupLESS}的数据机密性保障，以对抗通过以下恶意行为推断原始明文数据块的半诚实（semi-honest）的攻击者:
+\sysnameS 所针对的威胁模型基于具有多个客户端、密钥服务器和云的服务器辅助消息锁加密架构\cite{bellare2013DupLESS}。其主要安全目标是实现外包数据存储\cite{bellare2013DupLESS}的数据机密性保障，以对抗通过以下恶意行为推断原始明文数据块的半诚实(semi-honest)的攻击者:
 
 \begin{itemize}[leftmargin=*]
     \item 攻击者可以攻击并控制密钥服务器以了解每个客户端发出的 消息锁加密密钥生成请求，并且可以访问全局秘密来发动离线暴力破解攻击\cite{bellare2013DupLESS}，进而推断外包存储中密文数据块所对应的原始明文数据块。
@@ -32,7 +32,7 @@
 针对以上威胁模型，本章做出以下安全假设：
 
 \begin{enumerate}[leftmargin=*]
-    \item 客户端、密钥服务器和云之间的所有通信都受到保护（例如，通过 SSL/TLS）以防止篡改。
+    \item 客户端、密钥服务器和云之间的所有通信都受到保护(例如，通过 SSL/TLS)以防止篡改。
     \item Intel SGX完全可信且可靠，针对SGX的拒绝服务攻击或侧信道攻击\cite{bulck2018FORESHADOW, oleksenko18}不在本文研究范围之内。
     \item 本文提出的方案可以通过附加远程审计\cite{ateniese2007provable, juels2007pors}实现完整性保障，并通过多服务端方式\cite{li15}实现系统容错。
     \item 本文不考虑流量分析\cite{zuo2018mitigating}、频率分析\cite{li2020TED}和数据块大小泄漏\cite{ritzdorf16}等威胁。针对这些威胁的相关防御机制\cite{zuo2018mitigating,li2020TED,ritzdorf16}与本文的设计完全兼容。

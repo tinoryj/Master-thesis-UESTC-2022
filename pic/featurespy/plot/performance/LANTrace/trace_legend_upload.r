@@ -14,7 +14,7 @@ my_line=c("dashed","solid","dotted","longdash","solid","solid")
 if(T){
     x1 <- read.table("legend_upload.data",header=TRUE)
     cairo_pdf(file="trace_legend_upload.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "DetFirstUpload", "DetMinUpload", "DetAllUpload"),labels=c("SGXDedup", "firstFeature", "minFeature", "allFeature"))
+    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "DetFirstUpload", "DetMinUpload", "DetAllUpload"),labels=c("TEEDedup", "firstFeature", "minFeature", "allFeature"))
     my_hist = ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance,shape=Type, linetype=Type, colour=Type, group=Type)) +
     geom_line(size=1.5)  + 
     geom_point(size=4, stroke=1.5, fill="white") +

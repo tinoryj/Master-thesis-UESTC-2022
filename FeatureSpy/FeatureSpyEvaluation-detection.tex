@@ -1,77 +1,70 @@
 \subsection{检测效果分析}
 \label{subsec:featurespy-evaluation-detection}
 
-
-
-\paragraph*{Exp\#1（明文数据块的相似性检测）。}
-本文首先证明本文可以通过比较内容特征来有效地找到相似的明文数据块。 本文考虑多个 SYNChunk$(x, y)$，每个 SYNChunk$(x, y)$ 包括 10\,K 个从基本块修改的相似块（即 ground truth）（回想一下，$x$ 定义了修改位置的数量，$y$ 定义每个位置的修改字节数，参见\S\ref{subsec:featurespy-datasets}）。 本文为 SYNChunk$(x, y)$ 中的每个明文数据块提取四个内容特征，如果它们分别共享一到四个相同的特征，则识别相似的块。 本文评估在基本事实中的所有（相似）块中成功识别的相似块的比例。
-
+\paragraph*{Exp\#1(明文数据块的相似性检测)。}本文首先验证通过比较内容特征可有效地找到相似的明文数据块。本文考虑多个SYNChunk$(x, y)$数据集，每个SYNChunk$(x, y)$ 包括10\,K个从基本数据块修改得到的相似数据块($x$定义了随机修改位置的数量，$y$定义了每个修改位置处连续修改的字节数，参见\S\ref{subsec:featurespy-datasets})。 本文为 SYNChunk$(x, y)$中的每个明文数据块提取四个内容特征，如果这些数据块与基本数据块分别共享一到四个相同的特征，则认为成功识别相似数据块。本文评估每个SYNChunk$(x, y)$数据集中成功识别的与基本数据块相似的数据块占整个数据集所有数据块的比例。
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.4\textwidth]{pic/featurespy/plot/detection/syn/fixed_pq_legend.pdf}
+    \includegraphics[width=0.5\textwidth]{pic/featurespy/plot/detection/syn/fixed_pq_legend.pdf}
     \vspace{5pt}\\
     \begin{tabular}{@{\ }c@{\ }c}
         \includegraphics[width=0.45\textwidth]{pic/featurespy/plot/detection/syn/fixed_p_4.pdf} &
         \includegraphics[width=0.45\textwidth]{pic/featurespy/plot/detection/syn/fixed_q_16.pdf}\\
-        \mbox{\small (a) Fix $x=4$ and vary $y$}&
-        \mbox{\small (b) Fix $y=16$ and vary $x$}\\
+        \mbox{\small (a) 固定$x=4$，改变$y$}&
+        \mbox{\small (b) 固定$y=16$，改变$x$}\\
     \end{tabular}
-    \vspace{-6pt}
-    \caption{(Exp\#1) 明文数据块的相似性检测。 本文评估每个随机数据集 SYNChunk$(x, y)$ 中所有相似块中具有某些相同特征的块的比例。}
-    \vspace{-6pt}
+    \caption{(Exp\#1) 明文数据块的相似性检测}
     \label{fig:featurespy-expDetectionSynSim}
 \end{figure}
 
-图~\ref{fig:featurespy-expDetectionSynSim} 显示了当本文使用具有固定 $x$ = 4 和变化 $y$ 的 SYNChunk$(x, y)$ 时的结果（图~\ref{fig:featurespy-expDetectionSynSim}( a))，以及具有固定的 $y$ = 16 和变化的 $x$（图~\ref{fig:featurespy-expDetectionSynSim}(b)）。一般来说，识别出的相似块的比例会随着 $x$ 和 $y$ 而降低，因为重大修改可能会修改块的内容特征。具体来说，该分数受 $x$（比 $y$）的影响更大，因为增加 $x$ 将改变大量滑动窗口（\S\ref{subsec:featurespy-basic}）的拉宾指纹。另一方面，本文可以通过检查它们是否共享一个或两个相同的特征来有效地检测大部分（例如，至少 78.9\%）的相似块。
+图~\ref{fig:featurespy-expDetectionSynSim}(a)显示了当本文固定$x$=4并变化$y$(图~\ref{fig:featurespy-expDetectionSynSim}(a))，以及固定$y$=16并变化的$x$(图~\ref{fig:featurespy-expDetectionSynSim}(b))时产生的多个SYNChunk$(x, y)$数据集的检测结果。一般来说，识别到相似数据块的成功率随着$x$或$y$的增大而降低，这是因为修改范围越大，越有可能使数据块产生不同的内容特征。具体来说，称功率受$x$的影响比$y$更大，这是因为增加$x$将改变大量滑动窗口(\S\ref{subsec:featurespy-basic})的Rabin指纹。另一方面，本文可以通过检查数据块是否共享任意一个或两个相同的特征来有效地检测大部分(例如，至少78.9\%)的相似数据块。
 
-
-
-\paragraph*{Exp\#2（密文数据块的相似性检测）。}
-本文扩展 Exp\#1 来研究基于密文数据块的 \sysnameF 的相似性检测。本文应用本文的设计技术并研究相应操作后相似性保留的有效性。具体来说，本文对每个明文数据块执行特征密钥生成（通过 \S\ref{subsec:featurespy-spe} 中的建议实例），并评估相似块的比例（在每个随机数据集 SYNChunk$(x, y)$ 中）分配有相同的功能键。然后，本文执行 SPE，并进一步评估可以基于相应（加密）相似性指标识别的相似块的比例。在这里，本文关注三个 SPE 实例 SPE$(1)$、SPE$(2)$ 和 SPE$(4)$，它们划分了第一个、第二个和四个块（分别占用 16、32 和 64 个字节）每个明文数据块分别作为相似性指标。
+\paragraph*{Exp\#2(密文数据块的相似性检测)。}
+本文扩展Exp\#1来研究\sysnameF 基于密文数据块的的相似性检测能力。实验采用本文提出的相似性保留加密方法(SPE)产生密文数据块。具体来说，本文对每个明文数据块执行特征密钥生成(\S\ref{subsec:featurespy-spe})，检查为每个SYNChunk$(x, y)$中所有数据块生成的密钥相同的比例，以验证相似性保留加密为相似数据块产生相同特征密钥的能力(标记为KeyGen)。然后，本文执行SPE，使用特征密钥加密对应数据块的特征指标，并统计加密后的相似性指标与每个数据集中基本数据块的相似性指标相同的比例作为密文数据块相似性检查能力的结果。这里，本文关注三个SPE实例SPE$(1)$、SPE$(2)$和SPE$(4)$，它们将1个、2个和4个加密块(长度分别为16、32和64个字节)作为每个数据块的相似性指标。
 
 \begin{figure*}[!htb]
     \centering
     \includegraphics[width=0.4\textwidth]{pic/featurespy/plot/detection/syn/synBarPlotDetect_legend.pdf}\\
-    \begin{tabular}{@{}c@{}c@{}c}
-        \includegraphics[width=0.6\textwidth]{pic/featurespy/plot/detection/syn/syn-p1-q4-detect.pdf} \\
-        \mbox{\small (a) $\textrm{SYNChunk}(1, 4)$}\\
-        \includegraphics[width=0.6\textwidth]{pic/featurespy/plot/detection/syn/syn-p4-q16-detect.pdf} \\
-        \mbox{\small (b) $\textrm{SYNChunk}(4, 16)$}\\
-        \includegraphics[width=0.6\textwidth]{pic/featurespy/plot/detection/syn/syn-p8-q32-detect.pdf}\\
-        \mbox{\small (c) $\textrm{SYNChunk}(8, 32)$}\\
+    \begin{tabular}{@{}c@{}c}
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/syn/syn-p1-q4-detect.pdf} &
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/syn/syn-p2-q8-detect.pdf} \\
+        \mbox{\small (a) $\textrm{SYNChunk}(1, 4)$} &
+        \mbox{\small (b) $\textrm{SYNChunk}(2, 8)$} \\
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/syn/syn-p4-q16-detect.pdf} &
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/syn/syn-p8-q32-detect.pdf}\\
+        \mbox{\small (c) $\textrm{SYNChunk}(4, 16)$} &
+        \mbox{\small (d) $\textrm{SYNChunk}(8, 32)$}\\
     \end{tabular}
-    \vspace{-6pt}
-    \caption{(Exp\#2) 密文数据块的相似性检测。 本文评估分配有相同特征密钥（对于 KeyGen）的相似块的比例，以及可以通过检查相似性指标来检测（对于配置第一个 $i$ 数据块的每个 SPE$(i)$ 每个明文数据块作为相应的相似性指标）。}
-    \vspace{-6pt}
+    \caption{(Exp\#2) 密文数据块的相似性检测}
     \label{fig:featurespy-expDetectionSynDetect}
 \end{figure*}
 
-图~\ref{fig:featurespy-expDetectionSynDetect} 共同展示了具有小 (SYNChunk$(1, 4)$)、中 (SYNChunk$(4, 16)$) 和大 (SYNChunk$(8, 32)$) 修改相似的块，分别。与 {\tt allFeature} 相比，实例 {\tt firstFeature} 和 {\tt minFeature} 为更相似的块生成相同的特征密钥，尤其是当修改量很大时（例如，{\tt firstFeature} 和 59.3 的 45.7\% {\tt minFeature} 的 \% 与 {\tt allFeature} 的 8.1\%）。此外，{\tt minFeature} 优于 {\tt firstFeature}，这可能是因为最小内容特征对块内容的随机变化更加稳健。此外，本文观察到 SPE 在加密后保留了相似性。具体来说，通过检查密文数据块中的相似性指标，本文在 SYNChunk$(1, 4)$、SYNChunk$(4, 16)$ 和 SYNChunk$( 8, 32)$，分别。
+图~\ref{fig:featurespy-expDetectionSynDetect}展示了具有最小(SYNChunk$(1,4)$)、小(SYNChunk$(2,8)$)、中(SYNChunk $(4,16)$)和大(SYNChunk$(8,32)$)差异的相似数据块产生的密文数据块的相似性检查成功率。与{\tt allFeature}相比，实例{\tt firstFeature}和{\tt minFeature}为仅为更相似的数据块生成相同的特征密钥，尤其是当修改量很大时。例如，{\tt firstFeature}和{\tt minFeature}分别为45.7\%和59.3\%的数据块产生相同密钥，但{\tt allFeature}仅为8.1\%的数据块生成了相同特征密钥。此外，{\tt minFeature}为差异较大的相似数据块产生相同特征密钥的能力优于{\tt firstFeature}，这可能是因为最小内容特征对数据块内容的随机变化更不敏感。此外，本文观察到相似性保留加密在加密后保留了较高的相似性。具体来说，通过检查密文数据块中的相似性指标，本文在SYNChunk$(1,4)$、SYNChunk$(2,8)$、SYNChunk$(4,16)$和SYNChunk$(8,32)$，分别检测到至多95.2\%、90.4\%、80.2\%和58.3\%的相似数据块。
 
-
-\paragraph*{Exp\#3（攻击检测案例研究）。}
-本文扩展了 \S\ref{sec:featurespy-attack} 中的案例研究，以研究 \sysnameF 如何检测推断工资和签约奖金的推测内容攻击。本文用一个固定比率阈值 $T$ = 3\% 和一个大小为两个块（或等效 32 字节）的相似性指标配置 \sysnameF。回想一下 \S\ref{sec:featurespy-attack}，攻击者需要伪造 101 个 $\times$ 31 = 3131 个对抗性提议，其中年薪和签约奖金分别有 101 和 31 个可能值。为了模拟在普通快照中上传对抗提议的攻击者（否则更容易检测到），本文将所有对抗提议随机插入到每个 Linux/CouchDB 快照中，对 {\em 攻击快照} 的每个单独文件执行分块（即包括对抗性提议）作为现有的基于数据块的重复数据删除方法 \cite{fsl, meyer2011deduplication}，并进一步在块上应用 SPE。本文评估 {\em 检测率}，它是 \sysnameF 成功检测到的此类攻击快照的数量与攻击快照总数的比率。此外，本文让 \sysnameF 处理每个原始快照（没有对抗性注入），并评估 {\em false rate}，即 \sysnameF 误判的快照数量与原始快照总数的比率。本文展示了 \sysnameF 如何检测推测内容攻击，然后是整体检测结果。 在这里，本文不考虑 FSL 和 MS 进行评估，因为它们没有实际的数据内容。
-
+\paragraph*{Exp\#3(推测内容攻击检测案例研究)。}
+本文扩展了\S\ref{sec:featurespy-attack}中的案例研究，以研究 \sysnameF 如何检测推断工资和签约奖金的推测内容攻击。本文用一个固定报告阈值$T$=3\%和一个大小为两个加密块(等效32字节)的相似性指标来配置 \sysnameF。参考\S\ref{sec:featurespy-attack}，攻击者需要伪造101$\times$31=3131个文件，其中年薪和签约奖金分别有101和31个可能值。为了模拟在正常数据集中混合伪造文件(否则更容易被检测到)的攻击者，本文将所有伪造文件随机插入到每个Linux/CouchDB(由于FSL和MS数据集不含实际数据，因此不予考虑)快照中的文件之间，并对每个快照中的文件(及伪造的文件)单独执行数据分块\cite{fsl, meyer2011deduplication}，并在产生的数据块之上应用相似性保留加密。本文以检测率(\sysnameF 成功检测到的此类攻击快照的数量与使用的快照总数的比率)作为评价标准。此外，本文使用\sysnameF 处理每个原始快照中的所有文件(不包含伪造的文件)，评估\sysnameF 的误判率(即\sysnameF 误判的快照数量与原始快照总数的比率)。本文展示了\sysnameF 如何检测推测内容攻击，并给出整体的检测结果。
 
 \begin{figure*}[!htb]
     \centering
-    \includegraphics[width=0.5\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution_legend.pdf}\\
-    \begin{tabular}{@{\ }c@{\ }c@{\ }c}
-        \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-Linux-first.pdf} &
-        \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-Linux-min.pdf} &
-        \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-Linux-all.pdf} \\
-        \mbox{\makecell[c]{\small (a) {\tt firstFeature}}}&
-        \mbox{\makecell[c]{\small (b) {\tt minFeature}}}&
-        \mbox{\makecell[c]{\small (c) {\tt allFeature}}}\\
+    \includegraphics[width=0.8\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution_legend.pdf}\\
+    \begin{tabular}{@{\ }c@{\ }c}
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-Linux-first.pdf} &
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-CouchDB-first.pdf}\\
+        \mbox{\makecell[c]{\small (a) {\tt Linux firstFeature方案}}}&
+        \mbox{\makecell[c]{\small (b) {\tt CouchDB firstFeature方案}}}\\        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-Linux-min.pdf} &
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-CouchDB-min.pdf} \\
+        \mbox{\makecell[c]{\small (c) {\tt Linux minFeature方案}}}&
+        \mbox{\makecell[c]{\small (d) {\tt CouchDB minFeature方案}}}\\
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-Linux-all.pdf} &
+        \includegraphics[width=0.49\textwidth]{pic/featurespy/plot/detection/overall/prefixDistribution-1000-CouchDB-all.pdf} \\
+        \mbox{\makecell[c]{\small (e) {\tt Linux allFeature方案}}} &
+        \mbox{\makecell[c]{\small (f) {\tt CouchDB allFeature方案}}}\\
     \end{tabular}
-    \vspace{-5pt}
-    \caption{(Exp\#3) 一个攻击检测示例，显示 {\tt firstFeature}、{\tt minFeature} 和 {\tt allFeature} 处理具有（即攻击）和不具有（即原始）的相同 Linux 快照 对抗性注射。 本文展示了在每个窗口中具有相同相似性指标的最多块数占块总数（固定为 $W$ = 1\,K）的比例。}
+    \caption{(Exp\#3)攻击检测示例：给出了使用{\tt firstFeature}、{\tt minFeature}和{\tt allFeature}方案分别处理包含伪造文件(即攻击，Attack)和不包含伪造文件(即不发生攻击，Raw)的Linux/CouchDB最后一个版本的快照时每个窗口(大小固定为$W$=1\,K)中最高频相似性指标的出现频率。}
     \label{fig:featurespy-expDetectionOverall}
   \end{figure*}
 
-  图~\ref{fig:featurespy-expDetectionOverall} 比较 \sysnameF 实例在检测相同 Linux 快照（即 v5.13）中注入（即攻击）或没有（即原始）对抗性提议的推测内容攻击.具体来说，x 轴索引处理窗口（其大小在此处固定为 1\,K），而 y 轴显示 {\em most} 数量的密文数据块中具有相同相似性指示符的部分相应窗口中所有块的总数（即 1\,K）。本文观察到所有三个实例都可以有效地检测到推测内容攻击，因为它们在攻击快照中至少有一个窗口，因此具有相同相似性指标的密文数据块的比例大于 $T $（即 3\%）。另一方面，{\tt minFeature} 遭受 {\em false positive}，因为它甚至有一个正常的窗口（例如，原始的第 65 个窗口），其中分数（例如，3.5\%）检测到相似的块中大于$T$。
-
+图~\ref{fig:featurespy-expDetectionOverall}显示了\sysnameF 的三种实例在检测原始Linux快照（v5.13）和CouchDB快照（v6.6.2）以及插入伪造文件后的快照时的结果。具体来说，x轴为处理窗口（大小固定为$W$=1\,K）的顺序编号，y轴为每个窗口中具有相同相似性指标的数据块占该窗口中所有数据块的比例。本文观察到所有三个实例都可以有效地检测到推测内容攻击，因为它们在攻击快照（Attack）中至少有一个窗口的最高频率超过了阈值$T$=3\%（即，具有相同相似性指标的密文数据块的比例大于$T$=3\%)。另一方面，{\tt minFeature}方案在Linux快照中发生了误判，这是由于其至少有一个正常的窗口(例如，Raw的第65个窗口)中，具有相同相似性指标的密文数据块的比例大于阈值$T$=3\%。
 
 \begin{figure}[!htb]
     \centering
@@ -80,45 +73,39 @@
     \begin{tabular}{@{\ }c@{\ }c}
         \includegraphics[width=0.6\textwidth]{pic/featurespy/plot/detection/overall/effectivenessLinux.pdf} &
         \includegraphics[width=0.3\textwidth]{pic/featurespy/plot/detection/overall/falsePositiveLinux.pdf}\\
-        \mbox{\small (a) Detection rate} &
-        \mbox{\small (b) False rate}\\
+        \mbox{\small (a) 检测率} &
+        \mbox{\small (b) 误判率}\\
     \end{tabular}
-    \vspace{-6pt}
-    \caption{(Exp\#3) 每个 Linux 快照中的总体检测率和错误率。 请注意，{\tt allFeature} 没有任何误报。}
-    \vspace{-6pt}
+    \caption{(Exp\#3) 每个Linux/CouchDB快照中的总体检测率和误判率}
     \label{fig:featurespy-expDetectionOverallFalsePositive}
 \end{figure}
 
-图~\ref{fig:featurespy-expDetectionOverallFalsePositive} 展示了本文将窗口大小分别配置为 1\,K, 5\,K 和 10\,K 时 Linux 中的总体检测率和误报率。通常，\sysnameF 在 Linux 快照中实现了很高的检测率（例如，至少 98.6\%）。然而，较大的窗口会略微降低检测率，因为相对较小部分的密文数据块具有相同的相似性指标。
-此外，\sysnameF 仅在窗口大小为 1\,K 时才会产生误报（图~\ref{fig:featurespy-featureDistribution}(b)），因为原始快照最初具有相当大的部分相似块。即使在这种情况下，{\tt allFeature} 也没有任何误报，因为它只检测到少量相似的块。另一方面，检测到更多相似块 (Exp\#2) 的 {\tt minFeature} 会产生 28.6\% 的误报。
+图~\ref{fig:featurespy-expDetectionOverallFalsePositive}显示了本文将\sysnameF 的检测窗口大小分别配置为1\,K，5\,K和10\,K时Linux数据集中的总体检测率和误判率。在各个窗口大小设置下，\sysnameF 均实现了很高的检测率(例如，至少98.6\%)。然而，较大的窗口会略微降低检测率，这是因为大窗口中仅有相对较小部分的密文数据块具有相同的相似性指标。
+此外，\sysnameF 仅在窗口大小为1\,K时才会产生误判(图~\ref{fig:featurespy-featureDistribution}(b))，这是因为原始快照（Raw）当中本身包含较多的相似数据块。但即使在这种情况下，{\tt allFeature}也没有任何误判，这是因为它只能检测到少量相似度较高的数据块。另一方面，可检测到更多相似数据块(Exp\#2)的{\tt minFeature}方案会产生28.6\%的误判。
 
+除了Linux数据集，本文也在CouchDB数据集中评估\sysnameF，并发现所有\sysnameF 的实例均可成功检测到所有混合在CouchDB数据集的快照中的推测内容攻击(即具有100\%的检测率)，且没有引入任何误判。可能的原因是每个 CouchDB快照中几乎不含有相似数据块，当注入许多对伪造文件产生的相似数据块时，\sysnameF 可以立即检测到(相似数据块的)频率分布变化。
 
-除了 Linux，本文在 CouchDB 中评估 \sysnameF 并发现所有 \sysnameF 实例成功检测到所有 CouchDB 快照中的推测内容攻击（即 100\% 的检测率），而没有引入任何误报。可能的原因是每个 CouchDB 快照都有许多不相似的块，当注入许多对抗性的相似块时，\sysnameF 可以立即检测到（相似块的）分布变化。
+%TODO
+\paragraph*{Exp\#4(目标文件熵对攻击检测的影响)。}
 
-
-\paragraph*{Exp\#4（不同目标文件的影响）。}
-本文现在研究 \sysnameF 在用于检测针对每个随机文件 SYNFile$(x, y)$ 的推测内容攻击时的有效性（回想一下，$x$ 是文件中未知变量的数量，$y $ 是每个变量的可能值的数量）。为了攻击 SYNFile$(x, y)$，本文枚举了 $x\times y$ 对抗文件，将它们随机插入到最后一个 Linux 快照（最大大小为 985.9\,MiB 以及其他快照）中，并评估检测运行 100 次后 \sysnameF 的速率（配置为固定的 $T$ = 3\%）。
-
+本文扩展研究\sysnameF 在检测具有特定信息熵的目标文件时的检测率，即针对具有不同信息熵的目标文件SYNFile$(x, y)$($x$是文件中未知变量的数量，$y$是每个变量的可能取值的数量，参见\S\ref{subsec:featurespy-datasets})的检测能力。本文枚举了目标文件的$x\times y$个可能值，将它们随机插入到Linux数据集最后一个快照（v5.13，大小为985.9\,MiB)包含的文件序列中，并评估100次随机生成的目标文件数据集下\sysnameF 的检测率(阈值设置为固定的$T$=3\%)。
 
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=0.5\textwidth]{pic/featurespy/plot/detection/trade-off/trade_off_legend.pdf}
-    \vspace{5pt}\\
+    \vspace{5pt} \\
     \begin{tabular}{@{\ }c@{\ }c@{\ }c}
         \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/trade-off/varyWindow_linux.pdf} &
         \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/trade-off/varyModifyPos_linux.pdf}&
         \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/detection/trade-off/varyFileNumber_linux.pdf} \\
-        \makecell[c]{\small (a) Vary $W$ \\ \small against SYNFile$(6, 2048)$} &
-        \makecell[c]{\small (b) Fix W = 5\,K \\ \small against SYNFile$(\cdot, 2048)$} &
-        \makecell[c]{\small (c) Fix W = 5\,K \\ \small against SYNFile$(6, \cdot)$} \\
+        \makecell[c]{\small (a) 改变窗口大小$W$ \\ \small 检测SYNFile$(6,2048)$数据集} &
+        \makecell[c]{\small (b) 固定窗口大小$W$=5\,K \\ \small 检测SYNFile$(\cdot,2048)$数据集} &
+        \makecell[c]{\small (c) 固定窗口大小$W$=5\,K \\ \small 检测SYNFile$(6,\cdot)$数据集} \\
     \end{tabular}
-    \vspace{-6pt}
-    \caption{(Exp\#4) Impact of different target files.}
-    \vspace{-6pt}
+    \caption{(Exp\#4)针对不同伪造文件集合的检测率}
     \label{fig:featurespy-expDetectionTradeOff}
 \end{figure}
 
-图~\ref{fig:featurespy-expDetectionTradeOff}(a) 展示了当本文改变窗口大小 $W$ 来攻击 SYNFile$(6, 2048)$ 时的结果。 {\tt firstFeature} 和 {\tt minFeature} 的检测率对 $W$ 的增加是稳健的（例如，始终保持在 93\% 以上），但 {\tt allFeature} 的检测率下降到 34\%。原因是 {\tt allFeature} 只能检测到少量相似的块（Exp\#2），当 $W$ 很大时，这些块的比例很低。图~\ref{fig:featurespy-expDetectionTradeOff}(b) 展示了本文改变目标文件中未知变量 $x$ 的数量时的结果。本文观察到，当 $x$ = 9 时，{\tt allFeature} 的检测率再次急剧下降到 21\%，因为它无法检测到具有更多不同区域的相似块。
+图~\ref{fig:featurespy-expDetectionTradeOff}(a)展示了当改变窗口大小$W$时检测到对SYNFile$(6,2048)$目标文件的攻击的检测率结果。{\tt firstFeature}和{\tt minFeature}的检测率基本不受到窗口大小$W$的影响(例如，始终保持在93\%以上)，但{\tt allFeature}的检测率随着窗口大小增大而下降到34\%。其原因是{\tt allFeature}只能检测到少量相似度较高的数据块(Exp\#2)，当窗口大小$W$很大时，这些数据块在窗口内的占比很低。图~\ref{fig:featurespy-expDetectionTradeOff}(b)展示了改变目标文件中未知变量$x$的数量时的检测结果。本文观察到，当$x$=9时，{\tt allFeature}的检测率再次急剧下降到21\%，这是因为它无法检测到具有更多差异区域的相似数据块。
 
-
-图~\ref{fig:featurespy-expDetectionTradeOff}(c) 展示了当本文改变目标文件中每个变量的可能值的数量 $y$ 时的结果。当 $y$ 为 512 时，所有三个实例的检测率都较低（例如，高达 13\%）。原因是目标文件的熵较低，攻击者只需要构建少量相似的内容。 \sysnameF 在这种情况下检测推测内容攻击是无效的。 一种可能的解决方案是配置一个小的 $T$ 或 $W$ 以在检测到几个类似的块时报告攻击案例，但这会增加在不同工作负载中误判的可能性。 本文提出了一项未来的工作，即如何自动平衡检测对低熵文件的攻击和在处理不同工作负载时最大限度地减少误判之间的权衡。
+图~\ref{fig:featurespy-expDetectionTradeOff}(c)展示了当改变目标文件中每个变量的可能值的数量$y$时的结果。当$y$为512时，所有三个实例的检测率都较低(例如，仅为13\%)。其原因是目标文件的信息熵较低，攻击者只需要构建少量相似的内容，导致\sysnameF 难以在混在的数据块流中找到相似数据块。一种可能的解决方案是配置一个较小的阈值$T$或窗口大小$W$以在检测到少数几个相似数据块时报告攻击行为，但这会增加在不同工作负载中误判的可能性。对此，本文提出了一项未来的研究方向，即如何自动平衡检测对低信息熵文件的攻击和在处理不同工作负载时最大限度地减少误判之间的权衡。

@@ -15,7 +15,7 @@ if(T){
     x1 <- read.table("./download_bar.data",header=TRUE)
     cairo_pdf(file="download_bar.pdf",  width=mywidth, height=myheight)
     # cairo_pdf(file="./download_bar.pdf",  width=mywidth, height=myheight)
-    x1$type <- factor(x1$type, levels=c("SGX","Detection"), labels=c("SGXDedup","SGXDedup+"))
+    x1$type <- factor(x1$type, levels=c("SGX","Detection"), labels=c("TEEDedup","TEEDedup+"))
     x1$Netspeed <- factor(x1$Netspeed, levels=c("download"), labels=c("Download"))
     ggplot(data=x1, aes(x=Netspeed, y=throughput, fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.85), colour="black", width=0.7, size=0.3) +

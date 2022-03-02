@@ -7,20 +7,20 @@ loadfonts()
 
 mywidth=5
 myheight=2.5
-my_value=c(1,2,3,4,5)
-my_line=c("dashed","solid","dashed","solid","solid")
+my_value=c(1,2,3,4,5,6)
+my_line=c("dashed","solid","dotted","longdash","solid","solid")
 
 abbrev_x <- c(1,expression(2^3), expression(2^6),expression(2^9),expression(2^12),expression(2^15))
 
 if(T){
     x1 <- read.table("trace_linux.data",header=TRUE)
     cairo_pdf(file="trace_linux.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "DetFirstUpload", "DetMinUpload", "DetAllUpload","AverageDownload"))
+    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "DetFirstUpload", "DetMinUpload", "DetAllUpload","TEEDedupDownload","AverageDownload"))
     ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
     geom_line(size=1.5)  + 
     geom_point(size=0.5, stroke=0.8, fill="white") +
     scale_shape_manual(values=c(my_value)) +
-    scale_colour_brewer(palette="Set1") +
+    scale_colour_brewer(palette="Dark2") +
     scale_linetype_manual(values=c(my_line)) +
     coord_cartesian(ylim=c(16.2, 350)) +
     scale_y_continuous(breaks=seq(0, 300, 100), labels=format(seq(0, 300, 100), scientific=FALSE)) +
