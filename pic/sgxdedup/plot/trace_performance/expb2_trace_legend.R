@@ -26,7 +26,7 @@ if(T){
     coord_cartesian(ylim=c(0, 125)) +
     scale_y_continuous(breaks=seq(0, 125, 25), labels=format(seq(0, 125, 25), scientific=FALSE)) +
     scale_x_discrete(labels=c("1","2","3","4","5"), breaks=seq(1,5,1)) + 
-    ylab('Speed (MB/s)') +
+    ylab('Speed (MiB/s)') +
     xlab("Backup ID") +
     theme_bw() +
     theme(

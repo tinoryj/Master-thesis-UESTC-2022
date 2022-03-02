@@ -26,7 +26,7 @@ if(T){
     # scale_y_continuous(breaks=seq(0, 360, 60), labels=format(seq(0, 360, 60), scientific=FALSE)) +
     # scale_x_discrete(labels=abbrev_x, breaks=c("0", "3", "6", "9", "12", "15")) + 
     # scale_fill_manual(name="", breaks=c("OverallPoW", "PoWEnclave", "Cloud"),labels=c("OverallPoW", "PoWEnclave", "Cloud"))+
-    # ylab('Speed (MB/s)') +
+    # ylab('Speed (MiB/s)') +
     # xlab("Ciphertext Batch Size") +
     theme_bw() +
     theme(

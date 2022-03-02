@@ -27,7 +27,7 @@ if(T){
     coord_cartesian(ylim=c(0, 1300)) +
     scale_y_continuous(breaks=seq(0, 1300, 325), labels=format(seq(0, 1300, 325), scientific=FALSE)) +
     scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8,9,10), labels=format(c(1,2,3,4,5,6,7,8,9,10), scientific=FALSE)) + 
-    ylab("Speed (MB/s)") +
+    ylab("Speed (MiB/s)") +
     xlab("Number of Clients") +
     theme_bw() +
     theme(

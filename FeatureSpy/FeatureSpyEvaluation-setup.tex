@@ -1,7 +1,7 @@
 \section{实验分析}
 \label{sec:featurespy-evaluation}
 
-本文进行了广泛的评估来研究\sysnameF 对推测内容攻击的检测的有效性及相关影响因素(\S\ref{subsec:featurespy-evaluation-detection})；原型系统\prototype 在合成数据集(\S\ref{subsec:featurespy-syn})和真实世界数据集工作负载下的性能(\S\ref{subsec:featurespy-real})。本文将主要实验结果总结如下：
+本文进行了广泛的评估来研究\sysnameF 对推测内容攻击的检测的有效性及相关影响因素(\S\ref{subsec:featurespy-evaluation-detection})；原型系统\prototype 在合成数据集(\S\ref{subsubsec:featurespy-syn})和真实世界数据集工作负载下的性能(\S\ref{subsubsec:featurespy-real})。本文将主要实验结果总结如下：
 
 \begin{itemize}
   \item \sysnameF 根据相应的密文数据块可有效地找到相似的明文数据块。例如，当明文数据块具有中等程度的差异时，它可检测到多达80.2\%的相似数据块。
@@ -19,7 +19,7 @@
 
 此外，本文创建随机文件数据集SYNFile$(x, y)$，其中包含指定个数个大小为4\,KiB的相似文件。本文假设SYNFile$(x, y)$中的文件包含$x$个未知变量(其值将被作为推测内容攻击中的攻击目标)，并且每个变量的值是从大小为$y$的信息空间中随机选择的。本文使用SYNFile$(x, y)$作为目标文件来研究\sysnameF 在不同情况下对推测内容攻击的检测有效性(Exp\#4)。本文不考虑更大的目标文件，这是因为攻击者需要枚举更多相似的数据块(用于发起攻击)并且更有可能被\sysnameF 捕获。
 
-此外，本文产生一组大小为2\,GiB的非重复随机文件数据集SYNUnique，其中每个文件中的数据块在数据集中均为非重复数据块。本文使用SYNUnique对\prototype 的性能进行压力测试(\S\ref{subsec:featurespy-syn})。
+此外，本文产生一组大小为2\,GiB的非重复随机文件数据集SYNUnique，其中每个文件中的数据块在数据集中均为非重复数据块。本文使用SYNUnique对\prototype 的性能进行压力测试(\S\ref{subsubsec:featurespy-syn})。
 
 \paragraph*{真实世界数据集。}本文采用四个真实世界数据集，其特征总结在表~\ref{tab:featurespy-datasets}中： 
 

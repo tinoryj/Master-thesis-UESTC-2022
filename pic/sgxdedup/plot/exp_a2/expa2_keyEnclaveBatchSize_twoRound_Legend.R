@@ -26,7 +26,7 @@ if(T){
     coord_cartesian(ylim=c(0, 2.5)) +
     scale_y_continuous(breaks=seq(0, 2.5, 0.5), labels=format(seq(0, 2.5, 0.5), scientific=FALSE)) +
     scale_x_discrete(labels=abbrev_x, breaks=c("0", "1", "2", "3", "4", "5")) + 
-    ylab("Time (ms/MB)") +
+    ylab("Time (ms/MiB)") +
     xlab("Fingerprint Batch Size") +
     theme_bw() +
     theme(

@@ -26,7 +26,7 @@ if(T){
     coord_cartesian(ylim=c(0, 400)) +
     scale_y_continuous(breaks=seq(0, 400, 100), labels=format(seq(0, 400, 100), scientific=FALSE)) +
     scale_x_discrete(labels=abbrev_x, breaks=c("0", "3", "6", "9", "12", "15")) + 
-    ylab('Speed (MB/s)') +
+    ylab('Speed (MiB/s)') +
     xlab("Ciphertext Batch Size") +
     theme_bw() +
     theme(

@@ -64,15 +64,15 @@ Restart is required after the installation is finished. Then, check whether `isg
         "_chunkingType": 1, 
         // 0: fixed size chunking; 1: variable size chunking; 2: FSL dataset hash list; 3: MS dataset hash list
         "_minChunkSize": 4096, 
-        // The smallest chunk size in variable size chunking, Uint: Byte (Maximum size 16KB)
+        // The smallest chunk size in variable size chunking, Uint: Byte (Maximum size 16KiB)
         "_avgChunkSize": 8192, 
-        // The average chunk size in variable size chunking and chunk size in fixed size chunking, Uint: Byte (Maximum size 16KB)
+        // The average chunk size in variable size chunking and chunk size in fixed size chunking, Uint: Byte (Maximum size 16KiB)
         "_maxChunkSize": 16384, 
-        // The biggest chunk size in variable size chunking, Uint: Byte (Maximum size 16KB)
+        // The biggest chunk size in variable size chunking, Uint: Byte (Maximum size 16KiB)
         "_slidingWinSize": 256, 
-        // The sliding window size in variable size chunking, Uint: MB
+        // The sliding window size in variable size chunking, Uint: MiB
         "_ReadSize": 256 
-        // System read input file size every I/O operation, Uint: MB
+        // System read input file size every I/O operation, Uint: MiB
     },
     "KeyServerConfig": {
         "_keyBatchSize": 4096, 
@@ -104,7 +104,7 @@ Restart is required after the installation is finished. Then, check whether `isg
         ], 
         // Storage server host port for client upload or download files
         "_maxContainerSize": 8388608 
-        // Maximum space for one-time persistent chunk storage, Uint: Byte (Maximum size 8MB)
+        // Maximum space for one-time persistent chunk storage, Uint: Byte (Maximum size 8MiB)
     },
     "pow": {
         "_quoteType": 0, 

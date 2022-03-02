@@ -59,7 +59,7 @@ if(T){
     # scale_x_discrete(breaks=type_name, labels=x_name) +
     scale_fill_manual(values=my_color) +
     guides(fill=guide_legend(nrow=1)) + 
-    ylab("Speed (MB/s)") +
+    ylab("Speed (MiB/s)") +
     xlab("") +
     theme_bw() +
     theme(

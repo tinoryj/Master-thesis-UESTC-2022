@@ -250,11 +250,11 @@ SGXDedup+ is configured based on JSON. You can change its configuration without 
 {
     "ChunkerConfig": {
         "_chunkingType": "VariableSize", // FixedSize: fixed size chunking; VariableSize: variable size chunking; TraceFSL: FSL dataset hash list; TraceMS: MS dataset hash list
-        "_minChunkSize": 4096, // The smallest chunk size in variable size chunking, Uint: Byte (Maximum size 16KB)
-        "_avgChunkSize": 8192, // The average chunk size in variable size chunking and chunk size in fixed size chunking, Uint: Byte (Maximum size 16KB)
-        "_maxChunkSize": 16384, // The biggest chunk size in variable size chunking, Uint: Byte (Maximum size 16KB)
+        "_minChunkSize": 4096, // The smallest chunk size in variable size chunking, Uint: Byte (Maximum size 16KiB)
+        "_avgChunkSize": 8192, // The average chunk size in variable size chunking and chunk size in fixed size chunking, Uint: Byte (Maximum size 16KiB)
+        "_maxChunkSize": 16384, // The biggest chunk size in variable size chunking, Uint: Byte (Maximum size 16KiB)
         "_slidingWinSize": 48, // The sliding window size for rabin fingerprinting in variable size chunking, Uint: Byte
-        "_ReadSize": 256 // System read input file size every I/O operation, Uint: MB
+        "_ReadSize": 256 // System read input file size every I/O operation, Uint: MiB
     },
     "KeyServerConfig": {
         "_keyBatchSize": 4096, // Maximum number of keys obtained per communication
@@ -276,7 +276,7 @@ SGXDedup+ is configured based on JSON. You can change its configuration without 
         "_storageServerPort": [
             6668
         ], // Storage server host port for client upload or download files
-        "_maxContainerSize": 8388608 // Maximum space for one-time persistent chunk storage, Uint: Byte (Maximum size 8MB)
+        "_maxContainerSize": 8388608 // Maximum space for one-time persistent chunk storage, Uint: Byte (Maximum size 8MiB)
     },
     "pow": {
         "_quoteType": 0, // Enclave quote type, do not modify it
