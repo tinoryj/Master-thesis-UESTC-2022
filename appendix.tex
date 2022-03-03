@@ -1,2 +1,186 @@
-\input{appendix-sgxdedup}
-\input{appendix-featurespy}
+\chapter{原型系统开发测试说明}
+
+本文软件包提供了两个工具包：(1)\sysnameF 模拟器，用于模拟针对推测内容攻击的检测效果；（2）\prototype ，即本文提出的基于TEE的高性能强安全加密重复数据删除原型系统。
+
+\section{\sysnameF 模拟器测试指南}
+该模拟器用于运行本文\S\ref{subsec:featurespy-evaluation-detection}中的实验。为简洁起见，我们只关注整体\sysnameF 的模拟（即Exp\#3和Exp\#4）。
+
+\subsection*{软件包依赖}
+
+\sysnameF 模拟器是在Ubuntu 20.04.3 LTS系统下开发的，依赖于以下需要手动安装或通过默认的apt包管理工具安装的软件包。
+
+\begin{enumerate}
+    \item OpenSSL version 1.1.1l/libssl-dev (用于\sysnameF 中的密码学机制)
+    \item clang/llvm (用于编译模拟器)
+    \item python (用于伪造文件的生成)
+    \item git (用于下载Linux数据集)
+    \item curl/golang/jq (用于下载CouchDB数据集)
+\end{enumerate}
+
+上述软件包可以通过{\tt apt}软件包管理工具在Ubuntu系统上使用以下命令安装：
+
+\begin{lstlisting}[style=shell]
+sudo apt install -y build-essential openssl libssl-dev clang llvm python curl git golang jq
+\end{lstlisting}
+
+\subsection*{编译模拟器程序}
+
+参照以下指令编译（或清除）\sysnameF 模拟器：
+
+\begin{lstlisting}[style=shell]
+cd \sysnameF
+# 编译
+make
+# 清除
+make clean
+\end{lstlisting}
+
+\subsection*{运行指南}
+本文提供了一种快速复现实验的测试方法。可分别使用runCouch.sh和runLinux.sh脚本在CouchDB和Linux数据集上测试FeatureSpy，并使用 processResult.sh脚本输出摘要性结果。这里，可以通过修改runCouch.sh和runLinux.sh脚本中的参数来测试不同的窗口大小和相似性指标长度的影响。此外，也可以按照FeatureSpy/目录下提供的README.pdf指南手动运行模拟器。请参照以下执行步骤运行自动化测试：
+
+\begin{lstlisting}[style=shell]
+# 数据集下载
+cd \sysnameF/traceDownload
+chmod +x *.sh
+bash downloadTraceCouch.sh
+bash downloadTraceLinux.sh
+# 针对目标文件的攻击文件数据集生成
+cd \sysnameF/SimulateOfferGenerator
+chmod +x generateFakeOffers.sh
+bash generateFakeOffers.sh
+# 使用CouchDB和Linux数据集进行测试
+cd \sysnameF/
+chmod +x *.sh
+bash runCouch.sh
+bash runLinux.sh
+bash processResult.sh
+\end{lstlisting}
+
+在执行runLinux.sh或runCouch.sh测试脚本时，模拟器将依次处理每个数据集中的快照，并输出针对当前快照进行插入时的攻击检测结果（通过标准错误流stderr输出）如下所示：
+
+\begin{lstlisting}[style=shell]
+firstFeature: not detected
+minFeature: detected
+allFeature: not detected
+\end{lstlisting}
+
+同时，模拟器将检测过程中每个检测窗口的特征频率分布保存在\sysnameF/linuxResult/和\sysnameF/couchResult/目录下（分别对应Linux和CouchDB数据集）对于每个混合了伪造文件的快照的检测结果，其文件名形式为{snpashotID}-origin-{windowSize}-{indicatorLength}.csv；而对于未混合攻击文件的原始快照的检测结果，其文件名形式为{snpashotID}-mixed-{windowSize}-{indicatorLength}.csv；检测结果文件的范例如下所示，每一行分别代表了一个检测窗口中\sysnameF 的三种实例的检测结果。
+
+\begin{table}[!htb]
+    \small
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        firstFeature实例 & minFeature实例 & allFeature实例 \\
+        \midrule
+        0.08             & 0.08           & 0.08           \\
+        0.001            & 0.002          & 0.001          \\
+        0.003            & 0.003          & 0.003          \\
+        \bottomrule
+    \end{tabular}
+    \caption{数据集中每个窗口的最高频特征频率统计范例}
+    \label{tab:system-detection-window}
+\end{table}
+
+进一步的，使用processResult.sh脚本可以将上述每个快照的逐窗口频率统计结果整合形成merged{Linux/Couch}Result-{windowSize}-{indicatorLength}.csv文件，对各个数据集的检测结果进行总结。该总结文件以每个快照中所有窗口中特征频率的最高值表示，可自行对比期望的阈值$T$以判断是否检测到攻击（或发生误判）。如下所示，文件中每一行代表一个快照中所有窗口中统计到的特征频率的最大值。这里的raw(mixed)分别代表原始快照（混合了推测内容攻击伪造的文件的快照）。
+
+\begin{table}[!htb]
+    \small
+    \centering
+    \begin{tabular}{cccccc}
+        \toprule
+        \makecell[c]{firstFeature                           \\(raw)} & \makecell[c]{minFeature\\(raw)} & \makecell[c]{allFeature\\(raw)} & \makecell[c]{firstFeature\\(mixed)} & \makecell[c]{minFeature\\(mixed)} & \makecell[c]{allFeature\\(mixed)} \\
+        \midrule
+        0.0032 & 0.0028 & 0.0028 & 0.1106 & 0.1106 & 0.1106 \\
+        0.003  & 0.003  & 0.003  & 0.1022 & 0.1022 & 0.1022 \\
+        0.0026 & 0.0024 & 0.0024 & 0.1026 & 0.1026 & 0.1026 \\
+        0.0026 & 0.0022 & 0.0022 & 0.0972 & 0.0972 & 0.0972 \\
+        \bottomrule
+    \end{tabular}
+    \caption{综合数据集中每个快照的最高频特征频率统计结果范例}
+    \label{tab:system-detection-snapshot}
+\end{table}
+
+\section{\prototype 原型系统测试指南}
+
+\prototype 综合了\sysnameS 和\sysnameF 的所有相关设计，同时实现了高性能、高网络带宽节省、强安全三个加密重复数据删除的主要目标。
+
+\subsection*{配置运行前置条件}
+
+\prototype 在配备Gigabyte B460M-DS3H主板和Intel i7-10700 CPU并运行Ubuntu 20.04.3 LTS的设备上进行了测试。
+
+在运行\prototype 之前，请检查设备是否支持Intel SGX。如果BIOS中有SGX或Intel Software Guard Extensions等相关选项，则启用该选项；否则，该设备可能不支持SGX。对于支持的设备型号，强列建议在SGX硬件列表\cite{sgxHardware}中进行查询。
+
+\subsection*{注册Intel EPID远程认证服务}
+
+\prototype 使用基于EPID的远程认证，使用该官方功能需要在Intel EPID认证服务\cite{sgxEPID}页面中进行注册，以查看专有的SPID及相关订阅密钥（包含主密钥和辅助密钥）。本文的测试使用DEV Intel® Software Guard Extensions Attestation Service (Unlinkable)密钥。
+
+\subsection*{软件包依赖}
+本文提供一键配置脚本以完成\prototype 所需的复杂软件环境配置。该意见配置脚本在需要管理员权限时会要求输入密码。
+
+\begin{lstlisting}[style=shell]
+chmod +x Scripts/environmentInstall.sh
+./Scripts/environmentInstall.sh
+\end{lstlisting}
+
+在完成环境配置后，需要重新启动操作系统，并检查/dev目录下是否存在sgx\_enclave和sgx\_provision两个设备。 如果它们不在目录中（即SGX驱动程序可能未成功安装），请手动重新安装SGX驱动程序并重新启动设备，直到sgx\_enclave和sgx\_provision设备出现在/dev目录下。对于安装过程中出现的问题，请参考SGX安装配置指南\cite{sgxinstall}和SGX SSL\cite{sgxssl}使用说明中的详细步骤进行手动安装。
+
+\subsection*{系统参数配置}
+
+\prototype 是基于JSON进行配置的，可以更改其大部分运行配置而无需重编译整个原型系统。在开始测试前，需要根据上一步注册Intel认证服务得到的相关信息在原型系统中的config.json中填写SPID和订阅密钥（如下所示）。\prototype 的详细配置可以在\prototype 目录下的README.pdf文件中找到。
+
+\begin{lstlisting}[style=json]
+    ...
+    "pow": {
+        ...
+        "_SPID": "", // 注册的用于远程认证的SPID
+        "_PriSubscriptionKey": "", // 注册的用于远程认证的主密钥（primary subscription key）
+        "_SecSubscriptionKey": "" // 注册的用于远程认证的次密钥（secondary subscription key）
+    },
+    "km": {
+        ...
+        "_SPID": "", // 注册的用于远程认证的SPID
+        "_PriSubscriptionKey": "", // 注册的用于远程认证的主密钥（primary subscription key）
+        "_SecSubscriptionKey": "" // 注册的用于远程认证的次密钥（secondary subscription key）
+    },
+    ...
+\end{lstlisting}
+
+\subsection*{原型系统编译}
+本文提供一键脚本完成原型系统编译及清除等操作，如下所示：
+
+\begin{lstlisting}[style=shell]
+chmod +x ./Scripts/*.sh
+# Build \prototype in release mode
+./Scripts/buildReleaseMode.sh
+# Build \prototype in debug mode
+./Scripts/buildDebugMode.sh
+# Clean up build result
+./Scripts/cleanBuild.sh
+\end{lstlisting}
+
+编译生成的可执行文件及其所需的安全区动态运行库及相关密钥都存放在bin目录下。
+
+\subsection*{Usage}
+\prototype 可以在单机上进行测试（及通过本地网络回环连接客户端、密钥服务器和云服务端）。由于密钥安全区在使用前需要经过云服务端的远程认证，所以需要先启动云服务端（server-sgx），然后再启动密钥服务器（keymanager-sgx），等待消息"KeyServer : keyServer session key update done"在密钥服务器端弹出（即密钥安全区验证完成）后方可启动客户端。
+\begin{lstlisting}[style=shell]
+# start cloud
+cd bin
+./server-sgx
+
+# start key server
+cd bin
+./keymanager-sgx
+\end{lstlisting}
+
+\prototype 在客户端提供了数据存储（上传）和取回（下载）接口，可参照如下所示方式进行测试。
+
+\begin{lstlisting}[style=shell]
+# 存储文件
+cd bin
+./client-sgx -s file
+
+# 取回文件
+cd bin
+./client-sgx -r file
+\end{lstlisting}

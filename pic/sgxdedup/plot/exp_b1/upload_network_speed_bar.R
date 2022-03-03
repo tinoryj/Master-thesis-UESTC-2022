@@ -45,7 +45,7 @@ my_color=c("Gold3","red3","lemonchiffon1","coral3","cadetblue1","green3")
 if(T){
     x1 <- read.table("./upload_network_speed_bar_data.txt",header=TRUE)
     cairo_pdf(file="../../upload_network_speed_bar.pdf",  width=mywidth, height=myheight)
-    x1$type <- factor(x1$type, levels=c("DupLESS","SGX-1","NoProtect-1","SGX-2","NoProtect-2"), labels=c("DupLESS","TEEDedup-1st","PlainDedup-1st","TEEDedup-2nd","PlainDedup-2nd"))
+    x1$type <- factor(x1$type, levels=c("DupLESS","TEE-1","NoProtect-1","TEE-2","NoProtect-2"), labels=c("DupLESS","TEEDedup-1st","PlainDedup-1st","TEEDedup-2nd","PlainDedup-2nd"))
     x1$Netspeed <- factor(x1$Netspeed, levels=c("1", "5","10"), labels=c("1Gbps","5Gbps", "10Gbps"))
     ggplot(data=x1, aes(x=Netspeed, y=throughput, fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.90), colour="black", width=0.8, size=0.3) +

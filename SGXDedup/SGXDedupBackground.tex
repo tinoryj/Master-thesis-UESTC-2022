@@ -12,7 +12,7 @@
 
 
 \subsection{可信执行环境(TEE)}
-\label{subsec:sgxdedup-sgx} 
+\label{subsec:sgxdedup-sgx}
 
 本文以Intel SGX\cite{sgx}(\S\ref{subsec:background-tee-sgx})为例，在每个客户端和密钥服务器中部署安全区以保护敏感操作，减轻加密后重复数据删除的性能开销，同时保持安全性、带宽效率和存储效率。本文不考虑仅采用内存加密技术的TEE(例如AMD SEV\cite{AMDSEV}和MK-TME\cite{MK-TME})，因为它们需要大型可信计算基(\S\ref{subsec:background-tee-sgx})并暴露出广泛的可攻击面\cite{mofrad18}。此外，AMD SEV\cite{AMDSEV}不保护内存完整性，并且容易受到特权攻击者可以操纵加密内存页\cite{mofrad18}的攻击。
 

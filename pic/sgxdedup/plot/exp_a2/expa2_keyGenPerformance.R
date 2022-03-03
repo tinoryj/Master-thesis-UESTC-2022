@@ -47,7 +47,7 @@ my_color=c("Gold3","green3","lemonchiffon1","cadetblue1","red3","coral3")
 if(T){
     x1 <- read.table("./expa2_keyGenPerformance_data.txt",header=TRUE)
     snapshot_name=c("SYN")
-    type_name=c("BlindBLS","BlindRSA","MinHash", "TED", "SGX1st","SGX2nd")
+    type_name=c("BlindBLS","BlindRSA","MinHash", "TED", "TEE1st","TEE2nd")
     x_name= c("OPRF\nBLS","OPRF\nRSA","MinHash\nEncryption","TED","TEEDedup\n1st","TEEDedup\n2nd")
     x1$type <- factor(x1$type, levels=type_name)
     x1$snapshot <- factor(x1$snapshot, levels=snapshot_name)
@@ -62,7 +62,7 @@ if(T){
     scale_x_discrete(breaks=type_name, labels=x_name) +
     scale_fill_manual(values=my_color, name="", breaks=type_name, labels=type_name) +
     guides(fill=guide_legend(nrow=1)) + 
-    ylab("Speed (GB/s)") +
+    ylab("Speed (GiB/s)") +
     xlab("") +
     theme_bw() +
     theme(

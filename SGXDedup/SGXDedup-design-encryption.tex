@@ -8,10 +8,10 @@
 具体来说，为了加密明文$M$，首先将$M$划分为一系列明文数据块$b_1、b_2、\ldots、b_m$(例如，在AES中将每个块的大小固定为16字节)。对于每个客户端，选择一个唯一的随机数\textit{nonce} $\theta$(只被使用一次的任意或非重复的随机数值)。然后，计算第$i$个明文数据块的\textit{掩码(Mask)}为$e_i = {\bf E}(K, \theta || i)$，其中${\bf E}()$是对称加密函数，$K$是密钥，$i$是计数器(\textit{counter}，用于计数器模式加解密)，‘$||$’是连接运算符。最后，计算每个密文数据块$c_i = e_i \oplus b_i $，其中$\oplus$是按位异或运算符，并整合形成完整密文$C = c_1 || c_2 || \ldots || c_m$。为了解密密文，推测性加密技术如加密过程一样，为每个密文块生成掩码$e_i$，并通过$b_i = e_i \oplus c_i $解密得到相应的明文块，最终整合形成完整明文$M = b_1 || b_2 || \ldots || b_m$。由于掩码生成步骤独立于每个目标明文/密文的生成，推测性加密可以在离线时预先计算加解密掩码，然后应用轻量级异或操作进行在线加密/解密。
 
 \begin{figure}[!htb]
-\centering
-\includegraphics[width=0.9\textwidth]{pic/sgxdedup/key-enclave-arch.pdf}
-\caption{基于TEE的推测性加密概述}
-\label{fig:sgxdedup-SpecEnc}
+    \centering
+    \includegraphics[width=0.9\textwidth]{pic/sgxdedup/key-enclave-arch.pdf}
+    \caption{基于TEE的推测性加密概述}
+    \label{fig:sgxdedup-SpecEnc}
 \end{figure}
 
 \paragraph*{与TEE的整合。}要在\sysnameS 中实现推测性加密，本文需要解决多客户端的nonce管理问题。在计数器模式加密中，唯一的nonce充当不可预测的“一次性填充”，使得加密输出看起来时随机的\cite{counter}。如果多个客户端使用计数器模式加密，则需要在每个客户端的加解密操作中关联一个唯一的nonce。但是，由于不同的客户端之间是隔离的，因此很难确保为客户端关联的nonce是唯一的。

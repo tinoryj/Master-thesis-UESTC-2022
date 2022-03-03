@@ -4,10 +4,10 @@
 本文进行了广泛的评估来研究\sysnameF 对推测内容攻击的检测的有效性及相关影响因素(\S\ref{subsec:featurespy-evaluation-detection})；原型系统\prototype 在合成数据集(\S\ref{subsubsec:featurespy-syn})和真实世界数据集工作负载下的性能(\S\ref{subsubsec:featurespy-real})。本文将主要实验结果总结如下：
 
 \begin{itemize}
-  \item \sysnameF 根据相应的密文数据块可有效地找到相似的明文数据块。例如，当明文数据块具有中等程度的差异时，它可检测到多达80.2\%的相似数据块。
-  \item 即使攻击者将枚举的伪造文件混合于正常文件间，\sysnameF 仍可有效地检测到推测内容攻击。同时，它对真实世界数据集(正常文件)的误判率极低(例如，默认配置下为0)。
-  \item \prototype 在处理大规模真实世界数据时，相较于\sysnameS (不支持\sysnameF)仅产生有限的上传(例如，8.8\%)和下载(例如，0.8\%)性能开销。
-  \item 与现有的\cite{harnik2010side, li15}方案相比，\prototype 可以在安全抵御推测内容攻击的同时，实现最高的网络带宽效率(例如，节省高达98.9\%的网络流量)。
+    \item \sysnameF 根据相应的密文数据块可有效地找到相似的明文数据块。例如，当明文数据块具有中等程度的差异时，它可检测到多达80.2\%的相似数据块。
+    \item 即使攻击者将枚举的伪造文件混合于正常文件间，\sysnameF 仍可有效地检测到推测内容攻击。同时，它对真实世界数据集(正常文件)的误判率极低(例如，默认配置下为0)。
+    \item \prototype 在处理大规模真实世界数据时，相较于\sysnameS (不支持\sysnameF)仅产生有限的上传(例如，8.8\%)和下载(例如，0.8\%)性能开销。
+    \item 与现有的\cite{harnik2010side, li15}方案相比，\prototype 可以在安全抵御推测内容攻击的同时，实现最高的网络带宽效率(例如，节省高达98.9\%的网络流量)。
 \end{itemize}
 
 \subsection{数据集简介}
@@ -21,7 +21,7 @@
 
 此外，本文产生一组大小为2\,GiB的非重复随机文件数据集SYNUnique，其中每个文件中的数据块在数据集中均为非重复数据块。本文使用SYNUnique对\prototype 的性能进行压力测试(\S\ref{subsubsec:featurespy-syn})。
 
-\paragraph*{真实世界数据集。}本文采用四个真实世界数据集，其特征总结在表~\ref{tab:featurespy-datasets}中： 
+\paragraph*{真实世界数据集。}本文采用四个真实世界数据集，其特征总结在表~\ref{tab:featurespy-datasets}中：
 
 \begin{enumerate}
     \item \textbf{FSL}\cite{fsl}，其中包括795个2013年1月22日至6月17日之间9名学生主机的home目录快照。该数据集仅包含数据块的元数据(例如，数据块指纹、大小、进入快照的顺序等)。
@@ -30,19 +30,19 @@
     \item \textbf{CouchDB}\cite{couchdb}，其中包括83个CouchDB的 docker镜像，包含通用、社区和企业三个发行版，且版本号介于v2.5.2和v6.6.2之间。
 \end{enumerate}
 
-\begin{table}
-  \centering
-  \small
-  \begin{tabular}{cccc}
-    \toprule
-    {\bf 数据集} & {\bf 快照} & {\bf 去重前总数据量} & {\bf 重复数据删除系数} \\
-    \midrule
-    FSL & 795 & 56.2\,TiB & 140.4 \\
-    MS & 143 & 14.4\,TiB & 6.0 \\
-    Linux & 84 & 44.9\,GiB & 1.3 \\
-    CouchDB & 83 & 22.9\,GiB & 1.5 \\
-    \bottomrule
-  \end{tabular}
-  \caption{真实世界数据集的特征(重复数据删除率定义为重复数据删除前数据大小与重复数据删除后数据大小之比，更高的重复数据删除率意味着相应的数据集包含更多的冗余)}
-  \label{tab:featurespy-datasets}
+\begin{table}[!htb]
+    \centering
+    \small
+    \begin{tabular}{cccc}
+        \toprule
+        {\bf 数据集} & {\bf 快照} & {\bf 去重前总数据量} & {\bf 重复数据删除系数} \\
+        \midrule
+        FSL          & 795        & 56.2\,TiB            & 140.4                  \\
+        MS           & 143        & 14.4\,TiB            & 6.0                    \\
+        Linux        & 84         & 44.9\,GiB            & 1.3                    \\
+        CouchDB      & 83         & 22.9\,GiB            & 1.5                    \\
+        \bottomrule
+    \end{tabular}
+    \caption{真实世界数据集的特征(重复数据删除率定义为重复数据删除前数据大小与重复数据删除后数据大小之比，更高的重复数据删除率意味着相应的数据集包含更多的冗余)}
+    \label{tab:featurespy-datasets}
 \end{table}

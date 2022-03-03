@@ -4,10 +4,10 @@
 每个客户端都通过一个共享的会话密钥与密钥安全区安全通信，以防止密钥服务器 (\S\ref{subsec:sgxdedup-arch})窃听。为了产生会话密钥，一种直接的方法是直接在密钥安全区和每个客户端之间实现密钥协商协议。但是，密钥安全区需要即时验证客户端访问权限(例如，客户端可以更新或撤销其云存储服务订阅)。这种动态认证给密钥安全区带来了性能负担。
 
 \begin{figure}[!htb]
-\centering
-\includegraphics[width=\textwidth]{pic/sgxdedup/keyRegression.pdf}
-\caption{自更新的会话密钥管理：云服务端和密钥安全区可以根据其会话密钥状态导出新的会话密钥，而客户端只能从云服务端下载当前密钥状态，并产生最新的会话密钥}
-\label{fig:sgxdedup-keymanage}
+    \centering
+    \includegraphics[width=\textwidth]{pic/sgxdedup/keyRegression.pdf}
+    \caption{自更新的会话密钥管理：云服务端和密钥安全区可以根据其会话密钥状态导出新的会话密钥，而客户端只能从云服务端下载当前密钥状态，并产生最新的会话密钥}
+    \label{fig:sgxdedup-keymanage}
 \end{figure}
 
 如图~\ref{fig:sgxdedup-keymanage}所示，\sysnameS 在云服务端的帮助下管理会话密钥。在系统初始化期间，云服务端将一个盲秘密种子$\kappa$硬编码到密钥安全区代码中。每个客户端从云服务端下载一个\textit{密钥状态(key state)}(源自于$\kappa$；见下文)，并基于该密钥状态生成对应的会话密钥，用于与密钥安全区的安全通信。本文如此设计的考虑有以下三点：

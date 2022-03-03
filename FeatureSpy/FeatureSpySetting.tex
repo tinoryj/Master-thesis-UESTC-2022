@@ -5,7 +5,7 @@
 
 \paragraph*{部署场景。}图~\ref{fig:featurespy-model}展示将\sysnameF 部署在加密后重复数据删除的方式。为了部署\sysnameF，本文首先将安全区代码编译成动态链接库\cite{sgx}，并将动态链接库连同用于完整性验证的签名分发给每个客户端。云服务端托管动态链接库以验证每个客户端的安全区。具体来说，客户端初始化\sysnameF，通过加载动态链接库创建对应的安全区，云服务端通过远程证明\cite{sgx}(参见\S\ref{subsec:background-tee-sgx})对每个安全区进行认证，以确保将正确的代码加载到安全区中。
 
-\begin{figure}
+\begin{figure}[!htb]
     \centering
     \includegraphics[width=\textwidth]{pic/featurespy/deployment.pdf}
     \caption{部署\sysnameF}

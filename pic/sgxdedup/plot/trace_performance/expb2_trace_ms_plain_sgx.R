@@ -14,9 +14,9 @@ my_line=c("dashed","solid","dashed","solid")
 abbrev_x <- c(1,expression(2^3), expression(2^6),expression(2^9),expression(2^12),expression(2^15))
 
 if(T){
-    x1 <- read.table("expb2_trace_ms_data_plain_sgx.txt",header=TRUE)
-    cairo_pdf(file="../../expb2_trace_ms_plain_sgx.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "SGXDownload", "PlainUpload", "PlainDownload"))
+    x1 <- read.table("expb2_trace_ms_data_plain_TEE.txt",header=TRUE)
+    cairo_pdf(file="../../expb2_trace_ms_plain_TEE.pdf", width=mywidth, height=myheight)
+    x1$Type <- factor(x1$Type, levels=c("TEEUpload", "TEEDownload", "PlainUpload", "PlainDownload"))
     ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
     geom_line(size=1.5)  + 
     geom_point(size=4, stroke=1.5, fill="white") +

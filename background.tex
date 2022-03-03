@@ -1,7 +1,7 @@
 \chapter{相关基础研究}
 \label{chapter:background}
 
-本章将介绍普通和加密后重复数据删除、可信计算(TEE)等本文利用的基础知识，以及加密后重复数据删除系统中存在的性能瓶颈和安全性隐患。
+本章将介绍普通和加密后重复数据删除、可信执行环境(TEE)等本文利用的基础知识，以及加密后重复数据删除系统中存在的性能瓶颈和安全性隐患。
 
 \section{重复数据删除}
 \label{sec:background-deduplication}
@@ -21,7 +21,7 @@
     \small
     \centering
     \includegraphics[width=\textwidth]{chunk-based-dedup-arch.pdf}
-    \caption{基于数据块的重复数据删除的工作流程概览} 
+    \caption{基于数据块的重复数据删除的工作流程概览}
     \label{fig:chunk-based-dedup-flow}
 \end{figure}
 
@@ -45,7 +45,7 @@
     \small
     \centering
     \includegraphics[width=\textwidth]{chunk-based-enc-dedup-arch.pdf}
-    \caption{基于数据块的加密后重复数据删除的工作流程概览} 
+    \caption{基于数据块的加密后重复数据删除的工作流程概览}
     \label{fig:chunk-based-enc-dedup-flow}
 \end{figure}
 
@@ -91,11 +91,11 @@ TEE全名为可信执行环境(Trusted Execution Environment)是计算平台上�
 
 \begin{itemize}[leftmargin=*]
     \item \textbf{隔离性}：
-    TEE通过隔离的程序执行环境，提供一个可信的执行空间，为其中运行的程序和存储的数据提供了机密性和完整性保护。X86架构的隔离机制从Intel 80286处理器开始，Intel提出了CPU的两种运行模式，并且逐步衍生出后来的不同的特权界别，再后来提出了安全区域范围更小的SGX机制实现可信执行环境(TEE)；同样的，ARM架构通过TrustZone技术实现了相关软硬件的隔离性，实现了安全世界(Secure World)与非安全世界(Normal World)的隔离。
+          TEE通过隔离的程序执行环境，提供一个可信的执行空间，为其中运行的程序和存储的数据提供了机密性和完整性保护。X86架构的隔离机制从Intel 80286处理器开始，Intel提出了CPU的两种运行模式，并且逐步衍生出后来的不同的特权界别，再后来提出了安全区域范围更小的SGX机制实现可信执行环境(TEE)；同样的，ARM架构通过TrustZone技术实现了相关软硬件的隔离性，实现了安全世界(Secure World)与非安全世界(Normal World)的隔离。
     \item \textbf{软硬协同性}：
-    虽然标准定义可以通过单独软件方式或单独硬件方式实现TEE，但实际应用场景下，行业内更多选择通过软硬件结合的方式进行TEE的设计。
+          虽然标准定义可以通过单独软件方式或单独硬件方式实现TEE，但实际应用场景下，行业内更多选择通过软硬件结合的方式进行TEE的设计。
     \item \textbf{富表达性}：
-    与传统安全新芯片或纯软件的密码学营私保护方案相比，TEE支持的上层业务表达性更强，软件开发者仅需要根据业务逻辑划分业务层面的隐私和非隐私区域，而不会对定义隐私区域内的算法逻辑的语言等有可计算性方面的限制(图灵完备的)。同时，由于TEE为程序提供了可信的执行环境，安全区内的数据无需进行密态运算，使得TEE应用可以支持更多的算计及复杂的算法。
+          与传统安全新芯片或纯软件的密码学营私保护方案相比，TEE支持的上层业务表达性更强，软件开发者仅需要根据业务逻辑划分业务层面的隐私和非隐私区域，而不会对定义隐私区域内的算法逻辑的语言等有可计算性方面的限制(图灵完备的)。同时，由于TEE为程序提供了可信的执行环境，安全区内的数据无需进行密态运算，使得TEE应用可以支持更多的算计及复杂的算法。
 \end{itemize}
 
 \subsection{Intel SGX}
@@ -105,7 +105,7 @@ TEE全名为可信执行环境(Trusted Execution Environment)是计算平台上�
     \small
     \centering
     \includegraphics[width=0.6\textwidth]{sgx-example.pdf}
-    \caption{Intel SGX框架} 
+    \caption{Intel SGX框架}
     \label{fig:sgx-arch}
 \end{figure}
 
@@ -132,11 +132,11 @@ ARM TrustZone\cite{trustzone}是ARM公司为Cortex-A微架构\cite{cortex-a}设�
     \begin{tabular}{@{}c@{}c@{}c}
         \includegraphics[width=0.49\textwidth]{ARM-TZ-A.pdf} &
         \hspace{5pt}
-        \includegraphics[width=0.49\textwidth]{ARM-TZ-M.pdf}\\
-        \mbox{\small (a) Cortex-A微架构中的TrustZone} &
-        \mbox{\small (b) Cortex-M微架构中的TrustZone}\\
+        \includegraphics[width=0.49\textwidth]{ARM-TZ-M.pdf}   \\
+        \mbox{\small (a) Cortex-A微架构中的TrustZone}        &
+        \mbox{\small (b) Cortex-M微架构中的TrustZone}          \\
     \end{tabular}
-    \caption{ARM TrustZone技术} 
+    \caption{ARM TrustZone技术}
     \label{fig:ARM-TZ-base}
 \end{figure}
 

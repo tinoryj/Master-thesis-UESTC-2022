@@ -18,7 +18,7 @@ my_color=c("#66c2a5" ,"#fc8d62" ,"#8da0cb" ,"#e78ac3" ,"#a6d854" ,"#ffd92f")
 if(T){
     x1 <- read.table("download_line.data",header=TRUE)
     cairo_pdf(file="download_line.pdf",  width=mywidth, height=myheight)
-    x1$type <- factor(x1$type, levels=c("SGX","feature"), labels=c("TEEDedup","TEEDedup+"))
+    x1$type <- factor(x1$type, levels=c("TEE","feature"), labels=c("TEEDedup","TEEDedup+"))
     ggplot(data=x1, aes(x=ID,y=throughput,shape=type,linetype=type, colour=type)) +
     geom_line(size=2) + 
     geom_point(size=4, stroke=1.5, fill="white") +

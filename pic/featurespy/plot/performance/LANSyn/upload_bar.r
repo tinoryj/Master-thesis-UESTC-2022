@@ -12,7 +12,7 @@ myheight=2.5
 if(T){
     x1 <- read.table("upload_bar.data",header=TRUE)
     cairo_pdf(file="upload_bar.pdf",  width=mywidth, height=myheight)
-    x1$type <- factor(x1$type, levels=c("SGX","DetectionFirst", "DetectionMin","DetectionAll"), labels=c("TEEDedup","TEEDedup+\n(firstFeature)","TEEDedup+\n(minFeature)","TEEDedup+\n(allFeature)"))
+    x1$type <- factor(x1$type, levels=c("TEE","DetectionFirst", "DetectionMin","DetectionAll"), labels=c("TEEDedup","TEEDedup+\n(firstFeature)","TEEDedup+\n(minFeature)","TEEDedup+\n(allFeature)"))
     x1$round <- factor(x1$round, levels=c("second"), labels=c("Second upload"))
     ggplot(data=x1, aes(x=round, y=throughput, fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.90), colour="black", width=0.8, size=0.3) +

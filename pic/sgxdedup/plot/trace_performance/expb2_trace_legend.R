@@ -13,10 +13,10 @@ my_line=c("dashed","solid","dashed","solid")
 
 
 if(T){
-    x1 <- read.table("expb2_trace_ms_data_plain_sgx.txt",header=TRUE)
+    x1 <- read.table("expb2_trace_ms_data_plain_TEE.txt",header=TRUE)
     cairo_pdf(file="../../expb2_trace_legend.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("SGXUpload", "SGXDownload", "PlainUpload", "PlainDownload"), labels=c("TEEDedup-Upload", "TEEDedup-Download", "PlainDedup-Upload", "PlainDedup-Download"))
-    # x1$Type <- factor(x1$Type, levels=c("SGXUpload", "SGXDownload", "PlainUpload", "PlainDownload"), labels=c("TEEDedup\n    Upload", "TEEDedup\n Download", "PlainDedup\n    Upload", "PlainDedup\n Download"))
+    x1$Type <- factor(x1$Type, levels=c("TEEUpload", "TEEDownload", "PlainUpload", "PlainDownload"), labels=c("TEEDedup-Upload", "TEEDedup-Download", "PlainDedup-Upload", "PlainDedup-Download"))
+    # x1$Type <- factor(x1$Type, levels=c("TEEUpload", "TEEDownload", "PlainUpload", "PlainDownload"), labels=c("TEEDedup\n    Upload", "TEEDedup\n Download", "PlainDedup\n    Upload", "PlainDedup\n Download"))
     my_hist = ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
     geom_line(size=1)  + 
     geom_point(size=3, stroke=1, fill="white") +

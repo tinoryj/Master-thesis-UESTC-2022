@@ -61,7 +61,7 @@ rulesepcolor=\color{yellow!15}, %框架阴影颜色设置
 backgroundcolor = \color{yellow!5}, 
 numbers=left, %在左侧显示行数, right %在右侧显示行, none, %去掉行数显示
 stepnumber=1, %每两行标号一次
-% numbersep=5pt, %数字右端(若为左侧显示数字）水平距离代码5pt
+% numbersep=5pt, %数字右端(若为左侧显示数字)水平距离代码5pt
 numberstyle=\color{numberColor}\footnotesize\codefont,
 escapechar=\$,
 morecomment=*[s][\color{stringColor}\sffamily\codefont]{<}{>},
@@ -847,11 +847,11 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
   \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@thetitle} \\
   \vspace{-15pt}
   \rule{5.9in}{.5pt} \\
-  \fontsize{12pt}{12pt}\selectfont(题名和副题名）\\[36bp]
+  \fontsize{12pt}{12pt}\selectfont(题名和副题名)\\[36bp]
   \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@theauthor} \\
   \vspace{-15pt}
   \rule{1.63in}{.5pt} \\
-  \fontsize{12pt}{12pt}\selectfont(作者姓名） \\[36bp]
+  \fontsize{12pt}{12pt}\selectfont(作者姓名) \\[36bp]
 
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
@@ -860,7 +860,7 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
     \cline{2-2}
       & {\bfseries 电子科技大学\chinesespace 成都} \\
     \cline{2-2}
-    & \fontsize{12pt}{12pt}\selectfont(姓名、职称、单位名称）
+    & \fontsize{12pt}{12pt}\selectfont(姓名、职称、单位名称)
   \end{tabular}  \\[36bp]
 \end{center}
 

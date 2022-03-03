@@ -24,7 +24,7 @@ if(T){
     coord_cartesian(ylim=c(0, 8000)) +
     scale_y_continuous(breaks=seq(0, 8000, 2000), labels=format(seq(0, 8000, 2000), scientific=FALSE)) +
     scale_x_continuous(breaks=c(1,10,100,500,1000,1500,2000,2500,3000,3500,4000), labels=format(c(1,10,100,500,1000,1500,2000,2500,3000,3500,4000), scientific=FALSE)) + 
-    ylab("Speed (GB/s)") +
+    ylab("Speed (GiB/s)") +
     xlab("Key Enclave Batch Size") +
     theme_bw() +
     theme(

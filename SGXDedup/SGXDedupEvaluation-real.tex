@@ -4,24 +4,24 @@
 本文使用真实世界数据集作为测试工作负载评估\sysnameS。本文在评估中使用了以下了两个真实世界数据集：
 
 \begin{itemize}
-    \item \textbf{FSL数据集}，包含来自文件系统和存储实验室(FSL)\cite{fsl,sun16}的共享文件系统的用户主目录的备份快照。每个快照列出了其中包含的平均大小为8\,KiB的数据块的48位指纹。本文选择了2013年1月22日至6月17日之间的在\texttt{fslhomes}目录下的所有快照，共计包含56.2\,TB的原始数据，在重复数据删除后，数据量缩减至431.9\,GB(即具有133.2倍的重复数据删除率)。
-    \item \textbf{MS数据集}，包含来自微软公司\cite{meyer2011deduplication}的Windows文件系统快照。每个快照列出了其中包含的平均大小为8\,KiB的数据块的40位指纹。本文从原有的857个快照中选取了140个大小约为100\,GB的快照。本文所使用的数据集包含14.4\,TB的原始数据，在重复数据删除后，数据量缩减至2.4\,TB(即具有6倍的重复数据删除率)。
+    \item \textbf{FSL数据集}，包含来自文件系统和存储实验室(FSL)\cite{fsl,sun16}的共享文件系统的用户主目录的备份快照。每个快照列出了其中包含的平均大小为8\,KiB的数据块的48位指纹。本文选择了2013年1月22日至6月17日之间的在\texttt{fslhomes}目录下的所有快照，共计包含56.2\,TiB的原始数据，在重复数据删除后，数据量缩减至431.9\,GiB(即具有133.2倍的重复数据删除率)。
+    \item \textbf{MS数据集}，包含来自微软公司\cite{meyer2011deduplication}的Windows文件系统快照。每个快照列出了其中包含的平均大小为8\,KiB的数据块的40位指纹。本文从原有的857个快照中选取了140个大小约为100\,GiB的快照。本文所使用的数据集包含14.4\,TiB的原始数据，在重复数据删除后，数据量缩减至2.4\,TiB(即具有6倍的重复数据删除率)。
 \end{itemize}
 
-\paragraph*{Exp\#11(实际工作负载性能测试)。} 本文对\sysnameS 在真实世界数据集作为工作负载情况下的上传/下载性能进行了评估。实验从FSL和MS数据集中分别选择了10个快照。如下所示，对于FSL数据集，本文选择来自同一用户的快照以确保数据集具有较高的跨快照冗余；对于MS数据集，本文选择具有最多单个快照内冗余的10个快照。选择的FSL和MS快照分别包含1.3\,TB和1.0\,TB的原始数据。由于两个数据集提供的快照只包含数据块指纹等信息而不包含数据块内容，本文通过重复将其数据块指纹写入缓冲区直到达到指定的数据块大小为止来重构每个明文数据块，可确保相同(不同)指纹产生相同(不同)数据块。本文使用单个客户逐个快照进行上传，然后以与上传相同的顺序连续下载10个快照。本文将\sysnameS 与PlainDedup(Exp\#5)进行比较。
+\paragraph*{Exp\#11(实际工作负载性能测试)。} 本文对\sysnameS 在真实世界数据集作为工作负载情况下的上传/下载性能进行了评估。实验从FSL和MS数据集中分别选择了10个快照。如下所示，对于FSL数据集，本文选择来自同一用户的快照以确保数据集具有较高的跨快照冗余；对于MS数据集，本文选择具有最多单个快照内冗余的10个快照。选择的FSL和MS快照分别包含1.3\,TiB和1.0\,TiB的原始数据。由于两个数据集提供的快照只包含数据块指纹等信息而不包含数据块内容，本文通过重复将其数据块指纹写入缓冲区直到达到指定的数据块大小为止来重构每个明文数据块，可确保相同(不同)指纹产生相同(不同)数据块。本文使用单个客户逐个快照进行上传，然后以与上传相同的顺序连续下载10个快照。本文将\sysnameS 与PlainDedup(Exp\#5)进行比较。
 
 \begin{figure}[!htb]
-  \centering
-  \begin{tabular}{@{\ }c@{\ }c}
-  \multicolumn{2}{c}{\includegraphics[width=\textwidth]{pic/sgxdedup/expb2_trace_legend.pdf}} \\
-  \hspace{-0.1in}
-  \includegraphics[width=0.47\textwidth]{pic/sgxdedup/expb2_trace_fsl_plain_sgx.pdf} &
-  \includegraphics[width=0.47\textwidth]{pic/sgxdedup/expb2_trace_ms_plain_sgx.pdf}\\
-  \mbox{\small (a) FSL数据集} &
-  \mbox{\small (b) MS数据集}
-  \end{tabular}
-  \caption{(Exp\#11)真实世界数据集作为工作负载下的上传/下载性能}
-  \label{fig:sgxdedup-tracePerformance}
+    \centering
+    \begin{tabular}{@{\ }c@{\ }c}
+        \multicolumn{2}{c}{\includegraphics[width=\textwidth]{pic/sgxdedup/expb2_trace_legend.pdf}} \\
+        \hspace{-0.1in}
+        \includegraphics[width=0.47\textwidth]{pic/sgxdedup/expb2_trace_fsl_plain_sgx.pdf} & 
+        \includegraphics[width=0.47\textwidth]{pic/sgxdedup/expb2_trace_ms_plain_sgx.pdf}           \\
+        \mbox{\small (a) FSL数据集}                                                        & 
+        \mbox{\small (b) MS数据集}
+    \end{tabular}
+    \caption{(Exp\#11)真实世界数据集作为工作负载下的上传/下载性能}
+    \label{fig:sgxdedup-tracePerformance}
 \end{figure}
 
 图~\ref{fig:sgxdedup-tracePerformance}(a)显示了所选10个FSL数据集中快照的上传/下载速度。\sysnameS 和PlainDedup都实现了很高的上传速度，尤其是在上传第一个快照时，\sysnameS 达到了148.8\,MiB/s，而PlainDedup达到了157.5\,MiB/s。原因是FSL数据集跨快照的冗余度很高，两个系统都可以为后续快照上传较少的数据。与PlainDedup相比，\sysnameS 平均会导致上传性能下降22.0\%。这里，与本文使用合成工作负载的性能评估 (Exp\#5) 相比(17.5-21.4\%)，产生的性能损失略大。原因是为了重放快照中的数据块，本实验禁用了两个原型系统的数据分块模块，使得\sysnameS 的性能瓶颈转换切换到数据所有权证明参见表~\ref{tab:sgxdedup-system-breakdown})，而PlainDedup的瓶颈是数据块指纹计算。随着下载快照的版本从旧到新，由于数据块碎片化\cite{lillibridge13}加重，\sysnameS 的下载速度从41.3\,MiB/s下降到36.4\,MiB/s，同时PlainDedup的下载速度从45.0\,MiB/s下降到37.9\,MiB/s。\sysnameS 可以通过数据块重写和缓存\cite{lillibridge13,cao2018ALACC}技术来减轻数据块碎片，提升下载性能。
@@ -33,12 +33,12 @@
 \begin{figure}[!htb]
     \centering
     \begin{tabular}{@{\ }c@{\ }c}
-    \multicolumn{2}{c}{\includegraphics[width=0.9\textwidth]{pic/sgxdedup/upload_traffic_legend.pdf}} \\
-    \hspace{-0.1in}
-    \includegraphics[width=0.47\textwidth]{pic/sgxdedup/upload_traffic_fsl.pdf} &
-    \includegraphics[width=0.47\textwidth]{pic/sgxdedup/upload_traffic_ms.pdf}\\ 
-    \mbox{\small (a) FSL数据集} &
-    \mbox{\small (b) MS数据集}
+        \multicolumn{2}{c}{\includegraphics[width=0.9\textwidth]{pic/sgxdedup/upload_traffic_legend.pdf}} \\
+        \hspace{-0.1in}
+        \includegraphics[width=0.47\textwidth]{pic/sgxdedup/upload_traffic_fsl.pdf} & 
+        \includegraphics[width=0.47\textwidth]{pic/sgxdedup/upload_traffic_ms.pdf}                        \\ 
+        \mbox{\small (a) FSL数据集}                                                 & 
+        \mbox{\small (b) MS数据集}
     \end{tabular}
     \caption{(Exp\#12) 存储每个快照后的累积网络带宽节省(目标端重复数据删除为基准)}
     \label{fig:sgxdedup-uploadTraffic}
