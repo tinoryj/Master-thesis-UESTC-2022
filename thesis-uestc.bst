@@ -564,13 +564,13 @@ FUNCTION {digital}
     } if$
     format.title write$
     "[" format.type * "]" * write$ add.period
-    format.url write$ add.comma
     format.date missing$
     'skip$
     {
         add.comma
         format.date write$
     } if$
+    format.url write$
     newline$
 }
 
