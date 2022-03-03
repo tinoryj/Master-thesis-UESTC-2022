@@ -588,7 +588,6 @@ FUNCTION {misc}
     format.date missing$
     'skip$
     {
-        add.comma
         format.date write$
     } if$
     newline$
