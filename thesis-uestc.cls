@@ -302,8 +302,9 @@ tabsize=4
 	\renewcommand{\thelstlisting}{\arabic{chapter}-\arabic{lstlisting}}
 }
 
-\captionsetup{format=hang}
-\captionsetup{width=\textwidth - 42pt}
+%\captionsetup{format=hang}
+%\captionsetup{width=\textwidth - 42pt}
+\captionsetup{width=\textwidth - 84pt}
 \captionsetup[figure]{aboveskip=6pt, belowskip=0pt}
 \captionsetup[table]{aboveskip=9pt, belowskip=0pt}
 \captionsetup[lstlisting]{aboveskip=6pt, belowskip=0pt}
@@ -847,11 +848,11 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
   \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@thetitle} \\
   \vspace{-15pt}
   \rule{5.9in}{.5pt} \\
-  \fontsize{12pt}{12pt}\selectfont(题名和副题名)\\[36bp]
+  \fontsize{12pt}{12pt}\selectfont（题名和副题名）\\[36bp]
   \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@theauthor} \\
   \vspace{-15pt}
   \rule{1.63in}{.5pt} \\
-  \fontsize{12pt}{12pt}\selectfont(作者姓名) \\[36bp]
+  \fontsize{12pt}{12pt}\selectfont（作者姓名） \\[36bp]
 
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
@@ -860,7 +861,7 @@ UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
     \cline{2-2}
       & {\bfseries 电子科技大学\chinesespace 成都} \\
     \cline{2-2}
-    & \fontsize{12pt}{12pt}\selectfont(姓名、职称、单位名称)
+    & \fontsize{12pt}{12pt}\selectfont（姓名、职称、单位名称）
   \end{tabular}  \\[36bp]
 \end{center}
 
@@ -965,7 +966,7 @@ School: & \en@theschool \\
     本人声明所呈交的学位论文是本人在导师指导下进行的研究工作及取得的研究成果。%
     据我所知，除了文中特别加以标注和致谢的地方外，论文中不包含其他人已经发表或撰写过的研究成果，%
     也不包含为获得电子科技大学或其它教育机构的学位或证书而使用过的材料。%
-    与我一同工作的同志对本文所做的任何贡献均已在论文中作了明确的说明并表示谢意。}
+    与我一同工作的同志对本研究所做的任何贡献均已在论文中作了明确的说明并表示谢意。}
   \\[14pt]
   \fontsize{14pt}{16pt}\selectfont\noindent\null\hspace{35pt}作者签名：\rule[-3pt]{4.1cm}{0.5pt}\hspace{42pt}%
   日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日 \\
@@ -986,6 +987,11 @@ School: & \en@theschool \\
   \null\hspace{259pt} 日期：\chinesespace\chinesespace 年\hspace{21pt}月\hspace{21pt}日
 \end{spacing}
 \newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
+}
+
+\newcommand{\signatureofdeclaration}[1]{
+  \includepdf[pages=-]{#1}
+  \newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
 }
 
 \setlength{\extrarowheight}{2pt}
