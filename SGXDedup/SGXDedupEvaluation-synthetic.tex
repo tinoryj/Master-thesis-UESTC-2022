@@ -73,7 +73,7 @@
 
 \paragraph*{Exp\#5 (数据所有权证明计算开销)。}本文评估\sysnameS 的数据所有权证明性能。本文考虑一个对2\,GiB随机文件执行数据所有权证明的客户端。客户端从该文件中创建明文数据块，加密每个明文数据块，并向云服务端发出数据所有权证明请求。本文根据客户端(所有权证明安全区对密文数据块计算指纹并产生相应签名)和云服务端(验证指纹对应的数据的真实性)中所有数据块的总计算时间来测量所有权证明计算开销。本实验中的速度计算排除了客户端和云服务端之间的网络传输时间开销(本文在Exp\#10中考虑了网络传输时间)。
 
-本文将\sysnameS 与两种最先进的数据所有权证明方法进行比较：(i)\textit{PoW-MT}\cite{halevi11}(halevi等人提出的基本版本)，该数据所有权证明方法使用纠删码对块进行编码，并在编码的内容上构建默克尔树用于所有权证明；(ii)\textit{PoW-UH}\cite{xu2013weak}建立在通用哈希之上，相较于PoW-MT牺牲部分安全性以换取更高的性能。为了公平比较，本文使用C++复现了PoW-MT和PoW-UH方法。此外，halevi等人\cite{halevi11}提出了改进的数据所有权证明方法，但它们均为了更低的内存开销产生了更大的性能开销。
+本文将\sysnameS 与两种最先进的数据所有权证明方法进行比较：(i)\textit{PoW-MT}\cite{halevi11}(halevi等人提出的基本版本)，该数据所有权证明方法使用纠删码对块进行编码，并在编码的内容上构建Merkle树用于所有权证明；(ii)\textit{PoW-UH}\cite{xu2013weak}建立在通用哈希之上，相较于PoW-MT牺牲部分安全性以换取更高的性能。为了公平比较，本文使用C++复现了PoW-MT和PoW-UH方法。此外，halevi等人\cite{halevi11}提出了改进的数据所有权证明方法，但它们均为了更低的内存开销产生了更大的性能开销。
 
 \begin{figure}[!htb]
     \begin{minipage}[t]{0.47\textwidth}
@@ -91,7 +91,7 @@
     \end{minipage}%
 \end{figure}
 
-图~\ref{fig:sgxdedup-pow-comparison}显示了性能测试结果。由于\sysnameS 避免了客户端中的纠删码编码和默克尔树构造，其实现了相较于PoW-MT高达8.2倍的性能提升。此外，\sysnameS 相较于安全性较弱的PoW-UH实现了2.2倍的性能提升。
+图~\ref{fig:sgxdedup-pow-comparison}显示了性能测试结果。由于\sysnameS 避免了客户端中的纠删码编码和Merkle树构造，其实现了相较于PoW-MT高达8.2倍的性能提升。此外，\sysnameS 相较于安全性较弱的PoW-UH实现了2.2倍的性能提升。
 
 \paragraph*{Exp\#6(密文数据块批量大小对基于TEE的所有权证明的性能影响)。}本文评估密文数据块批量大小对\sysnameS 的数据所有权证明性能的影响。与Exp\#5中仅考虑数据所有权的整体计算速度相反，本实验评估数据所有权证明的有效性能。有效性能的定义为输入的2\,GiB随机文件的大小与从密文数据块输入安全区开始到全部完成指纹和证明生成、云端验证(包含网络传输开销)的总时间的比率。本文禁用了客户端上传数据块和云服务端执行重复数据删除的操作，以减少性能测量噪声。
 
@@ -110,7 +110,7 @@
 图~\ref{fig:sgxdedup-exp-pow-impact}(a)显示了数据所有权证明有效性能与不同密文数据块批量大小的关系，可以发现随着密文数据块批量大小增加，数据所有权证明性能从6.2\,MiB/s提升到360.9\,MiB/s。图~\ref{fig:sgxdedup-exp-pow-impact}(b)显示了所有权证明安全区和云服务端在数据所有权证明中每处理1\,MiB数据时所需的计算时间。云服务端的计算时间开销很低(例如，低于0.05\,ms)，而所有权证明安全区的计算时间随着批量大小增大从4.1\,ms减少到 2.7\,ms，这是因为批量增大使得访问所有权证明安全区的次数减少，进而减少了CPU的上下文切换开销(参见Exp\#3)。这里，即使批量的密文数据块的总大小超过安全区内存限制，所有权证明安全区仍可保持较高的计算性能，这是因为它不需要将数据块内容复制到安全区内(\S\ref{sec:sgxdedup-implementation})。
 
 
-\paragraph*{Exp\#7 (单客户端上传及下载性能)。}本文考虑单个客户端的上传/下载峰值性能，并将\sysnameS 与两个基准系统进行比较：(1)\textit{PlainDedup}禁用\sysnameS 的密钥生成、加密和所有权证明操作，从而实现源端重复数据删除，但无需任何安全保护；(2)\textit{DupLESS}\cite{bellare2013DupLESS}基于OPRF-RSA生成数据块的消息锁加密密钥，并执行加密后源端重复数据删除，但不内包数据所有权证明。由于DupLESS的原始实现不提供重复数据删除存储后端(其使用Dropbox作为存储后端)，本文根据\cite{bellare2013DupLESS}中描述的设计使用C++实现DupLESS。这里，PlainDedup基于未加密的文件元数据下载文件，并且不同于加密后重复数据删除系统中的两轮下载(即\sysnameS 和DupLESS)；在后者中，客户端首先下载并解密文件元数据，然后根据文件元数据下载数据块并解密后再重建文件(\S\ref{subsec:sgxdedup-problem})。
+\paragraph*{Exp\#7 (单客户端上传及下载性能)。}本文考虑单个客户端的上传/下载峰值性能，并将\sysnameS 与两个基准系统进行比较：(1)\textit{PlainDedup}禁用\sysnameS 的密钥生成、加密和所有权证明操作，从而实现源端重复数据删除，但无需任何安全保护；(2)DupLESS\cite{bellare2013DupLESS}基于OPRF-RSA生成数据块的消息锁加密密钥，并执行加密后源端重复数据删除，但不内包数据所有权证明。由于DupLESS的原始实现不提供重复数据删除存储后端(其使用Dropbox作为存储后端)，本文根据\cite{bellare2013DupLESS}中描述的设计使用C++实现DupLESS。这里，PlainDedup基于未加密的文件元数据下载文件，并且不同于加密后重复数据删除系统中的两轮下载(即\sysnameS 和DupLESS)；在后者中，客户端首先下载并解密文件元数据，然后根据文件元数据下载数据块并解密后再重建文件(\S\ref{subsec:sgxdedup-problem})。
 
 本文分三个步骤评估上传/下载速度：(1)客户端首先上传2\,GiB随机文件；(2)客户端重新启动，然后上传与步骤1中相同的2\,GiB随机文件(内容完全相同)；(3)客户端下载文件。这里，第二轮上传中PlainDedup及\sysnameS 执行源端重复数据删除，并利用推测性加密中离线计算的加解密掩码来加速密钥生成(仅适用于\sysnameS)。
 
@@ -125,13 +125,13 @@
     \label{fig:sgxdedup-singleClientThroughput}
 \end{figure}
 
-图~\ref{fig:sgxdedup-singleClientThroughput}(a)显示了通过{\tt trickle}\cite{eriksen05}控制的不同网络带宽下的上传速度。在第一轮上传中，当网络带宽为1\,Gbps时，\sysnameS (106.6\,MiB/s)和PlainDedup(106.2\,MiB/s)的上传速度均受网络带宽制约，而DupLESS(20.1\,MiB/s)的性能瓶颈在于基于OPRF-RSA的密钥生成(参见Exp\#1)。当网络带宽增加到10\,Gbps(本地局域网测试平台的默认带宽)时，\sysnameS 和PlainDedup的上传速度分别达到193.6\,MiB/s和242.0\,MiB/s，而DupLESS的上传速度稳定在20.0\,MiB/s。对于第二轮上传，由于DupLESS性能瓶颈为数据块密钥生成，其上传速度与第一轮相同。而\sysnameS 和PlainDedup由于不再需要上传任何数据块，其上传速度受网络带宽的影响较小。平均而言，\sysnameS 在第一轮和第二轮上传中分别比DupLESS实现了8.1倍和9.6倍的性能提升。即使与不安全的PlainDedup相比，\sysnameS 也只会导致两轮上传速度分别下降约17.5\%和21.4\%。这些开销来自于\sysnameS 中的安全机制(包括密钥生成、数据块加密和所有权证明)。
+图~\ref{fig:sgxdedup-singleClientThroughput}(a)显示了通过\textit{trickle}\cite{eriksen05}控制的不同网络带宽下的上传速度。在第一轮上传中，当网络带宽为1\,Gbps时，\sysnameS (106.6\,MiB/s)和PlainDedup(106.2\,MiB/s)的上传速度均受网络带宽制约，而DupLESS(20.1\,MiB/s)的性能瓶颈在于基于OPRF-RSA的密钥生成(参见Exp\#1)。当网络带宽增加到10\,Gbps(本地局域网测试平台的默认带宽)时，\sysnameS 和PlainDedup的上传速度分别达到193.6\,MiB/s和242.0\,MiB/s，而DupLESS的上传速度稳定在20.0\,MiB/s。对于第二轮上传，由于DupLESS性能瓶颈为数据块密钥生成，其上传速度与第一轮相同。而\sysnameS 和PlainDedup由于不再需要上传任何数据块，其上传速度受网络带宽的影响较小。平均而言，\sysnameS 在第一轮和第二轮上传中分别比DupLESS实现了8.1倍和9.6倍的性能提升。即使与不安全的PlainDedup相比，\sysnameS 也只会导致两轮上传速度分别下降约17.5\%和21.4\%。这些开销来自于\sysnameS 中的安全机制(包括密钥生成、数据块加密和所有权证明)。
 
 图~\ref{fig:sgxdedup-singleClientThroughput}(b)显示了不同网络带宽下的下载速度。随着网络带宽增加到10\,Gbps，\sysnameS 和DupLESS的下载性能均达到323.1\,MiB/s。相较于PlainDedup下降了约44.2\%，其原因是作为加密后重复数据删除系统，它们首先下载并解密文件元数据然后再下载密文数据块(PlainDedup的可由云服务端直接读取文件元数据进行文件下载)。
 
 \paragraph*{Exp\#8(云环境上传/下载性能)。}本文扩展Exp\#7，评估在真实云环境部署中的\sysnameS 的上传/下载速度。具体来说，本文将客户端和密钥服务器部署在本地局域网测试平台(\S\ref{sec:sgxdedup-evaluation})中，并通过互联网将客户端连接到部署在阿里云商的云服务端。本文使用阿里云\textit{ecs.c6e.xlarge}云服务器部署云服务端，其配备四核3.2GHz 虚拟CPU(其底层物理平台为Intel Xeon Cascade Lake Platinum 8269CY)，以及8GiB内存。本文以阿里云通用文件存储(\textit{Alibaba General Purpose NAS})作为存储后端。该存储后端拥有20000\,IOPS的4\,K随机读写性能。
 
-本文直接读取磁盘上的随机文件进行上传操作(与Exp\#7不同，后者在上传之前将文件加载到客户端的内存中)，并在云服务端将收到的数据文件存储于通用文件存储中。本文使用最轻量化的{\tt scp}网络传输工具将测试的2\,GiB随机文件上传到云服务端作为互联网环境下的网络传输速率基准。
+本文直接读取磁盘上的随机文件进行上传操作(与Exp\#7不同，后者在上传之前将文件加载到客户端的内存中)，并在云服务端将收到的数据文件存储于通用文件存储中。本文使用最轻量化的\textit{scp}网络传输工具将测试的2\,GiB随机文件上传到云服务端作为互联网环境下的网络传输速率基准。
 
 \begin{table}[!htb]
     \small
@@ -139,12 +139,12 @@
     \renewcommand{\arraystretch}{1.05}
     \begin{tabular}{cccc}
         \toprule
-        {\bf 方案} & {\bf 第一轮上传(非重复数据)}        & {\bf 第二轮上传(重复数据)} & {\bf 下载}     \\
+        {\bf 方案}          & {\bf 第一轮上传(非重复数据)}        & {\bf 第二轮上传(重复数据)} & {\bf 下载}     \\
         \midrule
-        网络带宽   & \multicolumn{3}{c}{11.9 $\pm$ 0.03}                                               \\  
-        \sysnameS  & 11.4 $\pm$ 0.3                      & 104.3 $\pm$ 1.2            & 10.1 $\pm$ 0.1 \\ 
-        PlainDedup & 11.6 $\pm$ 0.1                      & 120.1 $\pm$ 1.4            & 11.3 $\pm$ 0.3 \\
-        DupLESS    & \multicolumn{2}{c}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1                              \\
+        网络带宽            & \multicolumn{3}{c}{11.9 $\pm$ 0.03}                                               \\  
+        \sysnameS           & 11.4 $\pm$ 0.3                      & 104.3 $\pm$ 1.2            & 10.1 $\pm$ 0.1 \\ 
+        \textit{PlainDedup} & 11.6 $\pm$ 0.1                      & 120.1 $\pm$ 1.4            & 11.3 $\pm$ 0.3 \\
+        DupLESS             & \multicolumn{2}{c}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1                              \\
         \bottomrule
     \end{tabular}
     \caption{(Exp\#8)云环境部署下\sysnameS 的上传/下载性能(单位：MiB/s)}

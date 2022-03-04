@@ -16,11 +16,11 @@
 
 \paragraph*{与TEE的整合。}要在\sysnameS 中实现推测性加密，本文需要解决多客户端的nonce管理问题。在计数器模式加密中，唯一的nonce充当不可预测的“一次性填充”，使得加密输出看起来时随机的\cite{counter}。如果多个客户端使用计数器模式加密，则需要在每个客户端的加解密操作中关联一个唯一的nonce。但是，由于不同的客户端之间是隔离的，因此很难确保为客户端关联的nonce是唯一的。
 
-为了确保nonce的唯一性，\sysnameS 在密钥安全区中管理一个集中的键值对(key-value)结构，称为\textit{nonce}索引。 nonce索引的每个条目将存储的nonce(默认为12字节)映射到三个字段：其对应的计数器(4字节)、相应的加解密掩码存储的起始地址(8字节)和可用加解密掩码的数量(4字节)。此外，\sysnameS 实现了nonce检查安全区内调用(\textit{nonce checks ECall})。如图~\ref{fig:sgxdedup-SpecEnc}所示，它可以被密钥服务器调用，以将每个客户端提交的nonce与之前存储在nonce索引中的nonce进行比较，并在发现重复nonce时要求客户端重新选择nonce。在安全区内存大小限制下，本文使用3\,MiB(\sysnameS 的默认值)安全区内存空间管理多达112,000个客户端的信息(假设每个客户端仅一个nonce)。
+为了确保nonce的唯一性，\sysnameS 在密钥安全区中管理一个集中的键值对(Key-value)结构，称为\textit{nonce}索引。 nonce索引的每个条目将存储的nonce(默认为12字节)映射到三个字段：其对应的计数器(4字节)、相应的加解密掩码存储的起始地址(8字节)和可用加解密掩码的数量(4字节)。此外，\sysnameS 实现了nonce检查安全区内调用(\textit{nonce checks ECall})。如图~\ref{fig:sgxdedup-SpecEnc}所示，它可以被密钥服务器调用，以将每个客户端提交的nonce与之前存储在nonce索引中的nonce进行比较，并在发现重复nonce时要求客户端重新选择nonce。在安全区内存大小限制下，本文使用3\,MiB(\sysnameS 的默认值)安全区内存空间管理多达112,000个客户端的信息(假设每个客户端仅一个nonce)。
 
 \sysnameS 使用推测性加密在客户端和密钥安全区之间建立安全信道，以保护 消息锁加密密钥生成。在建立安全信道的过程中，客户端若为第一次启动，则随机挑选加密nonce $\theta$，并将计数器$i$置为0；若客户端非第一次启动(即本地保存有旧的nonce $\theta$和计数器$i$)则使用已有nonce $\theta$和计数器i进行加解密操作。
 
-具体来说，客户端使用最新的会话密钥(\S\ref{subsec:sgxdedup-key-management})加密$\theta$和$i$，根据生成的密文计算消息验证码(MAC)，并将密文和MAC提交给密钥服务器。这里，本文采用先加密后签名机制(\textit{Encrypt-then-MAC})\cite{bellare2000Authenticated}，密钥安全区通过检查密文和MAC来检测客户端是否使用过期的会话密钥，以阻止未授权客户端访问密钥生成服务。密钥服务器随即发出nonce检查安全区内部调用(nonce checking Ecall)，该安全区内部调用将客户端的上传作为输入，在密钥安全区内解密$\theta$和$i$，并使用nonce索引检查解密后的$\theta$和$i$，检查的结果可分为如下三种情况：
+具体来说，客户端使用最新的会话密钥(\S\ref{subsec:sgxdedup-key-management})加密$\theta$和$i$，根据生成的密文计算消息验证码(MAC)，并将密文和MAC提交给密钥服务器。这里，本文采用先加密后签名机制(\textit{Encrypt-then-MAC})\cite{bellare2000Authenticated}，密钥安全区通过检查密文和MAC来检测客户端是否使用过期的会话密钥，以阻止未授权客户端访问密钥生成服务。密钥服务器随即发出nonce检查安全区内部调用(Nonce checking Ecall)，该安全区内部调用将客户端的上传作为输入，在密钥安全区内解密$\theta$和$i$，并使用nonce索引检查解密后的$\theta$和$i$，检查的结果可分为如下三种情况：
 
 \begin{itemize}[leftmargin=*]
     \item 情况1：如果$\theta$是重复的且计数器$i = 0$，则表示该nonce已被其他客户端使用，则通过密钥服务器发送通知，要求客户端重新选择新的nonce。
