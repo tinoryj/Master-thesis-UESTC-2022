@@ -17,6 +17,7 @@
 % 
 
 
+
 ENTRY
 {
   author
@@ -420,17 +421,17 @@ FUNCTION {conference}
     } {
         format.journal write$
     } if$
-
     add.comma
     address missing$
     'skip$
     {
         format.address write$ add.comma
     } if$
-    format.year write$ add.comma
+    format.year write$
     pages missing$
     'skip$
     {
+        add.comma
         format.pages write$
     } if$
     newline$
@@ -510,7 +511,6 @@ FUNCTION {newspaper}
         format.journal write$
     } if$
     add.comma
-
     format.date write$
     newline$
 }
@@ -567,8 +567,7 @@ FUNCTION {digital}
     format.date missing$
     'skip$
     {
-        add.comma
-        format.date write$
+        format.date write$ add.comma
     } if$
     format.url write$
     newline$
@@ -577,19 +576,10 @@ FUNCTION {digital}
 FUNCTION {misc}
 {
     bibitem.begin
-    format.authors missing$
-    'skip$
-    {
-        format.authors write$ add.period
-    } if$
+    format.authors write$ add.period
     format.title write$
-    "[" format.type * "]" * write$ add.period
-    format.url write$ add.comma
-    format.date missing$
-    'skip$
-    {
-        format.date write$
-    } if$
+    "[J]. CoRR abs/" eprint * write$ add.comma
+    format.year write$
     newline$
 }
 
@@ -607,3 +597,5 @@ EXECUTE {bib.begin}
 ITERATE {call.type$}
 
 EXECUTE {bib.end}
+
+

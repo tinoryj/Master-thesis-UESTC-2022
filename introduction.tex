@@ -127,17 +127,17 @@
 \subsection{基于TEE的安全应用}
 \label{subsec:compare-tee}
 
-TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZone是ARM CPU指令集的安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\cite{rubinov2016automated}、用户输入口令\cite{ying2018truz}，以及监控安全区以外的程序执行\cite{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\cite{matetic19BITE}、文件系统\cite{ahmad2018OBLIVIATE,shinde20}、外包数据库\cite{eskandarian17,priebe18,sun21}、键值存储\cite{mishra2018Oblix,bailleu2019SPEICHER,kim2019ShieldStore,bailleu2021Avocado}和数据分析平台\cite{schuster15, zheng2017Opaque, bowe2020ZEXE}等。
+TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZone是ARM CPU指令集的安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\cite{rubinov2016automated}、用户输入口令\cite{ying2018truz}，以及监控安全区以外的程序执行\cite{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\cite{matetic19BITE}、文件系统\cite{ahmad2018OBLIVIATE,shinde20}、外包数据库\cite{eskandarian19,priebe18,sun21}、键值存储\cite{mishra2018Oblix,bailleu2019SPEICHER,kim2019ShieldStore,bailleu2021Avocado}和数据分析平台\cite{schuster15, zheng2017Opaque, bowe2020ZEXE}等。
 
 TEE已被广泛用于保护存储系统。PESOS\cite{krahn2018PESOS}使用SGX强化对象存储中的访问策略。OBLIVIATE\cite{ahmad2018OBLIVIATE}增强了基于SGX的文件系统对特权侧信道攻击的安全性。EnclaveDB\cite{priebe18}和ObliDB\cite{eskandarian19}基于SGX保护外包数据库免受信息泄露威胁。NEXUS\cite{djoko2019NEXUS}通过SGX对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik2018SGX}提出了降低基于SGX系统的性能开销的指南。ShieldStore\cite{kim2019ShieldStore}实现特定于应用程序的数据管理以减少安全区内存开销。SPEICHER\cite{bailleu2019SPEICHER}则是一个基于SGX及LSM树(Log-structured merge-tree)\cite{LSMT}的键值存储系统，具有高效的I/O操作能力。\textbf{然而，以上所有研究均未考虑重复数据删除。}
 
-Dang等人\cite{dang2017Privacy}提出了基于代理的加密后重复数据删除协议，用于低网络资源开销的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现相关原型系统。SPEED\cite{cui2019SPEED}利用重复数据删除来提高SGX的计算效率，但本文使用安全区提高了加密后重复数据删除的性能。其他研究使用云服务端安全区实现数据块所有权验证\cite{you2020Proofs}和基于文件的加密后重复数据删除\cite{fuhry20}，而本文使用客户端安全区进行有效的数据块所有权证明生成并支持更细粒度的基于数据块的重复数据删除。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda2021S2Dedup}在服务端部署安全区以重加密来自不同客户端的密文数据块，并在安全区外执行针对重加密后密文数据块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup产生了严重的CPU上下文切换开销(context-switching overhead)\cite{weisse2017regaining}。本文研究的基于TEE的加密后重复数据删除技术可实现对TEE的高效利用，相较于明文重复数据删除系统仅产生有限的额外性能开销。
+Dang等人\cite{dang2017Privacy}提出了基于代理的加密后重复数据删除协议，用于低网络资源开销的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现相关原型系统。SPEED\cite{cui2019SPEED}利用重复数据删除来提高SGX的计算效率，但本文使用安全区提高了加密后重复数据删除的性能。其他研究使用云服务端安全区实现数据块所有权验证\cite{you2020Proofs}和基于文件的加密后重复数据删除\cite{fuhry2020segshare}，而本文使用客户端安全区进行有效的数据块所有权证明生成并支持更细粒度的基于数据块的重复数据删除。SeGShare\cite{fuhry2020segshare20segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda2021S2Dedup}在服务端部署安全区以重加密来自不同客户端的密文数据块，并在安全区外执行针对重加密后密文数据块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup产生了严重的CPU上下文切换开销(context-switching overhead)\cite{weisse2017regaining}。本文研究的基于TEE的加密后重复数据删除技术可实现对TEE的高效利用，相较于明文重复数据删除系统仅产生有限的额外性能开销。
 
 \section{本文的主要贡献与创新}
 
 \begin{enumerate}[leftmargin=*]
     \item \textbf{系统性研究如何使用TEE改进重复数据删除，为后续TEE应用起到一定启发作用。}
-          尽管已有少量工作提出基于TEE的重复数据删除方法，但这些工作或者只支持粗粒度文件级重复数据删除\cite{fuhry2020segshare}，或者由于持续访问安全区外索引导致巨大环境切换开销\cite{miranda2021S2Dedup}。本项目明确了如何使用TEE改进现有加密后重复数据删除的密钥生成和所有权证明，以及实现对推测内容攻击的防御，并提供系统以论证实用性。本项目所提出的系统和方法对TEE在其他领域研究具有参考价值。
+          尽管已有少量工作提出基于TEE的重复数据删除方法，但这些工作或者只支持粗粒度文件级重复数据删除\cite{fuhry2020segshare20segshare}，或者由于持续访问安全区外索引导致巨大环境切换开销\cite{miranda2021S2Dedup}。本项目明确了如何使用TEE改进现有加密后重复数据删除的密钥生成和所有权证明，以及实现对推测内容攻击的防御，并提供系统以论证实用性。本项目所提出的系统和方法对TEE在其他领域研究具有参考价值。
     \item \textbf{研发高效实用的加密前和加密后重复数据删除原型系统，推动安全重复数据删除理论到实践的转化。}
           本项目研发的原型系统可以有效解决云存储服务商关注的安全、效率、成本控制等核心问题问题，并全面领先于现有基于纯软件的高效存储解决方案，推动安全重复数据删除落地实践。
 \end{enumerate}
