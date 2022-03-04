@@ -1,15 +1,15 @@
 \subsection{合成工作负载下的性能评估}
 \label{subsec:sgxdedup-synthetic}
 
-本文使用一组随机文件组成一个合成工作负载数据集，其中每个文件均仅包含全数据集范围内非重复的数据块(完全随机)。 默认情况下，本文将随机文件大小设置为2\,GiB(Exp\#2除外，本文在其中对消息锁加密密钥生成性能进行了压力测试)。 客户端通过云服务端上传或下载文件。为了避免磁盘I/O对性能的影响，本文将随机文件存储在内存中而不是磁盘上(Exp\#8除外，本文在真实云环境部署中使用磁盘处理随机文件数据集)。本文的结果为10次运行的平均结果以及T分布(\textit{ Student's t-Distribution})下的95\%置信区间包含在条形图中(为简洁起见，本文在折线图中不标注置信区间)。
+本文使用一组随机文件组成一个合成工作负载数据集，其中每个文件均仅包含全数据集范围内非重复的数据块(完全随机)。 默认情况下，本文将随机文件大小设置为2\,GiB(Exp\#2除外，本文在其中对消息锁加密密钥生成性能进行了压力测试)。 客户端通过云服务端上传或下载文件。为了避免磁盘I/O对性能的影响，本文将随机文件存储在内存中而不是磁盘上(Exp\#8除外，本文在真实云环境部署中使用磁盘处理随机文件数据集)。本文的结果为10次运行的平均结果以及T分布(\textit{Student's t-Distribution})下的95\%置信区间包含在条形图中(为简洁起见，本文在折线图中不标注置信区间)。
 
 \paragraph*{Exp\#1(单客户端消息锁加密密钥生成)。}本文评估\sysnameS 中两轮消息锁加密密钥生成的效率。首先，客户端基于Rabin指纹(\S\ref{sec:sgxdedup-implementation})对2\,GiB随机文件进行可变长度分块，并产生数据块指纹，发出消息锁加密密钥生成请求。然后，客户端为另一个2\,GiB随机执行相同步骤进行密钥生成。不同之处在于第二轮密钥生成将使用预先计算的加解密掩码加速密钥安全区处理(\S\ref{subsec:sgxdedup-encryption})。
 
-本文将\sysnameS 的单客户端消息锁加密密钥生成速度与现有服务器辅助密钥生成方案进行了对比。本文考虑两种基于OPRF协议的密钥生成方法，即 \textit{OPRF-BLS}\cite{armknecht2015transparent}和\textit{ OPRF-RSA}\cite{bellare2013DupLESS}，它们分别基于盲BLS签名和盲RSA签名实现了OPRF原语(\S\ref{subsec:sgxdedup-problem})。此外，本文还考虑了两种较宽松的密钥生成方法，即\textit{MinHash encryption}\cite{qin17}和\textit{TED}\cite{li2020TED}，它们以存储效率和安全性为代价换取密钥生成性能。具体来说，MinHash encryption使用OPRF-RSA协议基于每个数据段(较数据块更大的单位，平均大小为1\,MiB)中所有数据块指纹的最小值产生消息锁加密密钥。TED使用数据块的短哈希、密钥服务器的全局秘密以及基于草图(Sketch)统计的数据块频率共同为每个数据块生成消息锁加密密钥(参见\cite{li2020TED}中的\S3.3)。
+本文将\sysnameS 的单客户端消息锁加密密钥生成速度与现有服务器辅助密钥生成方案进行了对比。本文考虑两种基于OPRF协议的密钥生成方法，即\textit{OPRF-BLS}\cite{armknecht2015transparent}和\textit{OPRF-RSA}\cite{bellare2013DupLESS}，它们分别基于盲BLS签名和盲RSA签名实现了OPRF原语(\S\ref{subsec:sgxdedup-problem})。此外，本文还考虑了两种较宽松的密钥生成方法，即\textit{MinHash encryption}\cite{qin17}和\textit{TED}\cite{li2020TED}，它们以存储效率和安全性为代价换取密钥生成性能。具体来说，MinHash encryption使用OPRF-RSA协议基于每个数据段(较数据块更大的单位，平均大小为1\,MiB)中所有数据块指纹的最小值产生消息锁加密密钥。TED使用数据块的短哈希、密钥服务器的全局秘密以及基于草图(Sketch)统计的数据块频率共同为每个数据块生成消息锁加密密钥(参见\cite{li2020TED}中的\S3.3)。
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.8\textwidth]{pic/sgxdedup/expa2_keyGenPerformance.pdf}
+    \includegraphics[width=0.8\textwidth]{pic/sgxdedup/plot/exp_a2/expa2_keyGenPerformance.pdf}
     \caption{(Exp\#1)单客户端消息锁加密性能对比}
     \label{fig:sgxdedup-keygen-comparison}
 \end{figure}
@@ -24,11 +24,11 @@
     \small
     \centering
     \begin{tabular}{@{}c@{}c@{}c}
-        \includegraphics[width=0.49\textwidth]{pic/sgxdedup/expa3_keyScale_performance_number_singleThread.pdf} & 
+        \includegraphics[width=0.49\textwidth]{pic/sgxdedup/plot/exp_a3/expa3_keyScale_performance_number_singleThread.pdf} & 
         \hspace{5pt}
-        \includegraphics[width=0.49\textwidth]{pic/sgxdedup/expa3_keyScale_performance_number_multiThread.pdf}     \\
-        \mbox{\small (a)密钥安全区单线程执行}                                                                   & 
-        \mbox{\small (b)密钥安全区多线程执行}                                                                      \\
+        \includegraphics[width=0.49\textwidth]{pic/sgxdedup/plot/exp_a3/expa3_keyScale_performance_number_multiThread.pdf}     \\
+        \mbox{\small (a)密钥安全区单线程执行}                                                                               & 
+        \mbox{\small (b)密钥安全区多线程执行}                                                                                  \\
     \end{tabular}
     \caption{(Exp\#2) 多客户端消息锁加密密钥生成}
     \label{fig:sgxdedup-exp-keygen-scalability}
@@ -43,9 +43,9 @@
 \begin{figure}[!htb]
     \centering
     \begin{tabular}{@{\ }c@{\ }c}
-        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa2_keyEnclaveBatchSize_Performance_overall.pdf} & 
-        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa2_keyEnclaveBatchSize_Performance_1st.pdf}        \\
-        \mbox{\parbox{0.48\textwidth}{\small (a) 总体密钥生成速度vs.批量大小}}                                 & 
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/plot/exp_a2/expa2_keyEnclaveBatchSize_Performance_overall.pdf} & 
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/plot/exp_a2/expa2_keyEnclaveBatchSize_Performance_1st.pdf}        \\
+        \mbox{\parbox{0.48\textwidth}{\small (a) 总体密钥生成速度vs.批量大小}}                                             & 
         \mbox{\parbox{0.48\textwidth}{\small (b) 密钥生成中的计算开销vs.批量大小}}
     \end{tabular}
     \caption{(Exp\#3)指纹批量大小对密钥生成性能的影响}
@@ -58,9 +58,9 @@
 \begin{figure}[!htb]
     \centering
     \begin{tabular}{@{\ }c@{\ }c}
-        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa5_keyRegression_time.pdf} & 
-        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa5_keyRegression_time_default.pdf} \\
-        \mbox{\small (a)不同密钥回归参数}                                                 & 
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/plot/exp_a5/expa5_keyRegression_time.pdf} & 
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/plot/exp_a5/expa5_keyRegression_time_default.pdf} \\
+        \mbox{\small (a)不同密钥回归参数}                                                             & 
         \mbox{\small (b)不同密钥回归次数}
     \end{tabular}
     \caption{(Exp\#4)会话密钥更新延迟}
@@ -73,20 +73,20 @@
 
 \paragraph*{Exp\#5 (数据所有权证明计算开销)。}本文评估\sysnameS 的数据所有权证明性能。本文考虑一个对2\,GiB随机文件执行数据所有权证明的客户端。客户端从该文件中创建明文数据块，加密每个明文数据块，并向云服务端发出数据所有权证明请求。本文根据客户端(所有权证明安全区对密文数据块计算指纹并产生相应签名)和云服务端(验证指纹对应的数据的真实性)中所有数据块的总计算时间来测量所有权证明计算开销。本实验中的速度计算排除了客户端和云服务端之间的网络传输时间开销(本文在Exp\#10中考虑了网络传输时间)。
 
-本文将\sysnameS 与两种最先进的数据所有权证明方法进行比较:(i)\textit{PoW-MT}\cite{halevi11}(halevi等人提出的基本版本)，该数据所有权证明方法使用纠删码对块进行编码，并在编码的内容上构建默克尔树用于所有权证明；(ii)\textit{PoW-UH}\cite{xu2013weak}建立在通用哈希之上，相较于PoW-MT牺牲部分安全性以换取更高的性能。为了公平比较，本文使用C++复现了PoW-MT和PoW-UH方法。此外，halevi等人\cite{halevi11}提出了改进的数据所有权证明方法，但它们均为了更低的内存开销产生了更大的性能开销。
+本文将\sysnameS 与两种最先进的数据所有权证明方法进行比较：(i)\textit{PoW-MT}\cite{halevi11}(halevi等人提出的基本版本)，该数据所有权证明方法使用纠删码对块进行编码，并在编码的内容上构建默克尔树用于所有权证明；(ii)\textit{PoW-UH}\cite{xu2013weak}建立在通用哈希之上，相较于PoW-MT牺牲部分安全性以换取更高的性能。为了公平比较，本文使用C++复现了PoW-MT和PoW-UH方法。此外，halevi等人\cite{halevi11}提出了改进的数据所有权证明方法，但它们均为了更低的内存开销产生了更大的性能开销。
 
 \begin{figure}[!htb]
     \begin{minipage}[t]{0.47\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{pic/sgxdedup/expa4_powPerformance.pdf}
-        \caption{\small(Exp\#5)数据所有权证明的计算性能}
+        \includegraphics[width=\linewidth]{pic/sgxdedup/plot/exp_a4/expa4_powPerformance.pdf}
+        \caption{\small(Exp\#5)数据所有权证明的\\计算性能(不含网络开销)}
         \label{fig:sgxdedup-pow-comparison}
     \end{minipage}%
     \hspace{0.2in}
     \begin{minipage}[t]{0.47\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{pic/sgxdedup/expb1_multiple_client.pdf}
-        \caption{(Exp\#9) 多客户端上传/下载性能}
+        \includegraphics[width=\linewidth]{pic/sgxdedup/plot/exp_b1/expb1_multiple_client.pdf}
+        \caption{(Exp\#9)多客户端聚合的\\上传/下载性能}
         \label{fig:sgxdedup-multiClientThroughput}
     \end{minipage}%
 \end{figure}
@@ -98,9 +98,9 @@
 \begin{figure}[!htb]
     \centering
     \begin{tabular}{@{\ }c@{\ }c}
-        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa4_powBatchSize_overall.pdf} & 
-        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/expa4_powBatchSize_breakdown.pdf}  \\
-        \mbox{\parbox{0.48\textwidth}{\small (a) 所有权证明有效速度vs.批量大小}}            & 
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/plot/exp_a4/expa4_powBatchSize_overall.pdf} & 
+        \includegraphics[width=0.48\textwidth]{pic/sgxdedup/plot/exp_a4/expa4_powBatchSize_breakdown.pdf}  \\
+        \mbox{\parbox{0.48\textwidth}{\small (a) 所有权证明有效速度vs.批量大小}}                        & 
         \mbox{\parbox{0.48\textwidth}{\small (b) 所有权证明的计算开销vs.批量大小}}
     \end{tabular}
     \caption{(Exp\#6)密文数据块批量大小对所有权证明的性能影响}
@@ -116,8 +116,8 @@
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.646\textwidth]{pic/sgxdedup/upload_network_speed_bar.pdf}
-    \includegraphics[width=0.324\textwidth]{pic/sgxdedup/download_network_speed_bar.pdf}
+    \includegraphics[width=0.646\textwidth]{pic/sgxdedup/plot/exp_b1/upload_network_speed_bar.pdf}
+    \includegraphics[width=0.324\textwidth]{pic/sgxdedup/plot/exp_b1/download_network_speed_bar.pdf}
     \\
     \hspace{1.1in} {\small (a) 上传} \hspace{1.9in}
     {\small (b) 下载}\\
@@ -157,7 +157,7 @@
 
 图~\ref{fig:sgxdedup-multiClientThroughput}显示了多达10个客户端的测试结果。在第一轮上传中，由于客户端对云服务端的资源竞争，总体上传速度在7个客户端时达到峰值(637.0\,MiB/s)，随后下降到10个客户端时的620.3\,MiB/s。同样，由于多个客户端的读取竞争，总下载速度最终下降到408.8\,MiB/s。而在第二轮上传中，由于不再需要向云服务端写入任何数据块，总体速度随着客户端数量增加而增加，最终在10个客户端时达到峰值1277.1\,MiB/s。
 
-\paragraph*{Exp\#10(微基准性能测试)。}本文将\sysnameS 中各个步骤的计算时间开销分解以探究不同步骤的性能。假设密钥服务器及密钥安全区已启动并完成初始化，本文关注单个客户端的初始化(Initialization)和上传过程中各个步骤的时间开销。初始化过程客户端装载并启动所有权证明安全区。上传过程包括以下步骤:(1)数据分块(\textit{chunking})，将输入文件划分为可变的小的明文数据块；(2)明文数据块指纹计算(\textit{fingerprinting-p})，计算明文数据块的指纹，用于消息锁加密密钥生成；(3)密钥生成(\textit{key generation})，客户端与密钥安全区生成消息锁加密密钥；(4)数据块加密(\textit{encryption})，使用步骤3生成的消息锁加密密钥加密明文数据块；(5)密文数据块指纹计算(\textit{fingerprinting-c})，所有权证明安全区计算密文数据块的指纹； (6)密文数据块指纹签名(\textit{signing})，所有权证明安全区计算密文数据块指纹的签名；(7)云服务端验证(\textit{verification})，云服务端基于签名验证接收到的指纹的真实性；(8)重复数据删除查询(\textit{deduplication})，云服务端检测重复的密文数据块并通知客户端；(9)数据传输(\textit{transfer})，上传非重复的密文数据块及文件元数据。
+\paragraph*{Exp\#10(微基准性能测试)。}本文将\sysnameS 中各个步骤的计算时间开销分解以探究不同步骤的性能。假设密钥服务器及密钥安全区已启动并完成初始化，本文关注单个客户端的初始化(Initialization)和上传过程中各个步骤的时间开销。初始化过程客户端装载并启动所有权证明安全区。上传过程包括以下步骤:(1)数据分块(\textit{Chunking})，将输入文件划分为可变的小的明文数据块；(2)明文数据块指纹计算(\textit{Fingerprinting-p})，计算明文数据块的指纹，用于消息锁加密密钥生成；(3)密钥生成(\textit{Key generation})，客户端与密钥安全区生成消息锁加密密钥；(4)数据块加密(\textit{Encryption})，使用步骤3生成的消息锁加密密钥加密明文数据块；(5)密文数据块指纹计算(\textit{Fingerprinting-c})，所有权证明安全区计算密文数据块的指纹； (6)密文数据块指纹签名(\textit{Signing})，所有权证明安全区计算密文数据块指纹的签名；(7)云服务端验证(\textit{Verification})，云服务端基于签名验证接收到的指纹的真实性；(8)重复数据删除查询(\textit{Deduplication})，云服务端检测重复的密文数据块并通知客户端；(9)数据传输(\textit{Transfer})，上传非重复的密文数据块及文件元数据。
 
 \begin{table}[!htb]
     \small

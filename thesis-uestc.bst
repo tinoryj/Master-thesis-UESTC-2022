@@ -377,6 +377,11 @@ FUNCTION {add.comma}
     ", " write$
 }
 
+FUNCTION {add.colon}
+{
+    ": " write$
+}
+
 FUNCTION {book}
 {
     bibitem.begin
@@ -431,9 +436,10 @@ FUNCTION {conference}
     pages missing$
     'skip$
     {
-        add.comma
+        add.colon
         format.pages write$
     } if$
+    add.period
     newline$
 }
 
@@ -486,6 +492,7 @@ FUNCTION {thesis}
     format.institution write$ add.comma
     format.year write$ add.comma
     format.pages write$
+    add.period
     newline$
 }
 
@@ -512,6 +519,7 @@ FUNCTION {newspaper}
     } if$
     add.comma
     format.date write$
+    add.period
     newline$
 }
 
@@ -527,6 +535,7 @@ FUNCTION {techreport}
     } if$
     format.institution write$ add.comma
     format.date write$
+    add.period
     newline$
 }
 
@@ -539,6 +548,7 @@ FUNCTION {patent}
     format.type write$ add.comma
     format.id write$ add.comma
     format.date write$
+    add.period
     newline$
 }
 
@@ -551,6 +561,7 @@ FUNCTION {standard}
     format.address write$ ": " write$
     format.publisher write$ add.comma
     format.date write$
+    add.period
     newline$
 }
 
@@ -570,6 +581,7 @@ FUNCTION {digital}
         format.date write$ add.comma
     } if$
     format.url write$
+    add.period
     newline$
 }
 
@@ -580,6 +592,7 @@ FUNCTION {misc}
     format.title write$
     "[J]. CoRR abs/" eprint * write$ add.comma
     format.year write$
+    add.period
     newline$
 }
 

@@ -21,5 +21,5 @@
 \begin{itemize}
     \item 每个客户端与云服务端之间的通信受SSL/TLS保护以防止第三方窃听。
     \item 安全区是受信任且经过身份验证的(例如，在首次启动时通过远程证明验证其可靠性)，以便诚实地执行攻击检测并防止检测机制被篡改。此外，现有的基于TEE的加密重复数据删除\cite{shinde20}及\sysnameS 一样，安全区维护密钥(即\S\ref{sec:featurespy-implementation}中的PoW密钥)而不是所有安全区内的机密性，以缩小可信计算基TCB的大小，尽可能降低针对安全区的侧信道攻击产生的风险\cite{fei21}。
-    \item 不可信的云服务端可能会破坏外包数据，损害用户数据的完整性。\sysnameF 没有解决该威胁，但它与数据持有证明\textit{(Proofs of Data Possession, PDP)}\cite{ateniese2007provable}和可取回性证明\textit{(proof-of-retrievability, PoR)}\cite{juels2007pors}兼容，可通过执行定期的完整性验证外包数据应对云服务端破坏数据完整性的威胁。\sysnameF 也可与\cite{li15}中的高容错存储结合，以提高数据存储的可靠性。
+    \item 不可信的云服务端可能会破坏外包数据，损害用户数据的完整性。\sysnameF 没有解决该威胁，但它与数据持有证明\textit{(Proofs of Data Possession, PDP)}\cite{ateniese2007provable}和可取回性证明\textit{(Proof-of-retrievability, PoR)}\cite{juels2007pors}兼容，可通过执行定期的完整性验证外包数据应对云服务端破坏数据完整性的威胁。\sysnameF 也可与\cite{li15}中的高容错存储结合，以提高数据存储的可靠性。
 \end{itemize}

@@ -52,7 +52,7 @@
     \label{tab:featurespy-evaluation-syn-system-breakdown}
 \end{table}
 
-表~\ref{tab:featurespy-evaluation-syn-system-breakdown}展示每1\,MiB文件数据处理时各个步骤的时间开销。由于\prototype 建立在\sysnameS(\S\ref{sec:sec:sgxdedup-implementation})之上，它继承了在非首次上传时通过推测性加密降低密钥生成开销(\S\ref{sec:featurespy-implementation})以及避免传输重复数据块带来的性能优势。结果表明，针对推测内容攻击的检测步骤是高效的，并且在上传过程中仅占用了总时间开销的0.4\%。由于N-transform的计算开销，特征生成步骤开销很高。例如，{\tt firstFeature}实例中在第一轮上传时占用了总时间开销的31.4\%；{\tt minFeature}和{\tt allFeature}实例中特征提取所消耗的时间占比分别进一步增加到51.1\%和50.9\%，这是因为它们都提取了所有三个特征(与只需要提取第一个特征的{\tt firstFeature}相反)。然而，本文认为可以通过多线程来减轻特征生成的性能开销对\prototype 整体性能的影响(见下文)。
+表~\ref{tab:featurespy-evaluation-syn-system-breakdown}展示每1\,MiB文件数据处理时各个步骤的时间开销。由于\prototype 建立在\sysnameS(\S\ref{sec:sgxdedup-implementation})之上，它继承了在非首次上传时通过推测性加密降低密钥生成开销(\S\ref{sec:featurespy-implementation})以及避免传输重复数据块带来的性能优势。结果表明，针对推测内容攻击的检测步骤是高效的，并且在上传过程中仅占用了总时间开销的0.4\%。由于N-transform的计算开销，特征生成步骤开销很高。例如，{\tt firstFeature}实例中在第一轮上传时占用了总时间开销的31.4\%；{\tt minFeature}和{\tt allFeature}实例中特征提取所消耗的时间占比分别进一步增加到51.1\%和50.9\%，这是因为它们都提取了所有三个特征(与只需要提取第一个特征的{\tt firstFeature}相反)。然而，本文认为可以通过多线程来减轻特征生成的性能开销对\prototype 整体性能的影响(见下文)。
 
 \paragraph*{Exp\#6(单客户端上传/下载性能)。}
 本文考虑单个客户端，并将\prototype 的性能与其基础\sysnameS 进行比较。本文令客户端连续两次上传相同的SYNUnique文件(如Exp\#5)，最后下载该文件。
@@ -75,7 +75,7 @@
     \label{fig:featurespy-singleClientThroughput}
 \end{figure}
 
-图~\ref{fig:featurespy-singleClientThroughput}(a)和图~\ref{fig:featurespy-singleClientThroughput}(b)分别展示了改变提取特征的线程数(\S\ref{sec:featurespy-implementation})时\prototype 三种实例的性能变化。由于\sysnameS 无需进行特征提取，其第一轮上传速度为297.1\,MiB/s，并在第二轮上传中保持为304.3\,MiB/s。第二轮中上传性能稍有提升，这是由于\sysnameS 可在第二轮中通过推测行加密提升密钥生成速度，且无需上传任何数据块(\S\ref{sec:sec:sgxdedup-implementation})。
+图~\ref{fig:featurespy-singleClientThroughput}(a)和图~\ref{fig:featurespy-singleClientThroughput}(b)分别展示了改变提取特征的线程数(\S\ref{sec:featurespy-implementation})时\prototype 三种实例的性能变化。由于\sysnameS 无需进行特征提取，其第一轮上传速度为297.1\,MiB/s，并在第二轮上传中保持为304.3\,MiB/s。第二轮中上传性能稍有提升，这是由于\sysnameS 可在第二轮中通过推测行加密提升密钥生成速度，且无需上传任何数据块(\S\ref{sec:sgxdedup-implementation})。
 \prototype 的上传速度首先随着线程数的增加而增加。随后，{\tt firstFeature}实例在2个线程时达到峰值为265.3\,MiB/s，而{\tt minFeature}和{\tt allFeature}实例在3个线程时达到峰值分别为261.3\,MiB/s和262.6\,MiB/s(第一轮上传)，随后由于多线程资源竞争，性能在逐渐下降。在4个线程时，由于多线程资源竞争，对于所有三个实例第一轮上传速度降低至大约为220\,MiB/s，而第二轮上传速度降低至约为225\,MiB/s。
 
 通过利用多线程，\prototype 仅在第一轮上传时相较于\sysnameS 仅产生8.0-12.0\%的额外性能开销，而在第二轮上传时缩减为6.6-7.5\%。此外，本文观察到第一轮(传输所有数据块)和第二轮(不需要传输重复数据)上传之间的性能差异很小，这是因为本文的LAN测试平台具有高带宽来传输数据。本文认为源端重复数据删除在实际云部署中带来了显着的性能提升(Exp\#8)，并减少了处理实际存储工作负载的网络流量开销(Exp\#10)。图~\ref{fig:featurespy-singleClientThroughput}(c)比较下载速度。相较于\sysnameS，\prototype 会导致1.3\%的性能下降，这是因为它同时使用消息锁加密密钥和特征密钥解密每个密文数据块。

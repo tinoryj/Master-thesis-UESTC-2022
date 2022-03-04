@@ -20,7 +20,7 @@
 \begin{figure}[!htb]
     \small
     \centering
-    \includegraphics[width=\textwidth]{chunk-based-dedup-arch.pdf}
+    \includegraphics[width=\textwidth]{pic/background/chunk-based-dedup-arch.pdf}
     \caption{基于数据块的重复数据删除的工作流程概览}
     \label{fig:chunk-based-dedup-flow}
 \end{figure}
@@ -44,7 +44,7 @@
 \begin{figure}[!htb]
     \small
     \centering
-    \includegraphics[width=\textwidth]{chunk-based-enc-dedup-arch.pdf}
+    \includegraphics[width=\textwidth]{pic/background/chunk-based-enc-dedup-arch.pdf}
     \caption{基于数据块的加密后重复数据删除的工作流程概览}
     \label{fig:chunk-based-enc-dedup-flow}
 \end{figure}
@@ -54,7 +54,7 @@
 \subsection{数据块加密技术}
 \label{subsec:background-encrypted-deduplication-key}
 
-\textit{消息锁加密(Message-Locked Encryption, MLE)}\cite{bellare2013MLE}将基于内容的密钥生成方案等加密原语形式化用于加密后重复数据删除。它指出了如何从明文数据块的内容导出相应的对称加密密钥(称为 \textit{消息锁加密密钥(MLE密钥)})。以最广泛使用的消息锁加密技术：收敛加密(Convergent Encryption, CE)\cite{douceur2002reclaiming}为例，CE使用明文数据块的安全哈希作为MLE密钥，使得相同的明文数据块可被加密为相同的密文数据块，从而令重复数据删除技术在密文数据块之上仍然可行。除此之外，基于CE的消息锁加密方案还包括：
+消息锁加密\textit{(Message-Locked Encryption, MLE)}\cite{bellare2013MLE}将基于内容的密钥生成方案等加密原语形式化用于加密后重复数据删除。它指出了如何从明文数据块的内容导出相应的对称加密密钥(称为消息锁加密密钥(\textit{MLE}密钥))。以最广泛使用的消息锁加密技术：收敛加密(Convergent Encryption, CE)\cite{douceur2002reclaiming}为例，CE使用明文数据块的安全哈希作为MLE密钥，使得相同的明文数据块可被加密为相同的密文数据块，从而令重复数据删除技术在密文数据块之上仍然可行。除此之外，基于CE的消息锁加密方案还包括：
 
 \begin{enumerate}[leftmargin=*]
     \item \textbf{哈希收敛加密(Hash Convergent Encryption, HCE)}\cite{douceur2002reclaiming}与CE具有相同的MLE密钥产生规则，但基于明文哈希值计算指纹用于重复数据删除(CE使用密文指纹进行重复数据删除)。
@@ -104,14 +104,14 @@ TEE全名为可信执行环境(Trusted Execution Environment)是计算平台上�
 \begin{figure}[!htb]
     \small
     \centering
-    \includegraphics[width=0.6\textwidth]{sgx-example.pdf}
+    \includegraphics[width=0.6\textwidth]{pic/background/sgx-example.pdf}
     \caption{Intel SGX框架}
     \label{fig:sgx-arch}
 \end{figure}
 
 Intel Software Guard Extensions (Intel SGX)\cite{sgx,sgx2}，是一组内置于现代Intel CPU中用于增强应用程序代码和数据安全性的扩展指令。开发者可利用SGX技术将应用程序的安全操作封装在称为“安全区(Enclave)”的硬件保护环境中，保障用户关键代码和数据的机密性和完整性。Intel SGX最关键的优势在于将应用程序以外的软件栈如操作系统(OS)和基本输入输出系统(BIOS)都排除在了可信计算基(Trusted Computing Base, TCB)之外，一旦程序和数据在安全区之中，即便是操作系统和也无法影响安全区内的代码和数据，安全区的安全边界只包含CPU和它本身(如图\ref{fig:sgx-arch}所示)。Intel SGX具有隔离、证明和密封三项主要安全功能。
 
-\textbf{隔离(Isolation)}：安全区代码和数据被放置在被称为\textit{enclave page cache (EPC)}的硬件内存保护区域中，该内存区域使用内存加密引擎(MEE)进行加密，以防止泄露任何内存数据到本安全区之外。EPC以大小为4\,KiB的页面为基本单位管理安全区内存，任意安全区内应用程序最多可占用96\,MiB内存空间\cite{harnik2018SGX}。当安全区内存使用超过上限时，须将未使用的内存页面加密并逐出到未受保护的主存，并在将逐出的页面加载回安全区内存时解密并验证完整性，导致巨大的分页开销\cite{arnautov2016SCONE,dinhngoc2019Everything}。
+\textbf{隔离(Isolation)}：安全区代码和数据被放置在被称为\textit{Enclave page cache (EPC)}的硬件内存保护区域中，该内存区域使用内存加密引擎(MEE)进行加密，以防止泄露任何内存数据到本安全区之外。EPC以大小为4\,KiB的页面为基本单位管理安全区内存，任意安全区内应用程序最多可占用96\,MiB内存空间\cite{harnik2018SGX}。当安全区内存使用超过上限时，须将未使用的内存页面加密并逐出到未受保护的主存，并在将逐出的页面加载回安全区内存时解密并验证完整性，导致巨大的分页开销\cite{arnautov2016SCONE,dinhngoc2019Everything}。
 
 此外，SGX为安全区和未受保护的内存之间的交互提供了两个接口，应用程序可以通过安全区内部调用(ECalls)进入安全区以执行安全区内部函数，并且在ECall中，程序可通过安全区外部调用(OCalls)暂时退出安全区并调用不受保护的内存中的不受信任的函数。但安全区内部调用和外部调用会产生大量的CPU上下文切换开销\cite{harnik2018SGX}，严重影响SGX应用程序性能。
 
@@ -130,11 +130,11 @@ ARM TrustZone\cite{trustzone}是ARM公司为Cortex-A微架构\cite{cortex-a}设�
     \small
     \centering
     \begin{tabular}{@{}c@{}c@{}c}
-        \includegraphics[width=0.49\textwidth]{ARM-TZ-A.pdf} &
+        \includegraphics[width=0.49\textwidth]{pic/background/ARM-TZ-A.pdf} &
         \hspace{5pt}
-        \includegraphics[width=0.49\textwidth]{ARM-TZ-M.pdf}   \\
-        \mbox{\small (a) Cortex-A微架构中的TrustZone}        &
-        \mbox{\small (b) Cortex-M微架构中的TrustZone}          \\
+        \includegraphics[width=0.49\textwidth]{pic/background/ARM-TZ-M.pdf}   \\
+        \mbox{\small (a) Cortex-A微架构中的TrustZone}                       &
+        \mbox{\small (b) Cortex-M微架构中的TrustZone}                         \\
     \end{tabular}
     \caption{ARM TrustZone技术}
     \label{fig:ARM-TZ-base}
