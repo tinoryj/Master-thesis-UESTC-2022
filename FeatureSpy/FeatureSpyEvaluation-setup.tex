@@ -3,7 +3,7 @@
 
 本文进行了广泛的评估来研究\sysnameF 对推测内容攻击的检测的有效性及相关影响因素(\S\ref{subsec:featurespy-evaluation-detection})；原型系统\prototype 在合成数据集(\S\ref{subsubsec:featurespy-syn})和真实世界数据集工作负载下的性能(\S\ref{subsubsec:featurespy-real})。本文将主要实验结果总结如下：
 
-\begin{itemize}
+\begin{itemize}[leftmargin=0em]
     \item \sysnameF 根据相应的密文数据块可有效地找到相似的明文数据块。例如，当明文数据块具有中等程度的差异时，它可检测到多达80.2\%的相似数据块。
     \item 即使攻击者将枚举的伪造文件混合于正常文件间，\sysnameF 仍可有效地检测到推测内容攻击。同时，它对真实世界数据集(正常文件)的误判率极低(例如，默认配置下为0)。
     \item \prototype 在处理大规模真实世界数据时，相较于\sysnameS (不支持\sysnameF)仅产生有限的上传(例如，8.8\%)和下载(例如，0.8\%)性能开销。
@@ -23,11 +23,11 @@
 
 \paragraph*{真实世界数据集。}本文采用四个真实世界数据集，其特征总结在表~\ref{tab:featurespy-datasets}中：
 
-\begin{enumerate}
+\begin{enumerate}[leftmargin=0em]
     \item \textbf{FSL}\cite{fsl}，其中包括795个2013年1月22日至6月17日之间9名学生主机的home目录快照。该数据集仅包含数据块的元数据(例如，数据块指纹、大小、进入快照的顺序等)。
     \item \textbf{MS}\cite{meyer2011deduplication}，其中包括 143个windows文件系统快照，每个快照的逻辑大小约为100\,GiB。该数据集仅包含数据块的元数据(例如，数据块指纹、大小、进入快照的顺序等)。
     \item \textbf{Linux}\cite{linux}，其中包括产生自Linux源代码稳定版本(v2.6.11到v5.13之间)的84个快照。
-    \item \textbf{CouchDB}\cite{couchdb}，其中包括83个CouchDB的 docker镜像，包含通用、社区和企业三个发行版，且版本号介于v2.5.2和v6.6.2之间。
+    \item \textbf{CouchDB}\cite{couchdb}，其中包括83个CouchDB的docker镜像，包含通用、社区和企业三个发行版，且版本号介于v2.5.2和v6.6.2之间。
 \end{enumerate}
 
 \begin{table}[!htb]
@@ -43,6 +43,6 @@
         CouchDB      & 83         & 22.9\,GiB            & 1.5                    \\
         \bottomrule
     \end{tabular}
-    \caption{真实世界数据集的特征(重复数据删除率定义为重复数据删除前数据大小与重复数据删除后数据大小之比，更高的重复数据删除率意味着相应的数据集包含更多的冗余)}
+    \caption{真实世界数据集的特征(重复数据删除系数定义为重复数据删除前数据大小与重复数据删除后数据大小之比，更高的重复数据删除系数意味着相应的数据集包含更多的冗余)}
     \label{tab:featurespy-datasets}
 \end{table}

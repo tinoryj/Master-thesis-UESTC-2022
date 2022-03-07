@@ -11,10 +11,10 @@
 \end{figure}
 
 如图~\ref{fig:sgxdedup-keymanage}所示，\sysnameS 在云服务端的帮助下管理会话密钥。在系统初始化期间，云服务端将一个盲秘密种子$\kappa$硬编码到密钥安全区代码中。每个客户端从云服务端下载一个密钥状态\textit{(Key state)}(源自于$\kappa$；见下文)，并基于该密钥状态生成对应的会话密钥，用于与密钥安全区的安全通信。本文如此设计的考虑有以下三点：
-\begin{itemize}
+\begin{itemize}[leftmargin=0em]
     \item 首先，当客户端对云服务端发出任何上传/下载请求时，云服务端可以检查客户端是否被授权。
     \item 其次，本文可以从$\kappa$派生(而不是直接使用$\kappa$)一系列自更新的会话密钥，以防止被撤销/被攻击的客户端持续访问密钥安全区。
-    \item 自更新密钥管理定期更新会话密钥，要求客户端定期在云服务端进行验证，可以防止在线暴力攻击(\S\ref{subsec:background-encrypted-deduplication-key})，而不会主动降低密钥生成速率\cite{bellare2013DupLESS}。
+    \item 最后，本文通过自更新密钥管理定期更新会话密钥，要求客户端定期在云服务端进行验证，可以防止在线暴力攻击(\S\ref{subsec:background-encrypted-deduplication-key})，而不会主动降低密钥生成速率\cite{bellare2013DupLESS}。
 \end{itemize}
 
 \sysnameS 基于密钥回归(\textit{key regression})\cite{fu06}导出自更新的会话密钥，同时确保每个客户端和密钥安全区中的会话密钥是一致的。具体来说，密钥回归使用一系列密钥状态$S[1]、S[2]、\ldots、S[m]$，每个密钥状态都可用于派生密钥(例如，通过哈希函数)。它允许密钥安全区和云服务端执行密钥状态更新(\textit{rekeying})以使用盲秘密种子从旧密钥状态派生新密钥状态(例如，从$S[1]$导出$S[2]$)，使得客户端无法在不知道盲秘密种子的情况下获得有关新密钥状态的任何信息。同时，它允许每个客户端从新密钥状态派生任何旧密钥状态(例如，从$S[2]$派生$S[1]$)。

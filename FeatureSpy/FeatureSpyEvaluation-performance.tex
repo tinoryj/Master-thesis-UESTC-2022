@@ -6,12 +6,12 @@
 
 本文为\prototype 的性能评估配置了以下两个测试平台：
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=0em]
     \item {\bf 本地集群(LAN)。}包括三台设备，每台设备均配备一个八核2.9\,GHz的Intel Core i7-10700 CPU，一个4\,TB 7200转的希捷银河系列SATA机械硬盘32\,GB DDR4内存。所有机器都通过10\,Gbps交换机进行连接，并运行Ubuntu 20.04.3 LTS。
     \item {\bf 云环境(Cloud)。}本文在两个不同区域的阿里云\cite{Alibaba}部署了多台规格为\textit{ecs.g7t.3xlarge}的虚拟机(VM)来分别运行云服务端、密钥服务器和多个客户端。同一地域和不同地域的虚拟机分别通过10\,Gbps和100\,Mbps网络连接。每个虚拟机均配备一个12核3.5GHz的虚拟CPU(底层物理机CPU为Intel Xeon (Ice Lake) Platinum 8369B)和48GiB内存，并安装阿里云Linux 3.2104操作系统。本文另外挂载了阿里云通用存储\textit{Alibaba General-Purpose NAS}作为云服务端的存储后端。该NAS可实现高达15K\,IOPS的4\,K随机读写，且顺序读写性能为150\,MiB/s。
 \end{itemize}
 
-本文进行以下默认配置：对于底层\sysnameF，本文固定检测窗口大小$W$=5\,K(需消耗大约300\,KiB安全区内存)，报告攻击的阈值$T$=3\%，相似性指标的大小为2个加密块(即，32字节)，通过N-transform提取的特征数量为3个。对于\prototype，本文配置了三个线程来提取明文数据块的内容特征(除了 Exp\#5，它使用单个线程对\prototype 中各个模块的性能进行基准测试，而 Exp\#6评估了\prototype 使用不同线程数进行特征提取时的性能)，并在云服务端使用了一个大小为1\,GiB容器(云服务端的基本存储单位，参见\S\ref{sec:featurespy-implementation})缓存以提高下载性能。
+本文进行以下默认配置：对于底层\sysnameF，本文固定检测窗口大小$W$=5\,K(需消耗大约300\,KiB安全区内存)，报告攻击的阈值$T$=3\%，相似性指标的大小为2个加密块(即，32字节)，通过N-transform提取的特征数量为3个。对于\prototype，本文配置了三个线程来提取明文数据块的内容特征(除了Exp\#5，它使用单个线程对\prototype 中各个模块的性能进行基准测试，而Exp\#6评估了\prototype 使用不同线程数进行特征提取时的性能)，并在云服务端使用了一个大小为1\,GiB容器(云服务端的基本存储单位，参见\S\ref{sec:featurespy-implementation})缓存以提高下载性能。
 
 \subsubsection{合成工作负载}
 \label{subsubsec:featurespy-syn}
@@ -109,15 +109,13 @@
     \small
     \begin{tabular}{cccc}
         \toprule
-        {\bf 方案}                          & {\bf 第一轮上传(非重复数据)}        & {\bf 第二轮上传(重复数据)} & {\bf 下载}                        \\
+        {\bf 方案}                          & {\bf 第一轮上传(非重复数据)}                       & {\bf 第二轮上传(重复数据)}                     & {\bf 下载}                        \\
         \midrule
-        网络带宽                            & \multicolumn{3}{c}{11.8 $\pm$ 0.04}                                                                  \\
-        \hline
-        \makecell[c]{\textit{firstFeature}} & \multirow{3}{*}{11.5 $\pm$ 0.006}   & 204.4 $\pm$ 10.06          & \multirow{3}{*}{11.5 $\pm$ 0.004} \\
-        \makecell[c]{\textit{minFeature}}   &                                     & 184.7$\pm$ 7.4             &                                   \\
-        \makecell[c]{\textit{allFeature}}   &                                     & 185.0$\pm$ 6.4             &                                   \\
-        \hline
-        \sysnameS                           & 11.5 $\pm$ 0.009                    & 233.2 $\pm$ 8.4            & 11.5 $\pm$ 0.004                  \\
+        网络带宽                            & \multicolumn{3}{c}{\hspace{-50pt} 11.8 $\pm$ 0.04}                                                                                      \\
+        \makecell[c]{\textit{firstFeature}} & \multirow{3}{*}{11.5 $\pm$ 0.006}                  & \makecell[c]{\hspace{0.5em} 204.4 $\pm$ 10.06} & \multirow{3}{*}{11.5 $\pm$ 0.004} \\
+        \makecell[c]{\textit{minFeature}}   &                                                    & 184.7$\pm$ 7.4                                 &                                   \\
+        \makecell[c]{\textit{allFeature}}   &                                                    & 185.0$\pm$ 6.4                                 &                                   \\
+        \sysnameS                           & 11.5 $\pm$ 0.009                                   & 233.2 $\pm$ 8.4                                & 11.5 $\pm$ 0.004                  \\
         \bottomrule
     \end{tabular}
     \captionof{table}{(Exp\#7) 云环境下部署\prototype 的上传/下载性能(单位：MiB/s)}

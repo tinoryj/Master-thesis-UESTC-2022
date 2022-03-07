@@ -1,7 +1,7 @@
 \section{问题与安全模型}
 \label{sec:sgxdedup-background}
 
-本节介绍了加密后重复数据删除中存在的性能问题(\S\ref{subsec:sgxdedup-problem})和以Intel SGX为代表的可信执行环境(\S\ref{subsec:sgxdedup-sgx})在应用时所需的考量。本节还介绍了本章的威胁模型和与之对应的安全性假设(\S\ref{subsec:sgxdedup-threat})。
+本节介绍了加密后重复数据删除中存在的性能问题(\S\ref{subsec:sgxdedup-problem})和以Intel SGX为代表的可信执行环境(\S\ref{subsec:sgxdedup-sgx})在应用时所需的考量。本节还介绍了本文的威胁模型和与之对应的安全性假设(\S\ref{subsec:sgxdedup-threat})。
 
 \subsection{加密重复数据删除}
 \label{subsec:sgxdedup-problem}
@@ -24,16 +24,16 @@
 
 \sysnameS 所针对的威胁模型基于具有多个客户端、密钥服务器和云的服务器辅助消息锁加密架构\cite{bellare2013DupLESS}。其主要安全目标是实现外包数据存储\cite{bellare2013DupLESS}的数据机密性保障，以对抗通过以下恶意行为推断原始明文数据块的半诚实(Semi-honest)的攻击者:
 
-\begin{itemize}[leftmargin=*]
-    \item 攻击者可以攻击并控制密钥服务器以了解每个客户端发出的 消息锁加密密钥生成请求，并且可以访问全局秘密来发动离线暴力破解攻击\cite{bellare2013DupLESS}，进而推断外包存储中密文数据块所对应的原始明文数据块。
+\begin{itemize}[leftmargin=0em]
+    \item 攻击者可以攻击并控制密钥服务器以了解每个客户端发出的消息锁加密密钥生成请求，并且可以访问全局秘密来发动离线暴力破解攻击\cite{bellare2013DupLESS}，进而推断外包存储中密文数据块所对应的原始明文数据块。
     \item 攻击者可以攻击一个或多个客户端并发送任意消息锁加密密钥生成请求来获得目标数据块的消息锁加密密钥\cite{bellare2013DupLESS}。它还可以对某些目标块 \cite{harnik2010side} (\S\ref{subsec:intro-background}) 发起侧信道攻击，从而推断出其他未受损客户端拥有的原始明文数据块。
 \end{itemize}
 
-针对以上威胁模型，本章做出以下安全假设：
+针对以上威胁模型，本文做出以下\textbf{安全假设}：
 
-\begin{enumerate}[leftmargin=*]
-    \item 客户端、密钥服务器和云之间的所有通信都受到保护(例如，通过 SSL/TLS)以防止篡改。
+\begin{itemize}[leftmargin=0em]
+    \item 客户端、密钥服务器和云之间的所有通信都受到保护(例如，通过SSL/TLS)以防止篡改。
     \item Intel SGX完全可信且可靠，针对SGX的拒绝服务攻击或侧信道攻击\cite{bulck2018FORESHADOW, oleksenko18}不在本文研究范围之内。
     \item 本文提出的方案可以通过附加远程审计\cite{ateniese2007provable, juels2007pors}实现完整性保障，并通过多服务端方式\cite{li15}实现系统容错。
     \item 本文不考虑流量分析\cite{zuo2018mitigating}、频率分析\cite{li2020TED}和数据块大小泄漏\cite{ritzdorf16}等威胁。针对这些威胁的相关防御机制\cite{zuo2018mitigating,li2020TED,ritzdorf16}与本文的设计完全兼容。
-\end{enumerate}
+\end{itemize}

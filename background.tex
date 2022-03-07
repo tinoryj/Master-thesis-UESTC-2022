@@ -1,15 +1,15 @@
 \chapter{相关基础研究}
 \label{chapter:background}
 
-本章将介绍普通和加密后重复数据删除、可信执行环境(TEE)等本文利用的基础知识，以及加密后重复数据删除系统中存在的性能瓶颈和安全性隐患。
+本文将介绍普通和加密后重复数据删除、可信执行环境(TEE)等本文利用的基础知识，以及加密后重复数据删除系统中存在的性能瓶颈和安全性隐患。
 
 \section{重复数据删除}
 \label{sec:background-deduplication}
 
 本文专注于基于数据块的重复数据删除，它以称为数据块的小型数据单元为粒度运行。基于数据块的重复数据删除比基于文件的重复数据删除更精细，因此通常具有更高的存储效率(节省更多的存储空间)。基于数据块的重复数据删除有以下两种基本的数据块分块方法：
 
-\begin{itemize}[leftmargin=*]
-    \item \textbf{固定大小的数据分块(Fixed-size chunking)}，通常将文件划分为固定长度的数据块，具有简单快速的特点，但文件中小范围修改(例如：增加1字节内容或删除1字节内容)将从修改位置开始影响后续所有数据块的内容，不利于重复数据删除。
+\begin{itemize}[leftmargin=0em]
+    \item \textbf{固定大小的数据分块(Fixed-size chunking)}，通常将文件划分为固定长度的数据块，具有简单快速的特点，但文件中小范围修改(例如：增加或删除1字节内容)将从修改位置开始影响后续所有数据块的内容(即，边界漂移问题\cite{muthitacharoen2001low})，将严重降低重复数据删除的空间节省效果。
     \item \textbf{可变大小的数据分块(Variable-size chunking)}，也称为内容定义的数据块分块\textit{(Content-defined chunking, CDC)}。通常采用内容相关的方式指定数据块的边界(例如，通过Rabin指纹\cite{rabin1981fingerprinting}在特定内容模式出现时进行分块)。因此，在文件发生小范围修改时，产生的大多数数据块仍可保持不变，使得重复数据删除系统存储效率得到保障。
 \end{itemize}
 
@@ -27,7 +27,7 @@
 
 重复数据删除技术根据重复数据删除操作发生的位置可分为源端重复数据删除及目标端重复数据删除\cite{IDC2010Data}：
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=0em]
     \item \textbf{源端重复数据删除(Source-based Deduplication)}由客户端计算目标数据块的哈希值，并由服务端检查该哈希值是否存在于索引表中。如果哈希值存在(即服务端已有目标数据块的副本)，则通知客户端无需传输目标数据块。
     \item \textbf{目标端重复数据删除(Target-based Deduplication)}强制客户端传输所有密文数据块，并在服务端对所有收到的密文数据块进行重复数据删除。
 \end{itemize}
@@ -54,8 +54,8 @@
 
 消息锁加密\textit{(Message-Locked Encryption, MLE)}\cite{bellare2013MLE}将基于内容的密钥生成方案等加密原语形式化用于加密后重复数据删除。它指出了如何从明文数据块的内容导出相应的对称加密密钥(称为消息锁加密密钥(MLE密钥))。以最广泛使用的消息锁加密技术：收敛加密\textit{(Convergent Encryption, CE)}\cite{douceur2002reclaiming}为例，CE使用明文数据块的安全哈希作为MLE密钥，使得相同的明文数据块可被加密为相同的密文数据块，从而令重复数据删除技术在密文数据块之上仍然可行。除此之外，基于CE的消息锁加密方案还包括：
 
-\begin{enumerate}[leftmargin=*]
-    \item \textbf{哈希收敛加密(Hash Convergent Encryption, HCE)}\cite{douceur2002reclaiming}与CE具有相同的MLE密钥产生规则，但基于明文哈希值计算指纹用于重复数据删除(CE使用密文指纹进行重复数据删除)。
+\begin{enumerate}[leftmargin=0em]
+    \item \textbf{哈希收敛加密(Hash Convergent Encryption, HCE)}\cite{douceur2002reclaiming}与CE具有相同的MLE密钥产生规则，但基于明文哈希值计算指纹用于重复数据删除。作为对比的，CE使用密文的指纹进行重复数据删除检查。
     \item \textbf{随机收敛加密(Random Convergent Encryption, RCE)}\cite{douceur2002reclaiming}使用随机密钥加密明文以产生非确定的密文，但基于明文的哈希值进行重复数据删除检查。
     \item \textbf{收敛扩散(Convergent Dispersa, CD)}\cite{li2016cdstore}使用明文哈希值作为秘密共享(Secret Sharing)的输入种子，并对产生的多个秘密共享分别计算哈希并进行重复数据删除，在兼容重复数据删除的基础上提高了密文存储的可靠性。
 \end{enumerate}
@@ -64,7 +64,7 @@
 
 服务器辅助消息锁加密\textit{(Server-aided MLE)}\cite{bellare2013DupLESS}是最先进的加密原语，可增强加密后重复数据删除对离线暴力攻击的安全性。它为消息锁加密中的MLE密钥生成步骤部署了一个专用的\textbf{密钥服务器(Key server)}。为了加密明文数据块，客户端首先将明文数据块的指纹发送到密钥服务器，密钥服务器通过指纹和密钥服务器维护的\textbf{全局秘密(Global secret)}返回MLE密钥。如果全局秘密是安全的，则攻击者无法发起离线暴力攻击；如果全局秘密被泄露，则其安全性会降低到原始消息锁加密的安全性。服务器辅助消息锁加密建立在如下两种安全机制之上：
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=0em]
     \item \textbf{遗忘伪随机函数(Oblivious pseudorandom function, OPRF)}\cite{naor2004Number}是一种安全计算协议，协议包含服务端和客户端，服务端持有密钥$k$，客户端持有输入$x$，双方通过交互来联合计算函数$f_k(x)$，最终由客户端得到函数值。OPRF的计算过程以盲化方式进行,即在计算过程中服务端无法获取关于$x$的任何有价值信息，同时客户端无法获取关于$k$的任何有价值信息。
     \item \textbf{速率限制(Rate-limiting)}\cite{bellare2013DupLESS}阻止特定操作频率超出某些限制。在大型系统中，速率限制通常用于保护底层服务和资源。
 \end{itemize}
@@ -87,7 +87,7 @@
 
 TEE全名为可信执行环境(Trusted Execution Environment)是计算平台上由软件协同硬件方法构建的一个安全区域，可以确保在安全区域内加载的程序和数据在完整性和机密性方面得到必要保护。其目标是确保目标程序按照预期执行，保证程序初始状态和运行时状态的机密性、完整性。针对TEE的相关概念及规范定义，各个软件、硬件厂商结合自己的基础架构形态产生的具体实现各不相同。虽然在技术实现上存在显著差异，但TEE的技术共同点可总结为如下三点：
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=0em]
     \item \textbf{隔离性}：
           TEE通过隔离的程序执行环境，提供一个可信的执行空间，为其中运行的程序和存储的数据提供了机密性和完整性保护。X86架构的隔离机制从Intel 80286处理器开始，Intel提出了CPU的两种运行模式，并且逐步衍生出后来的不同的特权界别，再后来提出了安全区域范围更小的SGX机制实现可信执行环境(TEE)；同样的，ARM架构通过TrustZone技术实现了相关软硬件的隔离性，实现了安全世界\textit{(Secure World)}与非安全世界\textit{(Normal World)}的隔离。
     \item \textbf{软硬协同性}：

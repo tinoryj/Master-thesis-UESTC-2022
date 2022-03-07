@@ -129,7 +129,7 @@
 
 图~\ref{fig:sgxdedup-singleClientThroughput}(b)显示了不同网络带宽下的下载速度。随着网络带宽增加到10\,Gbps，\sysnameS 和DupLESS的下载性能均达到323.1\,MiB/s。相较于PlainDedup下降了约44.2\%，其原因是作为加密后重复数据删除系统，它们首先下载并解密文件元数据然后再下载密文数据块(PlainDedup的可由云服务端直接读取文件元数据进行文件下载)。
 
-\paragraph*{Exp\#8(云环境上传/下载性能)。}本文扩展Exp\#7，评估在真实云环境部署中的\sysnameS 的上传/下载速度。具体来说，本文将客户端和密钥服务器部署在本地局域网测试平台(\S\ref{sec:sgxdedup-evaluation})中，并通过互联网将客户端连接到部署在阿里云商的云服务端。本文使用阿里云\textit{ecs.c6e.xlarge}云服务器部署云服务端，其配备四核3.2GHz 虚拟CPU(其底层物理平台为Intel Xeon Cascade Lake Platinum 8269CY)，以及8GiB内存。本文以阿里云通用文件存储(\textit{Alibaba General Purpose NAS})作为存储后端。该存储后端拥有20000\,IOPS的4\,K随机读写性能。
+\paragraph*{Exp\#8(云环境上传/下载性能)。}本文扩展Exp\#7，评估在真实云环境部署中的\sysnameS 的上传/下载速度。具体来说，本文将客户端和密钥服务器部署在本地局域网测试平台(\S\ref{sec:sgxdedup-evaluation})中，并通过互联网将客户端连接到部署在阿里云商的云服务端。本文使用阿里云\textit{ecs.c6e.xlarge}云服务器部署云服务端，其配备四核3.2GHz虚拟CPU(其底层物理平台为Intel Xeon Cascade Lake Platinum 8269CY)，以及8GB内存。本文以阿里云通用文件存储(\textit{Alibaba General Purpose NAS})作为存储后端。该存储后端拥有20000\,IOPS的4\,K随机读写性能。
 
 本文直接读取磁盘上的随机文件进行上传操作(与Exp\#7不同，后者在上传之前将文件加载到客户端的内存中)，并在云服务端将收到的数据文件存储于通用文件存储中。本文使用最轻量化的\textit{scp}网络传输工具将测试的2\,GiB随机文件上传到云服务端作为互联网环境下的网络传输速率基准。
 

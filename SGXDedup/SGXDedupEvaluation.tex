@@ -3,7 +3,7 @@
 
 本文以多个客户端、密钥服务器和云服务端配置了一个局域网本地验证集群。集群中每台设备均使用四核3.0\,GHz的Intel Core i5-7400 CPU，1\,TB 7200转SATA机械硬和8\,GB DDR4内存。所有设备均运行Ubuntu 18.04 LTS操作系统并通过万兆网络(10\,GbE)连接。本文首先对\sysnameS 中提出的基于TEE的服务器辅助密钥生成和数据所有权证明模块进行性能测试分析(\S\ref{subsec:sgxdedup-synthetic}，Exp\#1$\sim$6)，随后使用随机(\S\ref{subsec:sgxdedup-synthetic}，Exp\#7$\sim$10)和真实世界(\S\ref{subsec:sgxdedup-real-world}，Exp\#11$\sim$12)工作负载来评估\sysnameS 的整体性能表现。本文将主要结果总结如下：
 
-\begin{itemize}
+\begin{itemize}[leftmargin=0em]
     \item \sysnameS 在单客户端(Exp\#1)和多客户端并发(Exp\#2)的条件下均实现了高消息锁加密密钥生成性能。例如，在单客户端情况下，相较于DupLESS\cite{bellare2013DupLESS}中基于OPRF-RSA的消息锁加密密钥生成实现了131.9倍的性能提升。
     \item \sysnameS 与仅实现较弱的安全性的基于通用哈希的数据所有权证明方案(PoW-UH)\cite{xu2013weak}和实现较高安全性的基于Merkle树的数据所有权证明方案(PoW-MT)\cite{halevi11}相比，分别实现了2.2倍和8.2倍的计算性能提升(Exp\#5)。
     \item \sysnameS 在单客户端(Exp\#7和Exp\#8)和多客户端(Exp\#9)情况下具有较高的整体性能。本文还提供了上传中 \sysnameS 各个步骤的时间开销分析(Exp\#10)。例如，在10\,GbE本地局域网测试平台中，与没有任何安全保护的普通重复数据删除系统(PlainDedup)相比，\sysnameS 的上传速度仅降低了17.5\%；在真实云环境部署(Exp\#8)中，相较于普通重复数据删除系统，\sysnameS 仅产生了13.2\%的性能下降(两者上传性能均受到网络带宽限制)。

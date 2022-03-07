@@ -12,7 +12,7 @@
 \paragraph*{对恶意客户端的鲁棒性。}
 本文已经讨论过攻击者无法绕过检测程序(\S\ref{subsec:featurespy-secure_design})，这里关注\sysnameF 对其他恶意行为的鲁棒性(\S\ref{sec:featurespy-setting})。
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=0em]
     \item \textbf{案例1：篡改不受保护的程序。}
           \sysnameF 通过TEE保护检测程序，但恶意客户端可以篡改未受保护的程序。它可能会操纵数据块特征、相似性指标和数据块密钥，以欺骗\sysnameF。本文认为，这些操作无助于从遵循本文设计的其他诚实客户端处获得目标内容，因为这些操作导致即使原始明文数据块是相同的，恶意客户端与相似性保留加密(由正常客户应用)产生的密文数据块不同。直接导致该密文数据块无法执行重复数据删除(被认为是非重复数据块)。最终使得依赖重复数据删除结果泄漏的推测内容攻击不可行。
     \item \textbf{案例2：篡改数据处理流程。}

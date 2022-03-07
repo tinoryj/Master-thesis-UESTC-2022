@@ -3,7 +3,7 @@
 
 本文在设计\sysnameF 时考虑了以下设计目标：
 
-\begin{itemize}
+\begin{itemize}[leftmargin=0em]
     \item \textbf{攻击检测。}\sysnameF 需可靠地检测推测内容攻击以防止客户端篡改(即具有强鲁棒性)。此外，需要实现较高的攻击检测成功率并维持较低的误判率。
     \item \textbf{保密性和带宽/存储效率。}\sysnameF 需要兼容源端重复数据删除，以达到高数据保密性和高带宽/存储效率的双重目标。此外，\sysnameF 还需减轻由于密钥泄露导致的数据块信息泄露。
     \item \textbf{低性能开销。}\sysnameF 需在上传时在线检测推测内容攻击是否发生，并在实际部署中仅产生可控且较低的性能开销。

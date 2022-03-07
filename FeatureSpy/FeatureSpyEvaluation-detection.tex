@@ -1,7 +1,7 @@
 \subsection{检测效果分析}
 \label{subsec:featurespy-evaluation-detection}
 
-\paragraph*{Exp\#1(明文数据块的相似性检测)。}本文首先验证通过比较内容特征可有效地找到相似的明文数据块。本文考虑多个SYNChunk$(x, y)$数据集，每个SYNChunk$(x, y)$ 包括10\,K个从基本数据块修改得到的相似数据块($x$定义了随机修改位置的数量，$y$定义了每个修改位置处连续修改的字节数，参见\S\ref{subsec:featurespy-datasets})。 本文为 SYNChunk$(x, y)$中的每个明文数据块提取四个内容特征，如果这些数据块与基本数据块分别共享一到四个相同的特征，则认为成功识别相似数据块。本文评估每个SYNChunk$(x, y)$数据集中成功识别的与基本数据块相似的数据块占整个数据集所有数据块的比例。
+\paragraph*{Exp\#1(明文数据块的相似性检测)。}本文首先验证通过比较内容特征可有效地找到相似的明文数据块。本文考虑多个SYNChunk$(x, y)$数据集，每个SYNChunk$(x, y)$ 包括10\,K个从基本数据块修改得到的相似数据块($x$定义了随机修改位置的数量，$y$定义了每个修改位置处连续修改的字节数，参见\S\ref{subsec:featurespy-datasets})。 本文为SYNChunk$(x, y)$中的每个明文数据块提取四个内容特征，如果这些数据块与基本数据块分别共享一到四个相同的特征，则认为成功识别相似数据块。本文评估每个SYNChunk$(x, y)$数据集中成功识别的与基本数据块相似的数据块占整个数据集所有数据块的比例。
 
 \begin{figure}[!htb]
     \centering
@@ -82,7 +82,7 @@
 
 图~\ref{fig:featurespy-expDetectionOverallFalsePositive}显示了本文将\sysnameF 的检测窗口大小分别配置为1\,K，5\,K和10\,K时Linux数据集中的总体检测率和误判率。在各个窗口大小设置下，\sysnameF 均实现了很高的检测率(例如，至少98.6\%)。然而，较大的窗口会略微降低检测率，这是因为大窗口中仅有相对较小部分的密文数据块具有相同的相似性指标。此外，\sysnameF 仅在窗口大小为1\,K时才会产生误判(图~\ref{fig:featurespy-featureDistribution}(b))，这是因为原始快照(Raw)当中本身包含较多的相似数据块。但即使在这种情况下，\textit{allFeature}也没有任何误判，这是因为它只能检测到少量相似度较高的数据块。另一方面，可检测到更多相似数据块(Exp\#2)的\textit{minFeature}方案会产生28.6\%的误判。
 
-除了Linux数据集，本文也在CouchDB数据集中评估\sysnameF，并发现所有\sysnameF 的实例均可成功检测到所有混合在CouchDB数据集的快照中的推测内容攻击(即具有100\%的检测率)，且没有引入任何误判。可能的原因是每个 CouchDB快照中几乎不含有相似数据块，当注入许多对伪造文件产生的相似数据块时，\sysnameF 可以立即检测到(相似数据块的)频率分布变化。
+除了Linux数据集，本文也在CouchDB数据集中评估\sysnameF，并发现所有\sysnameF 的实例均可成功检测到所有混合在CouchDB数据集的快照中的推测内容攻击(即具有100\%的检测率)，且没有引入任何误判。可能的原因是每个CouchDB快照中几乎不含有相似数据块，当注入许多对伪造文件产生的相似数据块时，\sysnameF 可以立即检测到(相似数据块的)频率分布变化。
 
 %TODO
 \paragraph*{Exp\#4(目标文件熵对攻击检测的影响)。}

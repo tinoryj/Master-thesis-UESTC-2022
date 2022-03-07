@@ -9,7 +9,7 @@
 
 \sysnameF 模拟器是在Ubuntu 20.04.3 LTS系统下开发的，依赖于以下需要手动安装或通过默认的apt包管理工具安装的软件包。
 
-\begin{enumerate}
+\begin{enumerate}[leftmargin=0em]
     \item OpenSSL version 1.1.1l/libssl-dev (用于\sysnameF 中的密码学机制)
     \item clang/llvm (用于编译模拟器)
     \item python (用于伪造文件的生成)
@@ -36,7 +36,7 @@ make clean
 \end{lstlisting}
 
 \subsection*{运行指南}
-本文提供了一种快速复现实验的测试方法。可分别使用runCouch.sh和runLinux.sh脚本在CouchDB和Linux数据集上测试FeatureSpy，并使用 processResult.sh脚本输出摘要性结果。这里，可以通过修改runCouch.sh和runLinux.sh脚本中的参数来测试不同的窗口大小和相似性指标长度的影响。此外，也可以按照FeatureSpy/目录下提供的README.pdf指南手动运行模拟器。请参照以下执行步骤运行自动化测试：
+本文提供了一种快速复现实验的测试方法。可分别使用runCouch.sh和runLinux.sh脚本在CouchDB和Linux数据集上测试\sysnameF，并使用processResult.sh脚本输出摘要性结果。这里，可以通过修改runCouch.sh和runLinux.sh脚本中的参数来测试不同的窗口大小和相似性指标长度的影响。此外，也可以按照\sysnameF/目录下提供的README.pdf指南手动运行模拟器。请参照以下执行步骤运行自动化测试：
 
 \begin{lstlisting}[style=shell]
 # 数据集下载
