@@ -107,15 +107,15 @@
 \begin{table}[!htb]
     \centering
     \small
-    \begin{tabular}{cccc}
+    \begin{tabular}{ccccc}
         \toprule
-        {\bf 方案}                          & {\bf 第一轮上传(非重复数据)}                       & {\bf 第二轮上传(重复数据)}                     & {\bf 下载}                        \\
+        \multicolumn{2}{c}{\bf 方案}  & {\bf 第一轮上传}                    & {\bf 第二轮上传}                  & {\bf 下载}                                                          \\
         \midrule
-        网络带宽                            & \multicolumn{3}{c}{\hspace{-50pt} 11.8 $\pm$ 0.04}                                                                                      \\
-        \makecell[c]{\textit{firstFeature}} & \multirow{3}{*}{11.5 $\pm$ 0.006}                  & \makecell[c]{\hspace{0.5em} 204.4 $\pm$ 10.06} & \multirow{3}{*}{11.5 $\pm$ 0.004} \\
-        \makecell[c]{\textit{minFeature}}   &                                                    & 184.7$\pm$ 7.4                                 &                                   \\
-        \makecell[c]{\textit{allFeature}}   &                                                    & 185.0$\pm$ 6.4                                 &                                   \\
-        \sysnameS                           & 11.5 $\pm$ 0.009                                   & 233.2 $\pm$ 8.4                                & 11.5 $\pm$ 0.004                  \\
+        \multicolumn{2}{c}{scp基准}   & \multicolumn{3}{c}{11.8 $\pm$ 0.04}                                                                                                           \\
+                                      & \makecell[c]{\textit{firstFeature}} & \multirow{3}{*}{11.5 $\pm$ 0.006} & \makecell[c]{204.4 $\pm$ 10.06} & \multirow{3}{*}{11.5 $\pm$ 0.004} \\
+        \prototype                    & \makecell[c]{\textit{minFeature}}   &                                   & 184.7$\pm$ 7.4                  &                                   \\
+                                      & \makecell[c]{\textit{allFeature}}   &                                   & 185.0$\pm$ 6.4                  &                                   \\
+        \multicolumn{2}{c}{\sysnameS} & 11.5 $\pm$ 0.009                    & 233.2 $\pm$ 8.4                   & 11.5 $\pm$ 0.004                                                    \\
         \bottomrule
     \end{tabular}
     \captionof{table}{(Exp\#7) 云环境下部署\prototype 的上传/下载性能(单位：MiB/s)}
