@@ -107,7 +107,7 @@ TEE全名为可信执行环境(Trusted Execution Environment)是计算平台上�
     \label{fig:sgx-arch}
 \end{figure}
 
-Intel Software Guard Extensions (Intel SGX)\cite{sgx,sgx2}，是一组内置于现代Intel CPU中用于增强应用程序代码和数据安全性的扩展指令。开发者可利用SGX技术将应用程序的安全操作封装在称为“安全区\textit{(Enclave)}”的硬件保护环境中，保障用户关键代码和数据的机密性和完整性。Intel SGX最关键的优势在于将应用程序以外的软件栈如操作系统(OS)和基本输入输出系统(BIOS)都排除在了可信计算基(Trusted Computing Base, TCB)之外，一旦程序和数据在安全区之中，即便是操作系统和也无法影响安全区内的代码和数据，安全区的安全边界只包含CPU和它本身(如图\ref{fig:sgx-arch}所示)。Intel SGX具有隔离、证明和密封三项主要安全功能。
+Intel Software Guard Extensions (Intel SGX)\cite{sgx,sgx2}，是一组内置于现代Intel CPU中用于增强应用程序代码和数据安全性的扩展指令。开发者可利用SGX技术将应用程序的安全操作封装在称为“安全区\textit{(Enclave)}”的硬件保护环境中，保障用户关键代码和数据的机密性和完整性。Intel SGX最关键的优势在于将应用程序以外的软件栈如操作系统(OS)和基本输入输出系统(BIOS)都排除在了可信计算基(Trusted Computing Base, TCB)之外，一旦程序和数据在安全区之中，即便是操作系统也无法影响安全区内的代码和数据，安全区的安全边界只包含CPU和它本身(如图\ref{fig:sgx-arch}所示)。Intel SGX具有隔离、证明和密封三项主要安全功能。
 
 \textbf{隔离(Isolation)}：安全区代码和数据被放置在被称为\textit{Enclave page cache (EPC)}的硬件内存保护区域中，该内存区域使用内存加密引擎(MEE)进行加密，以防止泄露任何内存数据到本安全区之外。EPC以大小为4\,KiB的页面为基本单位管理安全区内存，任意安全区内应用程序最多可占用96\,MiB内存空间\cite{harnik2018SGX}。当安全区内存使用超过上限时，须将未使用的内存页面加密并逐出到未受保护的主存，并在将逐出的页面加载回安全区内存时解密并验证完整性，导致巨大的分页开销\cite{arnautov2016SCONE,dinhngoc2019Everything}。
 

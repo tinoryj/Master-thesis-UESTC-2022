@@ -6,7 +6,7 @@
 \subsection{研究背景}
 \label{subsec:intro-background}
 
-随着信息技术产业的高速发展，数字信息量呈爆炸式增长。国际数据资讯公司(IDC)\cite{IDC}于2020年公布的统计及预测报告\cite{DataReport2020}显示，每年新产生的数据量在2015年至2025年间以约26\%的复合年增长率增长，预计仅2025年创建的新数的据数据量就将高达175.8\,ZB(而在2015年时仅为18.2\,ZB)。新创建数据量的快速增长导致个人及企业面临的数据存储和管理成本快速上涨\cite{敖莉2010重复数据删除技术}。另一方面，在各类型存储系统所保存的数据中，高达60\%的数据都是冗余的。并且，随着时间的推移，这些冗余数据占总数据量的比例将进一步上升\cite{mcknight2006digital}。近年来，存储系统中数据高度冗余的特点得到越来越多研究人员的关注，利用该特点来节省存储空间、降低存储管理开销是成为热门研究课题。
+随着信息技术产业的高速发展，数字信息量呈爆炸式增长。国际数据资讯公司(IDC)\cite{IDC}于2020年公布的统计及预测报告\cite{DataReport2020}显示，每年新产生的数据量在2015年至2025年间以约26\%的复合年增长率增长，预计仅2025年创建的新数的据数据量就将高达175.8\,ZB(而在2015年时仅为18.2\,ZB)。新创建数据量的快速增长导致个人及企业面临的数据存储和管理成本快速上涨\cite{敖莉2010重复数据删除技术}。另一方面，在各类型存储系统所保存的数据中，高达60\%的数据都是冗余的。并且，随着时间的推移，这些冗余数据占总数据量的比例将进一步上升\cite{mcknight2006digital}。近年来，存储系统中数据高度冗余的特点得到越来越多研究人员的关注，利用该特点来节省存储空间、降低存储管理开销成为热门研究课题。
 
 重复数据删除(Data deduplication)\cite{付印金2012重复数据删除关键技术研究进展, 敖莉2010重复数据删除技术,xia2016Deduplication,Paulo2014}是一种粗粒度的数据压缩技术。传统数据压缩针对小规模数据(例如，同一文件内部)，使用字节级重新编码以降低冗余；而重复数据删除作用的基本单位是数据块(大小通常为8\,KiB)，通过比较来自相同和不同文件的数据块，为具有相同内容的数据块仅保存一份物理拷贝以节约存储空间。如图~\ref{fig:Deduplication-storage-pattern}所示，在支持重复数据删除的各类存储系统(统称为重复数据删除系统)中，重复数据删除后的任何数据块都被一个或多个文件引用，而每个文件则以指向这些数据块的指针的集合形式进行存储。重复数据删除可为主存和备份数据分别节省50\%\cite{meyer2011deduplication}和98\%\cite{wallace12}的存储空间，可显著降低云存储厂商及个人的存储维护成本\cite{付印金2012重复数据删除关键技术研究进展}。由于能够有效地降低存储开销，重复数据删除技术非常适合为管理日益增长的海量数据节省成本。在工业界，Dell EMC Data Domain\cite{EMCDataDomain}、Avamar\cite{Avamar}、Veritas的NetBackup Appliances\cite{veritas}以及Commvault的开放数据平台\cite{CommVault}都是较为知名的重复数据删除应用产品。此外，各大云存储厂商(例如：Dropbox\cite{Dropbox}、Google Drive\cite{GoogleDrive}、百度网盘\cite{BaiduPan}等)也纷纷将重复数据删除技术应用于各自的云存储产品中，以提升经济效益\cite{harnik2010side}。
 
@@ -28,7 +28,7 @@
     \label{fig:Cloud-based-deduplication-storage-logic}
 \end{figure}
 %TODO
-近年来，研究者提出加密后重复数据删除\cite{bellare2013MLE}以保护重复数据删除过程中的数据安全。图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}描述了加密后重复数据删除系统框架，其包括客户端和云服务端两个主要组成部分。为了防止云服务商获取外包数据内容，加密后重复数据删除系统在客户端部署消息锁加密\textit{(Message-locked encryption, MLE)}\cite{bellare2013MLE}以加密明文数据块(简称为明文数据块)，同时确保重复数据删除仍然能够作用于密文数据块(简称为密文数据块)以节约存储空间。传统对称加密算法为每个客户端或每个数据块分配不同加密密钥，导致相同的明文数据块被加密为不同的密文数据块，无法通过重复数据删除进行冗余消除。消息锁加密的核心思路时基于数据块内容产生密钥(称为MLE密钥，例如MLE密钥为明文数据块的哈希值\cite{douceur2002reclaiming})，从而将相同明文数据块加密为相同的密文数据块，以兼容直接针对密文数据块的重复数据删除。现有消息锁加密采用服务器辅助密钥生成方式(称为服务器辅助消息锁加密\textit{(Server-aided MLE)}\cite{bellare2013DupLESS})，即部署第三方密钥服务器管理全局秘密，同时基于明文数据块哈希值以及密钥服务器的全局秘密共同生成MLE密钥，以防止攻击者针对MLE密钥实施离线暴力破解攻击。
+近年来，研究者提出加密后重复数据删除\cite{bellare2013MLE}以保护重复数据删除过程中的数据安全。图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}描述了加密后重复数据删除系统框架，其包括客户端和云服务端两个主要组成部分。为了防止云服务商获取外包数据内容，加密后重复数据删除系统在客户端部署消息锁加密\textit{(Message-locked encryption, MLE)}\cite{bellare2013MLE}以加密明文数据块(简称为明文数据块)，同时确保重复数据删除仍然能够作用于密文数据块(简称为密文数据块)以节约存储空间。传统对称加密算法为每个客户端或每个数据块分配不同加密密钥，导致相同的明文数据块被加密为不同的密文数据块，无法通过重复数据删除进行冗余消除。消息锁加密的核心思路是基于数据块内容产生密钥(称为MLE密钥，例如MLE密钥为明文数据块的哈希值\cite{douceur2002reclaiming})，从而将相同明文数据块加密为相同的密文数据块，以兼容直接针对密文数据块的重复数据删除。现有消息锁加密采用服务器辅助密钥生成方式(称为服务器辅助消息锁加密\textit{(Server-aided MLE)}\cite{bellare2013DupLESS})，即部署第三方密钥服务器管理全局秘密，同时基于明文数据块哈希值以及密钥服务器的全局秘密共同生成MLE密钥，以防止攻击者针对MLE密钥实施离线暴力破解攻击。
 
 \begin{figure}[!htb]
     \small
@@ -130,7 +130,7 @@ TrustZone和SGX是目前应用最广泛的TEE解决方案\cite{pinto19}。TrustZ
 
 TEE已被广泛用于保护存储系统。PESOS\cite{krahn2018PESOS}使用SGX强化对象存储中的访问策略。OBLIVIATE\cite{ahmad2018OBLIVIATE}增强了基于SGX的文件系统对特权侧信道攻击的安全性。EnclaveDB\cite{priebe18}和ObliDB\cite{eskandarian19}基于SGX保护外包数据库免受信息泄露威胁。NEXUS\cite{djoko2019NEXUS}通过SGX对不受信任的云存储启用细粒度的访问控制。在性能方面，Harnik等人\cite{harnik2018SGX}提出了降低基于SGX系统的性能开销的指南。ShieldStore\cite{kim2019ShieldStore}实现特定于应用程序的数据管理以减少安全区内存开销。SPEICHER\cite{bailleu2019SPEICHER}则是一个基于SGX及LSM树(Log-structured merge-tree)\cite{LSMT}的键值存储系统，具有高效的I/O操作能力。\textbf{然而，以上所有研究均未考虑重复数据删除。}
 
-Dang等人\cite{dang2017Privacy}提出了基于代理的加密后重复数据删除协议，用于低网络资源开销的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现相关原型系统。SPEED\cite{cui2019SPEED}利用重复数据删除来提高SGX的计算效率，但本文使用安全区提高了加密后重复数据删除的性能。其他研究使用云服务端安全区实现数据块所有权验证\cite{you2020Proofs}和基于文件的加密后重复数据删除\cite{fuhry2020segshare}，而本文使用客户端安全区进行有效的数据块所有权证明生成并支持更细粒度的基于数据块的重复数据删除。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda2021S2Dedup}在服务端部署安全区以重加密来自不同客户端的密文数据块，并在安全区外执行针对重加密后密文数据块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup产生了严重的CPU上下文切换开销\textit{(Context-switching overhead)}\cite{weisse2017regaining}。本文研究的基于TEE的加密后重复数据删除技术可实现对TEE的高效利用，相较于明文重复数据删除系统仅产生有限的额外性能开销。
+Dang等人\cite{dang2017Privacy}提出了基于代理的加密后重复数据删除协议，用于低网络资源开销的加密后重复数据删除，但这些协议没有解决密钥生成性能开销，也没有实现相关原型系统。SPEED\cite{cui2019SPEED}利用重复数据删除来提高SGX的计算效率，但本文使用安全区提高了加密后重复数据删除的性能。其他研究使用云服务端安全区实现数据块所有权验证\cite{you2020Proofs}和基于文件的加密后重复数据删除\cite{fuhry2020segshare}，而本文使用客户端安全区进行有效地数据块所有权证明生成并支持更细粒度的基于数据块的重复数据删除。SeGShare\cite{fuhry2020segshare}在服务端部署安全区实现文件级重复数据删除，但无法删除相似文件中的相同数据块。S2Dedup\cite{miranda2021S2Dedup}在服务端部署安全区以重加密来自不同客户端的密文数据块，并在安全区外执行针对重加密后密文数据块的重复数据删除，但是，由于所有数据块的重复数据删除均需进出安全区，S2Dedup产生了严重的CPU上下文切换开销\textit{(Context-switching overhead)}\cite{weisse2017regaining}。本文研究的基于TEE的加密后重复数据删除技术可实现对TEE的高效利用，相较于明文重复数据删除系统仅产生有限的额外性能开销。
 
 \section{本文的主要贡献与创新}
 

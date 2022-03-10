@@ -75,7 +75,7 @@
     \label{fig:featurespy-singleClientThroughput}
 \end{figure}
 
-图~\ref{fig:featurespy-singleClientThroughput}(a)和图~\ref{fig:featurespy-singleClientThroughput}(b)分别展示了改变提取特征的线程数(\S\ref{sec:featurespy-implementation})时\prototype 三种实例的性能变化。由于\sysnameS 无需进行特征提取，其第一轮上传速度为297.1\,MiB/s，并在第二轮上传中保持为304.3\,MiB/s。第二轮中上传性能稍有提升，这是由于\sysnameS 可在第二轮中通过推测行加密提升密钥生成速度，且无需上传任何数据块(\S\ref{sec:sgxdedup-implementation})。
+图~\ref{fig:featurespy-singleClientThroughput}(a)和图~\ref{fig:featurespy-singleClientThroughput}(b)分别展示了改变提取特征的线程数(\S\ref{sec:featurespy-implementation})时\prototype 三种实例的性能变化。由于\sysnameS 无需进行特征提取，其第一轮上传速度为297.1\,MiB/s，并在第二轮上传中保持为304.3\,MiB/s。第二轮中上传性能稍有提升，这是由于\sysnameS 可在第二轮中通过推测行性加密提升密钥生成速度，且无需上传任何数据块(\S\ref{sec:sgxdedup-implementation})。
 \prototype 的上传速度首先随着线程数的增加而增加。随后，\textit{firstFeature}实例在2个线程时达到峰值为265.3\,MiB/s，而\textit{minFeature}和\textit{allFeature}实例在3个线程时达到峰值分别为261.3\,MiB/s和262.6\,MiB/s(第一轮上传)，随后由于多线程资源竞争，性能在逐渐下降。在4个线程时，由于多线程资源竞争，对于所有三个实例第一轮上传速度降低至大约为220\,MiB/s，而第二轮上传速度降低至约为225\,MiB/s。
 
 通过利用多线程，\prototype 仅在第一轮上传时相较于\sysnameS 仅产生8.0-12.0\%的额外性能开销，而在第二轮上传时缩减为6.6-7.5\%。此外，本文观察到第一轮(传输所有数据块)和第二轮(不需要传输重复数据)上传之间的性能差异很小，这是因为本文的LAN测试平台具有高带宽来传输数据。本文认为源端重复数据删除在实际云部署中带来了显着的性能提升(Exp\#8)，并减少了处理实际存储工作负载的网络流量开销(Exp\#10)。图~\ref{fig:featurespy-singleClientThroughput}(c)比较下载速度。相较于\sysnameS，\prototype 会导致1.3\%的性能下降，这是因为它同时使用消息锁加密密钥和特征密钥解密每个密文数据块。
@@ -122,7 +122,7 @@
     \label{tab:featurespy-expCloudTest}
 \end{table}
 
-表~\ref{tab:featurespy-expCloudTest}列出了实验结果。在第一轮上传中，所有方法的性能都受到网络带宽的限制(均低于11.9\,MiB/s)。在第二轮上传中，\sysnameS 和\textit{firstFeature}实例的性能受到数据分块(Table~\ref{tab:featurespy-evaluation-syn-system-breakdown})的限制，而\textit{firstFeature}实例相较于\sysnameS 产生了12.3\%的额外性能开销，这是因为它额外提取了每个数据块的第一个特征来生成特征密钥。\textit{minFeature}实例和\textit{allFeature}实例(在第二轮上传中)的性能受特征提取的限制。这里，所有方法的第二轮上传速度都比LAN测试平台中的(Exp\#6)结果慢。原因有三个：首先，本实验包含了磁盘I/O开销；此外，云测试平台中的虚拟机是从物理机虚拟化得到的，在处理计算密集型操作时由于资源隔离等要求可能会导致性能下降；最后，互联网的高延迟减慢了重复数据删除中数据块指纹的传输速度。在下载中，所有方法的性能都受到网络带宽的限制，与\sysnameS 相比，\prototype 会产生约0.6\%的额外性能开销。
+表~\ref{tab:featurespy-expCloudTest}列出了实验结果。在第一轮上传中，所有方法的性能都受到网络带宽的限制(均低于11.9\,MiB/s)。在第二轮上传中，\sysnameS 和\textit{firstFeature}实例的性能受到数据分块(表~\ref{tab:featurespy-evaluation-syn-system-breakdown})的限制，而\textit{firstFeature}实例相较于\sysnameS 产生了12.3\%的额外性能开销，这是因为它额外提取了每个数据块的第一个特征来生成特征密钥。\textit{minFeature}实例和\textit{allFeature}实例(在第二轮上传中)的性能受特征提取的限制。这里，所有方法的第二轮上传速度都比LAN测试平台中的(Exp\#6)结果慢。原因有三个：首先，本实验包含了磁盘I/O开销；此外，云测试平台中的虚拟机是从物理机虚拟化得到的，在处理计算密集型操作时由于资源隔离等要求可能会导致性能下降；最后，互联网的高延迟减慢了重复数据删除中数据块指纹的传输速度。在下载中，所有方法的性能都受到网络带宽的限制，与\sysnameS 相比，\prototype 会产生约0.6\%的额外性能开销。
 
 \subsubsection{实际工作负载}
 \label{subsubsec:featurespy-real}

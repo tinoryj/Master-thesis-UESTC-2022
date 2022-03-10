@@ -17,7 +17,7 @@
     \label{fig:featurespy-expDetectionSynSim}
 \end{figure}
 
-图~\ref{fig:featurespy-expDetectionSynSim}(a)显示了当本文固定$x$=4并变化$y$(图~\ref{fig:featurespy-expDetectionSynSim}(a))，以及固定$y$=16并变化的$x$(图~\ref{fig:featurespy-expDetectionSynSim}(b))时产生的多个SYNChunk$(x, y)$数据集的检测结果。一般来说，识别到相似数据块的成功率随着$x$或$y$的增大而降低，这是因为修改范围越大，越有可能使数据块产生不同的内容特征。具体来说，称功率受$x$的影响比$y$更大，这是因为增加$x$将改变大量滑动窗口(\S\ref{subsec:featurespy-basic})的Rabin指纹。另一方面，本文可以通过检查数据块是否共享任意一个或两个相同的特征来有效地检测大部分(例如，至少78.9\%)的相似数据块。
+图~\ref{fig:featurespy-expDetectionSynSim}(a)显示了当本文固定$x$=4并变化$y$(图~\ref{fig:featurespy-expDetectionSynSim}(a))，以及固定$y$=16并变化的$x$(图~\ref{fig:featurespy-expDetectionSynSim}(b))时产生的多个SYNChunk$(x, y)$数据集的检测结果。一般来说，识别到相似数据块的成功率随着$x$或$y$的增大而降低，这是因为修改范围越大，越有可能使数据块产生不同的内容特征。具体来说，成功率受$x$的影响比$y$更大，这是因为增加$x$将改变大量滑动窗口(\S\ref{subsec:featurespy-basic})的Rabin指纹。另一方面，本文可以通过检查数据块是否共享任意一个或两个相同的特征来有效地检测大部分(例如，至少78.9\%)的相似数据块。
 
 \paragraph*{Exp\#2(密文数据块的相似性检测)。}
 本文扩展Exp\#1来研究\sysnameF 基于密文数据块的相似性检测能力。实验采用本文提出的相似性保留加密方法(SPE)产生密文数据块。具体来说，本文对每个明文数据块执行特征密钥生成(\S\ref{subsec:featurespy-spe})，检查为每个SYNChunk$(x, y)$中所有数据块生成的密钥相同的比例，以验证相似性保留加密为相似数据块产生相同特征密钥的能力(标记为KeyGen)。然后，本文执行SPE，使用特征密钥加密对应数据块的特征指标，并统计加密后的相似性指标与每个数据集中基本数据块的相似性指标相同的比例作为密文数据块相似性检查能力的结果。这里，本文关注三个SPE实例SPE$(1)$、SPE$(2)$和SPE$(4)$，它们将1个、2个和4个加密块(长度分别为16、32和64个字节)作为每个数据块的相似性指标。
@@ -80,7 +80,7 @@
     \label{fig:featurespy-expDetectionOverallFalsePositive}
 \end{figure}
 
-图~\ref{fig:featurespy-expDetectionOverallFalsePositive}显示了本文将\sysnameF 的检测窗口大小分别配置为1\,K，5\,K和10\,K时Linux数据集中的总体检测率和误判率。在各个窗口大小设置下，\sysnameF 均实现了很高的检测率(例如，至少98.6\%)。然而，较大的窗口会略微降低检测率，这是因为大窗口中仅有相对较小部分的密文数据块具有相同的相似性指标。此外，\sysnameF 仅在窗口大小为1\,K时才会产生误判(图~\ref{fig:featurespy-featureDistribution}(b))，这是因为原始快照(Raw)当中本身包含较多的相似数据块。但即使在这种情况下，\textit{allFeature}也没有任何误判，这是因为它只能检测到少量相似度较高的数据块。另一方面，可检测到更多相似数据块(Exp\#2)的\textit{minFeature}方案会产生28.6\%的误判。
+图~\ref{fig:featurespy-expDetectionOverallFalsePositive}显示了本文将\sysnameF 的检测窗口大小分别配置为1\,K，5\,K和10\,K时Linux数据集中的总体检测率和误判率。在各个窗口大小设置下，\sysnameF 均实现了很高的检测率(例如，至少98.6\%)。然而，较大的窗口会略微降低检测率，这是因为大窗口中仅有相对较小部分的密文数据块具有相同的相似性指标。此外，\sysnameF 仅在窗口大小为1\,K时才会产生误判(图~\ref{fig:featurespy-expDetectionOverallFalsePositive}(b))，这是因为原始快照(Raw)当中本身包含较多的相似数据块。但即使在这种情况下，\textit{allFeature}也没有任何误判，这是因为它只能检测到少量相似度较高的数据块。另一方面，可检测到更多相似数据块(Exp\#2)的\textit{minFeature}方案会产生28.6\%的误判。
 
 除了Linux数据集，本文也在CouchDB数据集中评估\sysnameF，并发现所有\sysnameF 的实例均可成功检测到所有混合在CouchDB数据集的快照中的推测内容攻击(即具有100\%的检测率)，且没有引入任何误判。可能的原因是每个CouchDB快照中几乎不含有相似数据块，当注入许多对伪造文件产生的相似数据块时，\sysnameF 可以立即检测到(相似数据块的)频率分布变化。
 
