@@ -10,7 +10,7 @@
     \label{fig:sgxdedup-overview}
 \end{figure}
 
-\paragraph*{基于密钥安全区的服务器MLE密钥生成。}如图~\ref{fig:sgxdedup-overview-key}所示，\sysnameS 在密钥服务器中部署一个密钥安全区\textit{(Key Enclave)}，以管理和保护服务器辅助消息锁加密所需的的全局秘密$S$，使其免受恶意(例如，被攻击者攻击并取得控制权限)的密钥服务器的威胁。在执行服务器辅助消息锁加密密钥生成时，密钥安全区和客户端都首先基于共享的会话密钥(Blinded key)建立一个安全信道(有关如何生成会话密钥的详细设计，请参阅\S\ref{subsec:sgxdedup-key-management})；然后客户端通过安全信道提交明文数据块的指纹；密钥安全区计算全局秘密和数据块指纹连接的结果的安全哈希作为该指纹对应的消息锁加密密钥；最后，密钥安全区通过安全信道向客户端返回该消息锁加密密钥。
+\paragraph*{基于密钥安全区的服务器MLE密钥生成。}如图~\ref{fig:sgxdedup-overview-key}所示，\sysnameS 在密钥服务器中部署一个密钥安全区\textit{(Key Enclave)}，以管理和保护服务器辅助消息锁加密所需的全局秘密$S$，使其免受恶意(例如，被攻击者攻击并取得控制权限)的密钥服务器的威胁。在执行服务器辅助消息锁加密密钥生成时，密钥安全区和客户端都首先基于共享的会话密钥(Blinded key)建立一个安全信道(有关如何生成会话密钥的详细设计，请参阅\S\ref{subsec:sgxdedup-key-management})；然后客户端通过安全信道提交明文数据块的指纹；密钥安全区计算全局秘密和数据块指纹连接的结果的安全哈希作为该指纹对应的消息锁加密密钥；最后，密钥安全区通过安全信道向客户端返回该消息锁加密密钥。
 
 \begin{figure}[!htb]
     \centering

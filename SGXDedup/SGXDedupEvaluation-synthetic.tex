@@ -34,7 +34,7 @@
     \label{fig:sgxdedup-exp-keygen-scalability}
 \end{figure}
 
-图~\ref{fig:sgxdedup-exp-keygen-scalability}(a)显示了密钥安全区仅使用单个线程处理所有模拟客户端的密钥生成请求时的聚合密钥生成速度。在第一轮和第二轮密钥生成中，\sysnameS 分别在5个和15个客户端时达到最大生成速度($4.3\times 10^5$\,keys/s和$11.3\times 10^5$\,keys/s)。随后，受限于单核处理能力上限，密钥生成速度基本保持不变。图~\ref{fig:sgxdedup-exp-keygen-scalability}(b)显示了密钥安全区多线程服务模拟客户端时的密钥生成聚合速度。第一轮和第二轮密钥生成分别在5个和10个模拟客户端时实现了最高$8.5\times 10^5$\,keys/s和$29\times 10^5$\,keys/s的密钥生成速度，随后由于CPU上下文切换开销逐渐增大，聚合速度逐渐下降。平均而言，第二轮基于推测性加密相较于第一轮实现了4.4倍的的聚合密钥生成加速。
+图~\ref{fig:sgxdedup-exp-keygen-scalability}(a)显示了密钥安全区仅使用单个线程处理所有模拟客户端的密钥生成请求时的聚合密钥生成速度。在第一轮和第二轮密钥生成中，\sysnameS 分别在5个和15个客户端时达到最大生成速度($4.3\times 10^5$\,keys/s和$11.3\times 10^5$\,keys/s)。随后，受限于单核处理能力上限，密钥生成速度基本保持不变。图~\ref{fig:sgxdedup-exp-keygen-scalability}(b)显示了密钥安全区多线程服务模拟客户端时的密钥生成聚合速度。第一轮和第二轮密钥生成分别在5个和10个模拟客户端时实现了最高$8.5\times 10^5$\,keys/s和$29\times 10^5$\,keys/s的密钥生成速度，随后由于CPU上下文切换开销逐渐增大，聚合速度逐渐下降。平均而言，第二轮基于推测性加密相较于第一轮实现了4.4倍的聚合密钥生成加速。
 
 \paragraph*{Exp\#3(密钥生成批量大小的影响)。}
 
