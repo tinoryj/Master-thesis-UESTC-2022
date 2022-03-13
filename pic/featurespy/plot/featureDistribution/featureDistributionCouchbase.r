@@ -13,7 +13,7 @@ if(T){
     cairo_pdf(file="./featureDistributionCouchbase.pdf", width=mywidth, height=myheight)
     x1$type <- factor(x1$wsize, levels=c("1K", "5K", "10K"), labels=c("W=1K", "W=5K", "W=10K"))
     ggplot(data=x1, aes(x=id, y=ndiff,shape=type,linetype=type, colour=type, group=type)) +
-    geom_line(size=1.5)  +
+    geom_line(size=1)  +
     scale_colour_brewer(palette = "Set1")+
     coord_cartesian(xlim=c(1.455, 2700), ylim=c(0.000285, 0.006)) +
     scale_x_continuous(trans='log10', breaks=trans_breaks("log10", function(x) 10^x),

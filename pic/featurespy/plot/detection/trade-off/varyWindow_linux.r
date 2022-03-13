@@ -18,7 +18,7 @@ if(T){
     # x1$ID <- factor(x1$ID, levels=c("1K","5K","10K"), labels=c("W=1K","W=5K","W=10K"))
     x1$type <- factor(x1$type, levels=c("firstFeature","minFeature","allFeature"), labels=c("firstFeature","minFeature","allFeature"))
     ggplot(data=x1, aes(x=ID,y=ratio,shape=type,linetype=type, colour=type)) +
-    geom_line(size=1.5) + 
+    geom_line(size=1) + 
     geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_brewer(palette = "Set2") + 

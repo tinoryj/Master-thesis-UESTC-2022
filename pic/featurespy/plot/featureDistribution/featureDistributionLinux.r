@@ -14,7 +14,7 @@ if(T){
     cairo_pdf(file="./featureDistributionLinux.pdf", width=mywidth, height=myheight)
     x1$type <- factor(x1$wsize, levels=c("1K", "5K", "10K"), labels=c("W=1K", "W=5K", "W=10K"))
     ggplot(data=x1, aes(x=id, y=ndiff,shape=type,linetype=type, colour=type, group=type), log="x") +
-    geom_line(size=1.5)  +
+    geom_line(size=1)  +
     scale_colour_brewer(palette = "Set1")+
     coord_cartesian(ylim=c(0.00212, 0.045), xlim=c(1.53,8500)) +
     scale_x_continuous(trans='log10', breaks=trans_breaks("log10", function(x) 10^x),
