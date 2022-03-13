@@ -6,8 +6,8 @@ require(scales)
 font_import()
 loadfonts()
 
-mywidth=5
-myheight=2.5
+mywidth=3
+myheight=1.5
 my_line=c("solid","longdash","dashed","dotted")
 
 abbrev_x <- c(1,expression(2^3), expression(2^6),expression(2^9),expression(2^12),expression(2^15))
@@ -32,8 +32,8 @@ if(T){
     # scale_y_continuous(breaks = trans_breaks("log10", function(x) 10^x)(c(1,8000)), labels = trans_format("log10", math_format(10^.x)),trans = 'log10') +
     scale_y_continuous(breaks=seq(0, 40, 10), labels=format(seq(0, 40, 10), scientific=FALSE)) +
     scale_x_discrete(labels=c("1", "20", "40", "60","80"), breaks=c("1", "20", "40", "60","80")) + 
-    xlab("Snapshot") +
-    ylab("Traffic (GiB)")+
+    xlab("快照编号") +
+    ylab("网络流量 (GiB)")+
     theme_bw() +
     theme(
         panel.grid.major=element_blank(), 
@@ -43,13 +43,13 @@ if(T){
 	    panel.border = element_blank(),
 	    axis.line=element_line(colour="black", size=0.3),
 	    axis.ticks=element_line(size=0.3),
-        axis.title.x=element_text(size=22),
-        axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.8, colour="black", size=22),
-        axis.title.y=element_text(size=22,  hjust=0.5),
-        axis.text.y=element_text(margin=margin(0, 2, 0, 0), colour="black",size=22),
+        axis.title.x=element_text(size=11,family="Times New Roman"),
+        axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.8, colour="black", size=11,family="Times New Roman"),
+        axis.title.y=element_text(size=11,  hjust=0.5,family="Times New Roman"),
+        axis.text.y=element_text(margin=margin(0, 2, 0, 0), colour="black",size=11,family="Times New Roman"),
         legend.title = element_blank(),
         legend.key.size=unit(0.3, "cm"),
-        legend.text=element_text(size=22),
+        legend.text=element_text(size=11),
         legend.position=c(0.35,1.1),
         legend.direction="horizontal",
         legend.margin = margin(t = 0, unit='cm'),

@@ -1,6 +1,6 @@
 #!/bin/bash
 # rm -rf *.pdf
-tyeSet=('fsl' 'ms' 'linux' 'couch')
+tyeSet=('fsl' 'ms')
 
 for type in ${tyeSet[@]}; do
     Rscript trace_$type.r

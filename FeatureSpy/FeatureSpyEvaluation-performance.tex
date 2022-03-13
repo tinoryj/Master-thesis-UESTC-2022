@@ -52,7 +52,7 @@
     \label{tab:featurespy-evaluation-syn-system-breakdown}
 \end{table}
 
-表~\ref{tab:featurespy-evaluation-syn-system-breakdown}展示每1\,MiB文件数据处理时各个步骤的时间开销。由于\prototype 建立在\sysnameS(\S\ref{sec:sgxdedup-implementation})之上，它继承了在非首次上传时通过推测性加密降低密钥生成开销(\S\ref{sec:featurespy-implementation})以及避免传输重复数据块带来的性能优势。结果表明，针对推测内容攻击的检测步骤是高效的，并且在上传过程中仅占用了总时间开销的0.4\%。由于N-transform的计算开销，特征生成步骤开销很高。例如，\textit{firstFeature}实例中在第一轮上传时占用了总时间开销的31.4\%；\textit{minFeature}和\textit{allFeature}实例中特征提取所消耗的时间占比分别进一步增加到51.1\%和50.9\%，这是因为它们都提取了所有三个特征(与只需要提取第一个特征的\textit{firstFeature}相反)。然而，本文认为可以通过多线程来减轻特征生成的性能开销对\prototype 整体性能的影响(见下文)。
+表~\ref{tab:featurespy-evaluation-syn-system-breakdown}展示每1\,MiB文件数据处理时各个步骤的时间开销。由于\prototype 建立在\sysnameS(\S\ref{sec:sgxdedup-implementation})之上，它继承了在非首次上传时通过推测性加密降低密钥生成开销(\S\ref{sec:featurespy-implementation})以及避免传输重复数据块带来的性能优势。结果表明，针对推测内容攻击的检测步骤是高效的，并且在上传过程中仅占用了总时间开销的0.4\%。由于N-transform的计算开销，特征生成步骤开销很高。例如，\textit{firstFeature}实例中在第一轮上传时占用了总时间开销的31.4\%；\textit{minFeature}和\textit{allFeature}实例中特征提取所消耗的时间占比分别进一步增加到51.1\%和50.9\%，这是因为它们都提取了所有三个特征(与只需要提取第一个特征的\textit{firstFeature}相反)。然而，本文认为可通过并行计算减轻特征生成的性能开销对\prototype 整体性能的影响。
 
 \paragraph*{Exp\#6(单客户端上传/下载性能)。}
 本文考虑单个客户端，并将\prototype 的性能与其基础\sysnameS 进行比较。本文令客户端连续两次上传相同的SYNUnique文件(如Exp\#5)，最后下载该文件。
@@ -85,7 +85,7 @@
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.7\linewidth]{pic/featurespy/plot/performance/multiClient/legend.pdf}\\
+    \includegraphics[height=11pt]{pic/featurespy/plot/performance/multiClient/legend.pdf}\\
     \vspace{1pt}
     \begin{tabular}{@{\ }c@{\ }c@{\ }c}
         \includegraphics[width=0.32\textwidth]{pic/featurespy/plot/performance/multiClient/upload_1st_line.pdf} &
@@ -132,14 +132,14 @@
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[height=0.2in]{pic/featurespy/plot/performance/LANTrace/trace_legend_upload.pdf}\\
-    \includegraphics[height=0.2in]{pic/featurespy/plot/performance/LANTrace/trace_legend_download.pdf}\\
+    \includegraphics[height=11pt]{pic/featurespy/plot/performance/LANTrace/trace_legend_upload.pdf}\\
+    \includegraphics[height=11pt]{pic/featurespy/plot/performance/LANTrace/trace_legend_download.pdf}\\
     \vspace{3pt}
     \begin{tabular}{@{\ }c@{\ }c}
-        \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/performance/LANTrace/trace_fsl.pdf} &
-        \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/performance/LANTrace/trace_ms.pdf}    \\
-        \mbox{\small (a) FSL}                                                                          &
-        \mbox{\small (b) MS}                                                                             \\
+        \includegraphics[width=0.475\textwidth]{pic/featurespy/plot/performance/LANTrace/trace_fsl.pdf} &
+        \includegraphics[width=0.475\textwidth]{pic/featurespy/plot/performance/LANTrace/trace_ms.pdf}    \\
+        \mbox{\small (a) FSL}                                                                           &
+        \mbox{\small (b)  MS}                                                                             \\
     \end{tabular}
     \caption{(Exp\#9)实际工作负载下上传/下载性能}
     \label{fig:featurespy-traceDrivenThroughput}
@@ -154,14 +154,14 @@
 
 \begin{figure}[!htb]
     \centering
-    \includegraphics[width=0.65\textwidth]{pic/featurespy/plot/bandwidth/upload_traffic_legend.pdf}     \vspace{3pt} \\
+    \includegraphics[height=22pt]{pic/featurespy/plot/bandwidth/upload_traffic_legend.pdf}     \vspace{3pt} \\
     \begin{tabular}{@{\ }c@{\ }c}
         \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/bandwidth/upload_traffic_fsl.pdf}   &
-        \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/bandwidth/upload_traffic_ms.pdf}                           \\
-        {\small (a) FSL}                                                                               & {\small (b) MS}      \\
+        \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/bandwidth/upload_traffic_ms.pdf}                                 \\
+        {\small (a) FSL数据集}                                                                         & {\small (b) MS数据集}      \\
         \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/bandwidth/upload_traffic_linux.pdf} &
-        \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/bandwidth/upload_traffic_couch.pdf}                        \\
-        {\small (c) Linux}                                                                             & {\small (d) CouchDB}
+        \includegraphics[width=0.47\textwidth]{pic/featurespy/plot/bandwidth/upload_traffic_couch.pdf}                              \\
+        {\small (c) Linux数据集}                                                                       & {\small (d) CouchDB数据集}
     \end{tabular}
     \caption{(Exp\#10) 存储每个快照后的累积网络流量。}
     \label{fig:featurespy-expNetworkTraffic}

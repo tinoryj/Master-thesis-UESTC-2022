@@ -8,8 +8,8 @@ loadfonts()
 
 
 
-mywidth=4
-myheight=2.5
+mywidth=2
+myheight=1.25
 my_value=c(1,2,3,4)
 # my_line=c("longdash","dotted","solid","dashed")
 my_line=c("solid","solid","solid","solid")
@@ -28,8 +28,8 @@ if(T){
     coord_cartesian(ylim=c(58, 1225), xlim=c(1,10)) +
     scale_x_continuous(breaks=c(1,2,3,4,5,6,7,8,9,10)) +
     scale_y_continuous(breaks=seq(0, 1200, 300), labels=format(seq(0, 1200, 300), scientific=FALSE)) +
-    ylab("Speed (MiB/s)") +
-    xlab("Number of clients") +
+    ylab("速度 (MiB/s)") +
+    xlab("客户端个数") +
     theme_bw() +
     theme(
       panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -38,10 +38,10 @@ if(T){
 		  # panel.border=element_rect(size=0.5),
 		  axis.line=element_line(colour="black", size=0.15),
 		  axis.ticks=element_line(size=0.15),
-	    axis.text.x=element_text(margin=margin(7,0,0,0), angle=0, hjust=0.6, colour="black", size=22),
-	    axis.title.y=element_text(size=22, hjust=0.9),
-      axis.title.x=element_text(size=24),
-	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=24),
+	    axis.text.x=element_text(margin=margin(2,0,0,0), angle=0, hjust=0.6, colour="black", size=11,family="Times New Roman"),
+	    axis.title.y=element_text(size=11, hjust=0.9,family="Times New Roman"),
+      axis.title.x=element_text(size=11,family="Times New Roman"),
+	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=11,family="Times New Roman"),
 	    # axis.title.x=element_text(size=rel(0)),
 	    legend.key.size=unit(0.5, "cm"),
       legend.title=element_blank(),

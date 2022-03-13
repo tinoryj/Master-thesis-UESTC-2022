@@ -5,8 +5,8 @@ require(scales)
 font_import()
 loadfonts()
 
-mywidth=15
-myheight=0.4
+mywidth=6
+myheight=0.3
 my_color=c("red3","dodgerblue3","Gold3")
 my_value=c(1,1,1,1)
 my_line=c("solid","longdash","dashed","longdash")
@@ -15,10 +15,10 @@ abbrev_x <- c(1,expression(2^3), expression(2^6),expression(2^9),expression(2^12
 
 if(T){
     x1 <- read.table("result_fsl.txt",header=TRUE)
-    cairo_pdf(file="../../upload_traffic_legend.pdf", width=mywidth, height=myheight)
+    cairo_pdf(file="./upload_traffic_legend.pdf", width=mywidth, height=myheight)
     x1$Type <- factor(x1$Type, levels=c("Client-side", "Two-stage", "Random-threshold"), labels=c("TEEDedup", "Two-stage Dedup", "Randomized-threshold Dedup"))
     my_hist = ggplot(data=x1, aes(x=as.factor(ID), y=Traffic/1073741824,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
-    geom_line(size=1.5)  + 
+    geom_line(size=1)  + 
     # geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) +
@@ -36,8 +36,8 @@ if(T){
 	    panel.border = element_blank(),
         legend.title = element_blank(),
         legend.key.size=unit(0.3, "cm"),
-        legend.key.width=unit(2,"cm"),
-        legend.text=element_text(size=22),
+        legend.key.width=unit(1,"cm"),
+        legend.text=element_text(size=11,family="Times New Roman"),
         # legend.position=c(0.35,1.1),
         legend.direction="horizontal",
         legend.margin = margin(t = 0, unit='cm'),

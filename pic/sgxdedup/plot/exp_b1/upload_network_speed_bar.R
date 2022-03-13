@@ -44,7 +44,7 @@ myheight=2.5
 my_color=c("Gold3","red3","lemonchiffon1","coral3","cadetblue1","green3")
 if(T){
     x1 <- read.table("./upload_network_speed_bar_data.txt",header=TRUE)
-    cairo_pdf(file="../../upload_network_speed_bar.pdf",  width=mywidth, height=myheight)
+    cairo_pdf(file="./upload_network_speed_bar.pdf",  width=mywidth, height=myheight)
     x1$type <- factor(x1$type, levels=c("DupLESS","TEE-1","NoProtect-1","TEE-2","NoProtect-2"), labels=c("DupLESS","TEEDedup-1st","PlainDedup-1st","TEEDedup-2nd","PlainDedup-2nd"))
     x1$Netspeed <- factor(x1$Netspeed, levels=c("1", "5","10"), labels=c("1Gbps","5Gbps", "10Gbps"))
     ggplot(data=x1, aes(x=Netspeed, y=throughput, fill=type)) +
@@ -57,7 +57,7 @@ if(T){
     # scale_x_discrete(breaks=type_name, labels=x_name) +
     scale_fill_manual(values=my_color) +
     guides(fill=guide_legend(nrow=1)) + 
-    ylab("Speed (MiB/s)") +
+    ylab("速度 (MiB/s)") +
     xlab("Network Bandwidth") +
     theme_bw() +
     theme(
@@ -67,16 +67,16 @@ if(T){
 		  # panel.border=element_rect(size=0.5),
 		  axis.line=element_line(colour="black", size=0.15),
 		  axis.ticks=element_line(size=0.15),
-	    axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.5, colour="black", size=20),
-	    axis.title.y=element_text(size=20, hjust=0.5),
-	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=20),
+	    axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.5, colour="black", size=20,family="Times New Roman"),
+	    axis.title.y=element_text(size=20, hjust=0.5,family="Times New Roman"),
+	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=20,family="Times New Roman"),
 	    axis.title.x=element_text(size=rel(0)),
 	    legend.key.size=unit(0.5, "cm"),
       legend.title=element_blank(),
 	    legend.position=c(0.46,0.94),
       # legend.key.width=unit(1, "cm"),
       legend.direction="horizontal",
-      legend.text=element_text(size=16.5),
+      legend.text=element_text(size=16.5,family="Times New Roman"),
       legend.margin = margin(t = 0, unit='cm'),
       plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")
     ) 

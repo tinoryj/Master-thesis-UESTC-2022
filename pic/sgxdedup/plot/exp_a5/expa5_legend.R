@@ -5,17 +5,17 @@ require(scales)
 font_import()
 loadfonts()
 
-mywidth=3
-myheight=0.4
-my_color=c("green3", "cadetblue4")
+mywidth=6
+myheight=0.3
+my_color=c("red3", "dodgerblue3")
 my_value=c(1,5,10,15)
 
 if(T){
     x1 <- read.table("expa5_keyRegression_data.txt",header=TRUE)
-    cairo_pdf(file="../../expa5_keyRegression_time_legend.pdf", width=mywidth, height=myheight)
-    x1$type <- factor(x1$type,labels = c("KeyEnclave", "Cloud"), levels=c("Enclave","Server"))
+    cairo_pdf(file="./expa5_keyRegression_time_legend.pdf", width=mywidth, height=myheight)
+    x1$type <- factor(x1$type,labels = c("密钥安全区", "云服务端"), levels=c("Enclave","Server"))
     my_hist=ggplot(data=x1, aes(x=NSize,y=time,shape=type,linetype=type, colour=type)) +
-    geom_line(size=1.5)  + 
+    geom_line(size=1)  + 
     geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) + 
@@ -35,7 +35,7 @@ if(T){
 	    panel.border = element_blank(),
         legend.title = element_blank(),
         legend.key.size=unit(0.3, "cm"),
-        legend.text=element_text(size=22),
+        legend.text=element_text(size=11, family="SimSun"),
         # legend.position=c(0.35,1.1),
         legend.direction="horizontal",
         legend.margin = margin(t = 0, unit='cm'),

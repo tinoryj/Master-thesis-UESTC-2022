@@ -45,7 +45,7 @@ myheight=2.5
 my_color=c("red3","lemonchiffon1")
 if(T){
     x1 <- read.table("./download_network_speed_bar_data.txt",header=TRUE)
-    cairo_pdf(file="../../download_network_speed_bar.pdf",  width=mywidth, height=myheight)
+    cairo_pdf(file="./download_network_speed_bar.pdf",  width=mywidth, height=myheight)
     # cairo_pdf(file="./download_network_speed_bar.pdf",  width=mywidth, height=myheight)
     x1$type <- factor(x1$type, levels=c("TEE","NoProtect"), labels=c("TEEDedup","PlainDedup"))
     x1$Netspeed <- factor(x1$Netspeed, levels=c("1","5", "10"), labels=c("1Gbps","5Gbps","10Gbps"))
@@ -59,7 +59,7 @@ if(T){
     # scale_x_discrete(breaks=type_name, labels=x_name) +
     scale_fill_manual(values=my_color) +
     guides(fill=guide_legend(nrow=1)) + 
-    ylab("Speed (MiB/s)") +
+    ylab("速度 (MiB/s)") +
     xlab("") +
     theme_bw() +
     theme(
@@ -69,9 +69,9 @@ if(T){
 		  # panel.border=element_rect(size=0.5),
 		  axis.line=element_line(colour="black", size=0.15),
 		  axis.ticks=element_line(size=0.15),
-	    axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.5, colour="black", size=20),
-	    axis.title.y=element_text(size=20, hjust=0.5),
-	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=20),
+	    axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.5, colour="black", size=20,family="Times New Roman"),
+	    axis.title.y=element_text(size=20, hjust=0.5,family="Times New Roman"),
+	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=20,family="Times New Roman"),
 	    axis.title.x=element_text(size=rel(0)),
 	    legend.key.size=unit(0.5, "cm"),
       legend.title=element_blank(),
@@ -79,7 +79,7 @@ if(T){
       legend.margin = margin(t = 0, unit='cm'),
       legend.direction="vertical",
 		  legend.box = "vertical",
-      legend.text=element_text(size=16.5),
+      legend.text=element_text(size=16.5,family="Times New Roman"),
       plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")
     # )
 	  ) + 

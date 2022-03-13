@@ -8,8 +8,8 @@ loadfonts()
 
 
 
-mywidth=8
-myheight=0.5
+mywidth=6
+myheight=0.3
 my_value=c(1,2,3,4)
 # my_line=c("longdash","dotted","solid","dashed")
 my_line=c("solid","solid","solid","solid")
@@ -42,12 +42,12 @@ if(T){
 	    axis.title.y=element_text(size=24, hjust=0.5),
 	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=26),
 	    axis.title.x=element_text(size=rel(0)),
-	    legend.key.size=unit(1, "cm"),
+	    legend.key.size=unit(0.5, "cm"),
       legend.title=element_blank(),
 	    # legend.position=c(0.5,0.94),
       # legend.key.width=unit(1, "cm"),
       legend.direction="horizontal",
-      legend.text=element_text(size=16.5),
+      legend.text=element_text(size=11,family="Times New Roman"),
       legend.margin = margin(t = 0, unit='cm'),
       plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")
     ) 
