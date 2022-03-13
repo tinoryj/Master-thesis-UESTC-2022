@@ -18,7 +18,7 @@ if(T){
     x1$type <- factor(x1$type, levels=c("1stKeyGen", "2ndKeyGen"), labels=c("KeyGen-1st", "KeyGen-2nd"))
     ggplot(data=x1, aes(x=Nsize, y=performance/100000,shape=type, linetype=type, colour=type)) +
     geom_line(size=1.5)  + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(my_line)) +

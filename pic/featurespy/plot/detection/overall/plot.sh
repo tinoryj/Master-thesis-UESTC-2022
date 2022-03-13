@@ -1,6 +1,5 @@
 #!/bin/bash
 # rm -rf *.pdf
-# versionSet=('1000' '5000' '10000')
 versionSet=('1000')
 tyeSet=('all' 'min' 'first')
 

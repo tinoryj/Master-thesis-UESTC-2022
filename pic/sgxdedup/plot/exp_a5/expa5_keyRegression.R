@@ -18,7 +18,7 @@ if(T){
     scale_color_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(2, 1, 3, 5, 4, 6)) +              
     geom_line(size=1.5)  + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_point(size=2, stroke=0.75, fill="white") +
         coord_cartesian(ylim=c(0, 15)) +
     scale_y_continuous(breaks=seq(0, 15, 5), labels=format(seq(0, 15, 5), scientific=FALSE)) +
     scale_x_discrete(labels = abbrev_x, breaks=c("0", "3", "6", "9"))+

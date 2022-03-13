@@ -8,8 +8,8 @@ loadfonts()
 
 my_color=c("#66c2a5","#fc8d62","#8da0cb","#e78ac3","#66c2a5","#fc8d62")
 
-mywidth=10
-myheight=0.4
+mywidth=6
+myheight=0.3
 my_value=c(1,2,3,4)
 # my_line=c("longdash","dotted","solid","dashed")
 my_line=c("solid","solid","solid","solid")
@@ -20,8 +20,8 @@ if(T){
     cairo_pdf(file="legend.pdf",  width=mywidth, height=myheight)
     x1$type <- factor(x1$type, levels=c("TEE","DetectionFirst", "DetectionMin","DetectionAll"), labels=c("TEEDedup","firstFeature","minFeature","allFeature"))
     my_hist=ggplot(data=x1, aes(x=ID,y=throughput,shape=type,linetype=type, colour=type)) +
-    geom_line(size=2) + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_line(size=1.5) + 
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(my_line)) +
@@ -47,7 +47,7 @@ if(T){
 	    # legend.position=c(0.5,0.94),
       # legend.key.width=unit(1, "cm"),
       legend.direction="horizontal",
-      legend.text=element_text(size=16.5),
+      legend.text=element_text(size=10.5,family="Times New Roman"),
       legend.margin = margin(t = 0, unit='cm'),
       plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")
     ) 

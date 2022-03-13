@@ -1,5 +1,0 @@
-round    type            throughput     fraction
-second   DetectionAll    281.6012564	1.472566915	
-second   DetectionFirst  288.4256984	1.934804055	
-second   DetectionMin    281.7386409	0.739714392
-second   TEE             304.3179822	3.054359847

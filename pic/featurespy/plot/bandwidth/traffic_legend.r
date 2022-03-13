@@ -19,8 +19,8 @@ if(T){
     cairo_pdf(file="./upload_traffic_legend.pdf", width=mywidth, height=myheight)
     x1$Type <- factor(x1$Type, levels=c("Client-side", "Two-stage", "Random-threshold","Server-side"), labels=c("TEEDedup+", "Two-stage dedup", "Random-threshold dedup","Target-based dedup"))
     my_hist = ggplot(data=x1, aes(x=as.factor(ID), y=Traffic/1073741824,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
-    geom_line(size=2)  + 
-    # geom_point(size=4, stroke=1.5, fill="white") +
+    geom_line(size=1.5)  + 
+    # geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_brewer(palette = "Set1") + 
     scale_linetype_manual(values=c(my_line)) +

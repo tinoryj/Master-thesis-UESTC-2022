@@ -18,7 +18,7 @@ if(T){
     x1$type <- factor(x1$type, levels=c("Enclave","Server"), labels=c("KeyEnclave", "Cloud"))
     ggplot(data=x1, aes(x=as.factor(NSize), y=time,shape=type, linetype=type, colour=type, group=type)) +
     geom_line(size=1.5)  + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(2, 1, 3, 5, 4, 6)) +              

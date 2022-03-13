@@ -6,18 +6,18 @@ require(scales)
 font_import()
 loadfonts()
 
-mywidth=20
-myheight=0.5
+mywidth=6
+myheight=0.3
 my_value=c(1,10,5,15)
 my_line=c(1,2,3,4)
 
 if(T){
     x1 <- read.table("fixed_q_16.data",header=TRUE)
     cairo_pdf(file="fixed_pq_legend.pdf", width=mywidth, height=myheight)
-    x1$Type <- factor(x1$Type, levels=c("1F","2F","3F","4F"), labels=c("One","Two","Three","Four"))
+    x1$Type <- factor(x1$Type, levels=c("1F","2F","3F","4F"), labels=c("单特征匹配","双特征匹配","三特征匹配","四特征匹配"))
     my_hist=ggplot(data=x1, aes(x=ID, y=Ratio,shape=Type, linetype=Type, colour=Type, group=Type)) +
-    geom_line(size=2)  +
-    geom_point(size=6, stroke=1.5, fill="white") +
+    geom_line(size=1.5)  +
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_brewer(palette = "Set1")+
     scale_linetype_manual(values=c(my_line)) +
@@ -40,8 +40,8 @@ if(T){
         axis.title.y=element_text(size=20,  hjust=0.5),
         axis.text.y=element_text(margin=margin(0, 2, 0, 0), colour="black",size=22),
         legend.title = element_blank(),
-        legend.key.size=unit(2, "cm"),
-        legend.text=element_text(size=22),
+        legend.key.size=unit(1, "cm"),
+        legend.text=element_text(size=11,family="SimSun"),
         # legend.position="none",
         legend.direction="horizontal",
         legend.margin = margin(t = 0, unit='cm'),

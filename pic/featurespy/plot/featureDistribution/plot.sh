@@ -1,5 +1,7 @@
 #!/bin/bash
+Rscript featureDistributionLegend.r
 Rscript featureDistributionLinux.r
 Rscript featureDistributionCouchbase.r
 pdfcrop featureDistributionLinux.pdf featureDistributionLinux.pdf
 pdfcrop featureDistributionCouchbase.pdf featureDistributionCouchbase.pdf
+pdfcrop featureDistributionLegend.pdf featureDistributionLegend.pdf

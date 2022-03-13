@@ -6,8 +6,8 @@ require(scales)
 font_import()
 loadfonts()
 
-mywidth=10
-myheight=0.4
+mywidth=6
+myheight=0.5
 my_value=c(1,5,10)
 my_line=c("longdash","dashed","solid")
 
@@ -17,8 +17,8 @@ if(T){
     cairo_pdf(file="trade_off_legend.pdf", width=mywidth, height=myheight)
     x1$type <- factor(x1$type, levels=c("firstFeature","minFeature","allFeature"), labels=c("firstFeature","minFeature","allFeature"))
     my_hist=ggplot(data=x1, aes(x=ID,y=ratio,shape=type,linetype=type, colour=type)) +
-    geom_line(size=2) + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_line(size=1.5) + 
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_brewer(palette = "Set2") + 
     scale_linetype_manual(values=c(my_line)) +
@@ -26,7 +26,7 @@ if(T){
     scale_x_continuous(breaks=c(1,2,3),labels=c("W=1K", "W=5K", "W=10K")) +
     scale_y_continuous(breaks=seq(0, 1, 0.25), labels=format(seq(0, 100, 25), scientific=FALSE)) +
     guides(fill=guide_legend(ncol=3)) + 
-    ylab("Detection (%)") +
+    ylab("检测率 (%)") +
     xlab(NULL) +
     theme_bw() +
     theme(
@@ -41,8 +41,8 @@ if(T){
         axis.text.y=element_text(margin=margin(0, 2, 0, 0),colour="black",size=26),
         axis.title.x=element_text(size=26),
         legend.title = element_blank(),
-        legend.key.size=unit(0.3, "cm"),
-        legend.text=element_text(size=20),
+        legend.key.size=unit(0.5, "cm"),
+        legend.text=element_text(size=11,family="Times New Roman"),
         legend.position=c(0.5,0.5),
         # legend.position="none",
         legend.direction="horizontal",

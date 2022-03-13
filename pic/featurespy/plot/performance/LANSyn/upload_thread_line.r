@@ -8,8 +8,8 @@ loadfonts()
 
 
 
-mywidth=3.3
-myheight=2.5
+mywidth=2
+myheight=1.5
 my_value=c(1,2,3,4)
 # my_line=c("longdash","dotted","solid","dashed")
 my_line=c("solid","solid","solid","solid")
@@ -20,16 +20,16 @@ if(T){
     cairo_pdf(file="upload_thread_line.pdf",  width=mywidth, height=myheight)
     x1$type <- factor(x1$type, levels=c("TEE","DetectionFirst", "DetectionMin","DetectionAll"), labels=c("TEEDedup","TEEDedup+\n(firstFeature)","TEEDedup+\n(minFeature)","TEEDedup+\n(allFeature)"))
   ggplot(data=x1, aes(x=ID,y=throughput,shape=type,linetype=type, colour=type)) +
-    geom_line(size=2) + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_line(size=1.5) + 
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(my_line)) +
     coord_cartesian(ylim=c(15.17, 320), xlim=c(1,4)) +
     scale_x_continuous(breaks=c(1,2,3,4)) +
     scale_y_continuous(breaks=seq(0, 300, 100), labels=format(seq(0, 300, 100), scientific=FALSE)) +
-    ylab("Speed (MiB/s)") +
-    xlab("Thread") +
+    ylab("速度 (MiB/s)") +
+    xlab("线程数") +
     theme_bw() +
     theme(
       panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
@@ -38,10 +38,10 @@ if(T){
 		  # panel.border=element_rect(size=0.5),
 		  axis.line=element_line(colour="black", size=0.15),
 		  axis.ticks=element_line(size=0.15),
-	    axis.text.x=element_text(margin=margin(7,0,0,0), angle=0, hjust=0.5, colour="black", size=24),
-	    axis.title.y=element_text(size=23, hjust=0.9),
-	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=24),
-	    axis.title.x=element_text(size=24),
+	    axis.text.x=element_text(margin=margin(7,0,0,0), angle=0, hjust=0.5, colour="black", size=11,family="Times New Roman"),
+	    axis.title.y=element_text(size=11, hjust=0.9,family="Times New Roman"),
+	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=11,family="Times New Roman"),
+	    axis.title.x=element_text(size=11,family="Times New Roman"),
 	    legend.key.size=unit(0.5, "cm"),
       legend.title=element_blank(),
 	    legend.position="none",

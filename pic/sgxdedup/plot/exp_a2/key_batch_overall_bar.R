@@ -52,7 +52,7 @@ if(T){
     ggplot(data=x1, aes(x=Netspeed, y=throughput, fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.90), colour="black", width=0.8, size=0.3) +
     # geom_errorbar(aes(ymin=x1$fraction-x1$interval, ymax=x1$fraction+x1$interval), width=0.4, colour="black", position=position_dodge(0.9)) + 
-    geom_text(aes(label = round(throughput,2)), position = position_dodge(0.90), hjust=0.5, vjust=-0.1,size=7,angle=0, color="black") +
+    geom_text(aes(label = round(throughput,2)), position = position_dodge(0.90), hjust=0.5, vjust=-0.1,size=7,angle=0, color="black",family="Times New Roman") +
     scale_color_manual(values=c(my_color)) + 
     coord_cartesian(ylim=c(250, 6000)) +
     scale_y_continuous(breaks=seq(0, 6000, 1500), labels=format(seq(0, 6000, 1500), scientific=FALSE)) +

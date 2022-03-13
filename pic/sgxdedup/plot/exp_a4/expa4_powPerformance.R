@@ -54,7 +54,7 @@ if(T){
     ggplot(data=x1, aes(x=type, y=(interval), fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.9), colour="black", width=0.7, size=0.3) +
     geom_errorbar(aes(x=type,ymin=interval-fraction, ymax=interval+fraction), width=0.35, colour="black", position=position_dodge(0.9)) + 
-    # geom_text(aes(label = round((interval),0)), position = position_dodge(0.9), hjust=0.5, vjust=-0.1,size=8,angle=0, color="black") +
+    # geom_text(aes(label = round((interval),0)), position = position_dodge(0.9), hjust=0.5, vjust=-0.1,size=8,angle=0, color="black",family="Times New Roman") +
     coord_cartesian(ylim=c(15, 350),xlim=c(1,3)) +
     scale_y_continuous(breaks=seq(0, 300, 100), labels=format(seq(0, 300, 100), scientific=FALSE)) +
     scale_x_discrete(breaks=type_name, labels=x_name) +
@@ -83,7 +83,7 @@ if(T){
       legend.margin = margin(t = 0, unit='cm'),
       plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")
     ) + 
-    annotate("text", x = 1, y = 37+20+10, label = "37", size=7, angle=0, color="black") +
-    annotate("text", x = 2, y = 139+20+10, label = "139", size=7, angle=0, color="black") +
-    annotate("text", x = 3, y = 305+20+20, label = "305", size=7, angle=0, color="black")
+    annotate("text", x = 1, y = 37+20+10, label = "37", size=7, angle=0, color="black",family="Times New Roman") +
+    annotate("text", x = 2, y = 139+20+10, label = "139", size=7, angle=0, color="black",family="Times New Roman") +
+    annotate("text", x = 3, y = 305+20+20, label = "305", size=7, angle=0, color="black",family="Times New Roman")
 }

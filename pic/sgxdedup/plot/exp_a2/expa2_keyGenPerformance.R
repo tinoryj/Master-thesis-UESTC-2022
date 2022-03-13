@@ -56,7 +56,7 @@ if(T){
     ggplot(data=x1, aes(x=type, y=interval, fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.9), colour="black", width=0.6, size=0.3) +
     geom_errorbar(aes(x=type,ymin=interval-fraction, ymax=interval+fraction), width=0.35, colour="black", position=position_dodge(0.9)) + 
-    # geom_text(aes(label = round(interval/1024,3)), position = position_dodge(0.9), hjust=0.5, vjust=-0.1,size=7.5,angle=0, color="black") +
+    # geom_text(aes(label = round(interval/1024,3)), position = position_dodge(0.9), hjust=0.5, vjust=-0.1,size=7.5,angle=0, color="black",family="Times New Roman") +
     coord_cartesian(ylim=c(290, 6500)) +
     scale_y_continuous(breaks=seq(0, 6000, 2000), labels=format(seq(0, 6, 2), scientific=FALSE)) +
     scale_x_discrete(breaks=type_name, labels=x_name) +
@@ -81,10 +81,10 @@ if(T){
       legend.margin = margin(t = 0, unit='cm'),
       plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")
     ) + 
-    annotate("text", x = 1, y = 2.11+600+50, label = "0.002", size=7, angle=0, color="black") +
-    annotate("text", x = 2, y = 24.07+600+50, label = "0.024", size=7, angle=0, color="black") +
-    annotate("text", x = 3, y = 346.02+600+50, label = "0.338", size=7, angle=0, color="black") +
-    annotate("text", x = 4, y = 888.03+600+100, label = "0.867", size=7, angle=0, color="black") +
-    annotate("text", x = 5, y = 3243.09+600+80, label = "3.166", size=7, angle=0, color="black") +
-    annotate("text", x = 6, y = 5438.9+600+300, label = "5.311", size=7, angle=0, color="black")
+    annotate("text", x = 1, y = 2.11+600+50, label = "0.002", size=7, angle=0, color="black",family="Times New Roman") +
+    annotate("text", x = 2, y = 24.07+600+50, label = "0.024", size=7, angle=0, color="black",family="Times New Roman") +
+    annotate("text", x = 3, y = 346.02+600+50, label = "0.338", size=7, angle=0, color="black",family="Times New Roman") +
+    annotate("text", x = 4, y = 888.03+600+100, label = "0.867", size=7, angle=0, color="black",family="Times New Roman") +
+    annotate("text", x = 5, y = 3243.09+600+80, label = "3.166", size=7, angle=0, color="black",family="Times New Roman") +
+    annotate("text", x = 6, y = 5438.9+600+300, label = "5.311", size=7, angle=0, color="black",family="Times New Roman")
 }

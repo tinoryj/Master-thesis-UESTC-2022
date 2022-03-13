@@ -16,7 +16,7 @@ if(T){
     x1$type <- factor(x1$type, levels=c("1stUpload","2ndUpload","Download"), labels=c("Upload-1st","Upload-2nd","Download"))
     ggplot(data=x1, aes(x=clients,y=throughput,shape=type,linetype=type, colour=type)) +
     geom_line(size=1.5)  + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(my_line)) +

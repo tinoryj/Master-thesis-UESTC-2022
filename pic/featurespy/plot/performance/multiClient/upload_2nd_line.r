@@ -20,8 +20,8 @@ if(T){
     cairo_pdf(file="upload_2nd_line.pdf",  width=mywidth, height=myheight)
     x1$type <- factor(x1$type, levels=c("TEE","firstFeature","minFeature","allFeature"), labels=c("TEEDedup","TEEDedup+\n(firstFeature)","TEEDedup+\n(minFeature)","TEEDedup+\n(allFeature)"))
     ggplot(data=x1, aes(x=ID,y=throughput,shape=type,linetype=type, colour=type)) +
-    geom_line(size=2) + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_line(size=1.5) + 
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(my_line)) +

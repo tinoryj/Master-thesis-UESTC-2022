@@ -20,9 +20,9 @@ if(T){
     cairo_pdf(file="./upload_traffic_fsl.pdf", width=mywidth, height=myheight)
     x1$Type <- factor(x1$Type, levels=c("Client-side", "Two-stage", "Random-threshold","Server-side"), labels=c("Source-based", "Two-stage", "Random-threshold", "Server-side"))
     ggplot(data=x1, aes(x=as.factor(ID), y=Traffic,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
-    geom_line(size=2)  + 
+    geom_line(size=1.5)  + 
     # annotation_logticks()  +
-    # geom_point(size=4, stroke=1.5, fill="white") +
+    # geom_point(size=2, stroke=0.75, fill="white") +
     # scale_shape_manual(values=c(my_value)) +
     scale_colour_brewer(palette = "Set1") +
     scale_linetype_manual(values=c(my_line)) +

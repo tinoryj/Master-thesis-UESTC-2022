@@ -17,7 +17,7 @@ if(T){
     x1$Type <- factor(x1$Type, levels=c("TEEUpload", "DetFirstUpload", "DetMinUpload", "DetAllUpload"),labels=c("TEEDedup", "firstFeature", "minFeature", "allFeature"))
     my_hist = ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance,shape=Type, linetype=Type, colour=Type, group=Type)) +
     geom_line(size=1.5)  + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_colour_brewer(palette="Dark2") +
     scale_linetype_manual(values=c(my_line)) +

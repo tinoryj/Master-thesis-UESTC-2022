@@ -25,23 +25,23 @@ if(T){
     coord_cartesian(ylim=c(0.0021, 0.045), xlim=c(8.6, 162)) +
     scale_x_continuous(breaks=c(1,40,80,120,160)) +
     scale_y_continuous(breaks=seq(0, 0.04, 0.02), labels=format(seq(0, 4, 2), scientific=FALSE)) +
-    ylab("Frac. (%)") +
-    xlab("Window ID") +
+    ylab("频率 (%)") +
+    xlab("窗口编号") +
     theme_bw() +
-    theme(
+     theme(
         panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
 	    panel.background=element_blank(), 
 	    # panel.border=element_rect(size=0.5),
 	    panel.border = element_blank(),
 	    axis.line=element_line(colour="black", size=0.3),
 	    axis.ticks=element_line(size=0.3),
-        axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.8, colour="black", size=30),
-        axis.title.y=element_text(size=26,  hjust=0.5),
-        axis.text.y=element_text(margin=margin(0, 2, 0, 0),colour="black",size=30),
-        axis.title.x=element_text(size=30),
+        axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.8, colour="black", size=30, family="Times New Roman"),
+        axis.title.y=element_text(size=26,  hjust=0.5, family="SimSun"),
+        axis.text.y=element_text(margin=margin(0, 2, 0, 0),colour="black",size=30, family="Times New Roman"),
+        axis.title.x=element_text(size=30, family="SimSun"),
         legend.title = element_blank(),
         legend.key.size=unit(0.3, "cm"),
-        legend.text=element_text(size=20),
+        legend.text=element_text(size=20,family="SimSun"),
         # legend.position=c(0.3,0.82),
         legend.position="none",
         legend.direction="vertical",

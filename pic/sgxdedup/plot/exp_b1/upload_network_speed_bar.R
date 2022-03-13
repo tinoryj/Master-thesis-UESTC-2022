@@ -50,7 +50,7 @@ if(T){
     ggplot(data=x1, aes(x=Netspeed, y=throughput, fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.90), colour="black", width=0.8, size=0.3) +
     geom_errorbar(aes(x=Netspeed,ymin=throughput-fraction, ymax=throughput+fraction), width=0.4, colour="black", position=position_dodge(0.9)) + 
-    geom_text(aes(label = round(throughput,0)), position = position_dodge(0.90), hjust=0.5, vjust=-0.3,size=7,angle=0, color="black") +
+    geom_text(aes(label = round(throughput,0)), position = position_dodge(0.90), hjust=0.5, vjust=-0.3,size=7,angle=0, color="black",family="Times New Roman") +
     scale_color_manual(values=c(my_color)) + 
     coord_cartesian(ylim=c(16.3, 349), xlim=c(1.05, 2.95)) +
     scale_y_continuous(breaks=seq(0, 300, 100), labels=format(seq(0, 300, 100), scientific=FALSE)) +
@@ -81,16 +81,16 @@ if(T){
       plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")
     ) 
     # +
-    # annotate("text", x = 0.65, y = 107+21+10, label = "107", size=7, angle=0, color="black") +
-    # annotate("text", x = 0.875, y = 106+21+10, label = "106", size=7, angle=0, color="black") +
-    # annotate("text", x = 1.105, y = 183+21+10, label = "183", size=7, angle=0, color="black") +
-    # annotate("text", x = 1.34, y = 237+21+13, label = "237", size=7, angle=0, color="black") +
-    # annotate("text", x = 1.65, y = 183+21+10, label = "183", size=7, angle=0, color="black") +
-    # annotate("text", x = 1.88, y = 239+21+10, label = "239", size=7, angle=0, color="black") +
-    # annotate("text", x = 2.105, y = 188+21+10, label = "188", size=7, angle=0, color="black") +
-    # annotate("text", x = 2.335, y = 242+21+10, label = "242", size=7, angle=0, color="black") +
-    # annotate("text", x = 2.65, y = 194+21+10, label = "194", size=7, angle=0, color="black") +
-    # annotate("text", x = 2.875, y = 242+21+12, label = "242", size=7, angle=0, color="black") +
-    # annotate("text", x = 3.105, y = 202+21+10, label = "202", size=7, angle=0, color="black") +
-    # annotate("text", x = 3.34, y = 250+21+10, label = "250", size=7, angle=0, color="black")
+    # annotate("text", x = 0.65, y = 107+21+10, label = "107", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 0.875, y = 106+21+10, label = "106", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 1.105, y = 183+21+10, label = "183", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 1.34, y = 237+21+13, label = "237", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 1.65, y = 183+21+10, label = "183", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 1.88, y = 239+21+10, label = "239", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 2.105, y = 188+21+10, label = "188", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 2.335, y = 242+21+10, label = "242", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 2.65, y = 194+21+10, label = "194", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 2.875, y = 242+21+12, label = "242", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 3.105, y = 202+21+10, label = "202", size=7, angle=0, color="black",family="Times New Roman") +
+    # annotate("text", x = 3.34, y = 250+21+10, label = "250", size=7, angle=0, color="black",family="Times New Roman")
 }

@@ -20,7 +20,7 @@ if(T){
     x1$Type <- factor(x1$Type, levels=c("1stKeyGen","2ndKeyGen"), labels=c("KeyGen-1st", "KeyGen-2nd"))
     ggplot(data=x1, aes(x=as.factor(BatchSize), y=Performance/1024,shape=Type, linetype=Type, colour=Type, group=Type), log= "x") +
     geom_line(size=1.5)  + 
-    geom_point(size=4, stroke=1.5, fill="white") +
+    geom_point(size=2, stroke=0.75, fill="white") +
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) +
     scale_linetype_manual(values=c(my_line)) +    
