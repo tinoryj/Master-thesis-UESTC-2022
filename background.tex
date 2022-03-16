@@ -85,7 +85,7 @@
 \section{可信执行环境(TEE)}
 \label{sec:background-tee}
 
-TEE全名为可信执行环境(Trusted Execution Environment)是计算平台上由软件协同硬件方法构建的一个安全区域，可以确保在安全区域内加载的程序和数据在完整性和机密性方面得到必要保护。其目标是确保目标程序按照预期执行，保证程序初始状态和运行时状态的机密性、完整性。针对TEE的相关概念及规范定义，各个软件、硬件厂商结合自己的基础架构形态产生的具体实现各不相同。虽然在技术实现上存在显著差异，但TEE的技术共同点可总结为如下三点：
+可信执行环境(Trusted Execution Environment, TEE)是一种由软件协同硬件的方法在各类计算平台上构建的一个安全区域，用于确保在安全区域内加载的程序和数据在完整性和机密性方面得到必要保护。其目标是确保目标程序按照预期执行，保证程序初始状态和运行时的机密性、完整性。基于GlobalPlatform组织对TEE的标准规范，各个软硬件厂商结合自身基础架构构建的TEE存在显著差异，但各类TEE实现的技术共同点如下所示：
 
 \begin{itemize}[leftmargin=0em]
     \item \textbf{隔离性}：
@@ -140,7 +140,7 @@ ARM TrustZone\cite{trustzone}是ARM公司为Cortex-A微架构\cite{cortex-a}设�
 
 除了Cortex-A微架构外，ARM发布的新一代Cortex-M微架构\cite{cortex-m}同样为TrustZone提供了硬件支持。与Cortex-A相同的是，Cortex-M依旧将处理器运行状态划分为安全世界和非安全世界，并阻止运行于非安全世界的软件直接访问安全资源。不同的是，Cortex-M针对更快的上下文切换和低功耗应用进行了优化。具体来说，Cortex-M中世界之间的划分是基于内存映射的，并且转换是在异常处理代码中自动发生的(如图~\ref{fig:ARM-TZ-base}(b)所示)。这意味着，当从安全内存运行代码时，处理器处于安全世界，而当从非安全内存运行代码时，处理器处于非安全世界。Cortex-M中的TrustZone技术排除了监视模式，也不需要任何安全的监视软件，这大大减少了安全世界与非安全世界的切换延迟，使得世界之间的转换为更高效。
 
-各芯片产商根据ARM公司对于TrustZone的硬件设计在各自具体的芯片上进行设计和实现，基于TrustZone技术，可以搭建一个可信执行环境(TEE)，并在TEE内运行基于TrustZone的操作系统，如高通的QSEE、开源的OP-TEE等。
+各芯片产商依据ARM公司对于TrustZone的硬件设计规范在其芯片上进行实现落地。总体而言，基于TrustZone技术，可以搭建一个可信执行环境(TEE)，并在TEE内运行基于TrustZone的操作系统(例如，高通QSEE\cite{qsee}、OP-TEE\cite{op-tee})。
 
 \section{本章小结}
 
