@@ -10,14 +10,14 @@
 \sysnameF 模拟器是在Ubuntu 20.04.3 LTS系统下开发的，依赖于以下需要手动安装或通过默认的apt包管理工具安装的软件包。
 
 \begin{enumerate}[leftmargin=0em]
-    \item OpenSSL version 1.1.1l/libssl-dev (用于\sysnameF 中的密码学机制)
-    \item clang/llvm (用于编译模拟器)
-    \item python (用于伪造文件的生成)
-    \item git (用于下载Linux数据集)
-    \item curl/golang/jq (用于下载CouchDB数据集)
+  \item OpenSSL version 1.1.1l/libssl-dev (用于\sysnameF 中的密码学机制)
+  \item clang/llvm (用于编译模拟器)
+  \item python (用于伪造文件的生成)
+  \item git (用于下载Linux数据集)
+  \item curl/golang/jq (用于下载CouchDB数据集)
 \end{enumerate}
 
-上述软件包可以通过apt软件包管理工具在Ubuntu系统上使用以下命令安装：
+在Ubuntu/Debian系列系统中，可通过apt包管理工具执行以下命令安装：
 
 \begin{lstlisting}[style=shell]
 sudo apt install -y build-essential openssl libssl-dev clang llvm python curl git golang jq
@@ -67,38 +67,38 @@ allFeature: not detected
 同时，模拟器将检测过程中每个检测窗口的特征频率分布保存在\sysnameF/linuxResult/和\sysnameF/couchResult/目录下(分别对应Linux和CouchDB数据集)对于每个混合了伪造文件的快照的检测结果，其文件名形式为{snpashotID}-origin-{windowSize}-{indicatorLength}.csv；而对于未混合攻击文件的原始快照的检测结果，其文件名形式为{snpashotID}-mixed-{windowSize}-{indicatorLength}.csv；检测结果文件的范例如下所示，每一行分别代表了一个检测窗口中\sysnameF 的三种实例的检测结果。
 
 \begin{table}[!htb]
-    \small
-    \centering
-    \begin{tabular}{ccc}
-        \toprule
-        firstFeature实例 & minFeature实例 & allFeature实例 \\
-        \midrule
-        0.08             & 0.08           & 0.08           \\
-        0.001            & 0.002          & 0.001          \\
-        0.003            & 0.003          & 0.003          \\
-        \bottomrule
-    \end{tabular}
-    \caption{数据集中每个窗口的最高频特征频率统计范例}
-    \label{tab:system-detection-window}
+  \small
+  \centering
+  \begin{tabular}{ccc}
+    \toprule
+    firstFeature实例 & minFeature实例 & allFeature实例 \\
+    \midrule
+    0.08             & 0.08           & 0.08           \\
+    0.001            & 0.002          & 0.001          \\
+    0.003            & 0.003          & 0.003          \\
+    \bottomrule
+  \end{tabular}
+  \caption{数据集中每个窗口的最高频特征频率统计范例}
+  \label{tab:system-detection-window}
 \end{table}
 
 进一步的，使用processResult.sh脚本可以将上述每个快照的逐窗口频率统计结果整合形成merged{Linux/Couch}Result-{windowSize}-{indicatorLength}.csv文件，对各个数据集的检测结果进行总结。该总结文件以每个快照中所有窗口中特征频率的最高值表示，可自行对比期望的阈值$T$以判断是否检测到攻击(或发生误判)。如下所示，文件中每一行代表一个快照中所有窗口中统计到的特征频率的最大值。这里的raw(mixed)分别代表原始快照(混合了推测内容攻击伪造的文件的快照)。
 
 \begin{table}[!htb]
-    \small
-    \centering
-    \begin{tabular}{cccccc}
-        \toprule
-        \makecell[c]{firstFeature                           \\(raw)} & \makecell[c]{minFeature\\(raw)} & \makecell[c]{allFeature\\(raw)} & \makecell[c]{firstFeature\\(mixed)} & \makecell[c]{minFeature\\(mixed)} & \makecell[c]{allFeature\\(mixed)} \\
-        \midrule
-        0.0032 & 0.0028 & 0.0028 & 0.1106 & 0.1106 & 0.1106 \\
-        0.003  & 0.003  & 0.003  & 0.1022 & 0.1022 & 0.1022 \\
-        0.0026 & 0.0024 & 0.0024 & 0.1026 & 0.1026 & 0.1026 \\
-        0.0026 & 0.0022 & 0.0022 & 0.0972 & 0.0972 & 0.0972 \\
-        \bottomrule
-    \end{tabular}
-    \caption{综合数据集中每个快照的最高频特征频率统计结果范例}
-    \label{tab:system-detection-snapshot}
+  \small
+  \centering
+  \begin{tabular}{cccccc}
+    \toprule
+    \makecell[c]{firstFeature                           \\(raw)} & \makecell[c]{minFeature\\(raw)} & \makecell[c]{allFeature\\(raw)} & \makecell[c]{firstFeature\\(mixed)} & \makecell[c]{minFeature\\(mixed)} & \makecell[c]{allFeature\\(mixed)} \\
+    \midrule
+    0.0032 & 0.0028 & 0.0028 & 0.1106 & 0.1106 & 0.1106 \\
+    0.003  & 0.003  & 0.003  & 0.1022 & 0.1022 & 0.1022 \\
+    0.0026 & 0.0024 & 0.0024 & 0.1026 & 0.1026 & 0.1026 \\
+    0.0026 & 0.0022 & 0.0022 & 0.0972 & 0.0972 & 0.0972 \\
+    \bottomrule
+  \end{tabular}
+  \caption{综合数据集中每个快照的最高频特征频率统计结果范例}
+  \label{tab:system-detection-snapshot}
 \end{table}
 
 \section{\prototype 原型系统测试指南}
@@ -109,11 +109,11 @@ allFeature: not detected
 
 \prototype 在配备Gigabyte B460M-DS3H主板和Intel i7-10700 CPU并运行Ubuntu 20.04.3 LTS的设备上进行了测试。
 
-在运行\prototype 之前，请检查设备是否支持Intel SGX。如果BIOS中有SGX或Intel Software Guard Extensions等相关选项，则启用该选项；否则，该设备可能不支持SGX。对于支持的设备型号，强列建议在SGX硬件列表\cite{sgxHardware}中进行查询。
+在运行\prototype 之前，请检查设备是否支持Intel SGX。如果BIOS中有SGX或Intel Software Guard Extensions等相关选项，则启用该选项；否则，该设备可能不支持SGX。对于支持的设备型号，强列建议在SGX硬件列表\citing{sgxHardware}中进行查询。
 
 \subsection*{注册Intel EPID远程认证服务}
 
-\prototype 使用基于EPID的远程认证，使用该官方功能需要在Intel EPID认证服务\cite{sgxEPID}页面中进行注册，以查看专有的SPID及相关订阅密钥(包含主密钥和辅助密钥)。本文的测试使用DEV Intel® Software Guard Extensions Attestation Service (Unlinkable)密钥。
+\prototype 使用基于EPID的远程认证，使用该官方功能需要在Intel EPID认证服务\citing{sgxEPID}页面中进行注册，以查看专有的SPID及相关订阅密钥(包含主密钥和辅助密钥)。本文的测试使用DEV Intel® Software Guard Extensions Attestation Service (Unlinkable)密钥。
 
 \subsection*{软件包依赖}
 本文提供一键配置脚本以完成\prototype 所需的复杂软件环境配置。该意见配置脚本在需要管理员权限时会要求输入密码。
@@ -123,7 +123,7 @@ chmod +x Scripts/environmentInstall.sh
 ./Scripts/environmentInstall.sh
 \end{lstlisting}
 
-在完成环境配置后，需要重新启动操作系统，并检查/dev目录下是否存在sgx\_enclave和sgx\_provision两个设备。 如果它们不在目录中(即SGX驱动程序可能未成功安装)，请手动重新安装SGX驱动程序并重新启动设备，直到sgx\_enclave和sgx\_provision设备出现在/dev目录下。对于安装过程中出现的问题，请参考SGX安装配置指南\cite{sgxinstall}和SGX SSL\cite{sgxssl}使用说明中的详细步骤进行手动安装。
+在完成环境配置后，需要重新启动操作系统，并检查/dev目录下是否存在sgx\_enclave和sgx\_provision两个设备。 如果它们不在目录中(即SGX驱动程序可能未成功安装)，请手动重新安装SGX驱动程序并重新启动设备，直到sgx\_enclave和sgx\_provision设备出现在/dev目录下。对于安装过程中出现的问题，请参考SGX安装配置指南\citing{sgxinstall}和SGX SSL\citing{sgxssl}使用说明中的详细步骤进行手动安装。
 
 \subsection*{系统参数配置}
 

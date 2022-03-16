@@ -4,38 +4,38 @@
 本文以多个客户端、密钥服务器和云服务端配置了一个局域网本地验证集群。集群中每台设备均使用四核3.0\,GHz的Intel Core i5-7400 CPU，1\,TB 7200转SATA机械硬盘和8\,GB DDR4内存。所有设备均运行Ubuntu 18.04 LTS操作系统并通过万兆网络(10\,GbE)连接。本文首先对\sysnameS 中提出的基于TEE的服务器辅助密钥生成和数据所有权证明模块进行性能测试分析(\S\ref{subsec:sgxdedup-synthetic}，Exp\#1$\sim$6)，随后使用随机(\S\ref{subsec:sgxdedup-synthetic}，Exp\#7$\sim$10)和真实世界(\S\ref{subsec:sgxdedup-real-world}，Exp\#11$\sim$12)工作负载来评估\sysnameS 的整体性能表现。本文将主要结果总结如下：
 
 \begin{itemize}[leftmargin=0em]
-    \item \sysnameS 在单客户端(Exp\#1)和多客户端并发(Exp\#2)的条件下均实现了最高的消息锁加密密钥生成性能。例如，在单客户端情况下，相较于DupLESS\cite{bellare2013DupLESS}中基于OPRF-RSA的消息锁加密密钥生成实现了131.9倍的性能提升。
-    \item \sysnameS 与仅实现较弱安全性的基于通用哈希的数据所有权证明方案(PoW-UH)\cite{xu2013weak}和实现较高安全性的基于Merkle树的数据所有权证明方案(PoW-MT)\cite{halevi11}相比，分别实现了2.2倍和8.2倍的计算性能提升(Exp\#5)。
-    \item \sysnameS 在单客户端(Exp\#7和Exp\#8)和多客户端(Exp\#9)情况下具有较高的整体性能。本文还提供了上传中 \sysnameS 各个步骤的时间开销分析(Exp\#10)。例如，在10\,GbE本地局域网测试平台中，与没有任何安全保护的普通重复数据删除系统(PlainDedup)相比，\sysnameS 的上传速度仅降低了17.5\%；在真实云环境部署(Exp\#8)中，相较于普通重复数据删除系统，\sysnameS 仅产生了13.2\%的性能下降(两者上传性能均受到网络带宽限制)。
-    \item 在上传过程的各个步骤时间开销分析中，\sysnameS 将第二次上传(完全重复数据)的客户端初始化时间减少了91.5\%，并将第二次上传的密钥生成时间开销减少了41.9\%(Exp\#10)。
-    \item \sysnameS 对于处理实际工作负载(Exp\#11和Exp\#12)非常有效。例如其上传的额外性能开销相对于普通重复数据删除(无安全保护)在22.0\%以内(Exp\#11)；与现有方法\cite{li15,harnik2010side} 相比，它还实现了高带宽节省，网络流量开销绝对差异高达91.4\%(Exp\#12)。
+  \item \sysnameS 在单客户端(Exp\#1)和多客户端并发(Exp\#2)的条件下均实现了最高的消息锁加密密钥生成性能。例如，在单客户端情况下，相较于DupLESS\citing{bellare2013DupLESS}中基于OPRF-RSA的消息锁加密密钥生成实现了131.9倍的性能提升。
+  \item \sysnameS 与仅实现较弱安全性的基于通用哈希的数据所有权证明方案(PoW-UH)\citing{xu2013weak}和实现较高安全性的基于Merkle树的数据所有权证明方案(PoW-MT)\citing{halevi11}相比，分别实现了2.2倍和8.2倍的计算性能提升(Exp\#5)。
+  \item \sysnameS 在单客户端(Exp\#7和Exp\#8)和多客户端(Exp\#9)情况下具有较高的整体性能。本文还提供了上传中 \sysnameS 各个步骤的时间开销分析(Exp\#10)。例如，在10\,GbE本地局域网测试平台中，与没有任何安全保护的普通重复数据删除系统(PlainDedup)相比，\sysnameS 的上传速度仅降低了17.5\%；在真实云环境部署(Exp\#8)中，相较于普通重复数据删除系统，\sysnameS 仅产生了13.2\%的性能下降(两者上传性能均受到网络带宽限制)。
+  \item 在上传过程的各个步骤时间开销分析中，\sysnameS 将第二次上传(完全重复数据)的客户端初始化时间减少了91.5\%，并将第二次上传的密钥生成时间开销减少了41.9\%(Exp\#10)。
+  \item \sysnameS 对于处理实际工作负载(Exp\#11和Exp\#12)非常有效。例如其上传的额外性能开销相对于普通重复数据删除(无安全保护)在22.0\%以内(Exp\#11)；与现有方法\citing{li15,harnik2010side} 相比，它还实现了高带宽节省，网络流量开销绝对差异高达91.4\%(Exp\#12)。
 \end{itemize}
 
 表~\ref{tab:sgxdedup-summary}总结了本文提出的基于TEE的高性能加密重复数据删除系统\sysnameS 中各项关键技术以及整体性能相较于现有方案的优劣。
 
 \begin{table}[!htb]
-    \centering
-    \small
-    \begin{tabular}{cccc}
-        \toprule
-        \multicolumn{2}{c}{\bf 对比对象}                                   & {\bf 基础方案/系统}                              & {\bf 优势}                                                         \\
-        \midrule
-        \multirow{8}{*}{\bf 性能提升}                                      & \multirow{4}{*}{\shortstack{密钥生成}}           & OPRF-BLS \cite{armknecht2015transparent} & 1,583$\times\;\uparrow$ \\
-                                                                           &                                                  & OPRF-RSA \cite{bellare2013DupLESS}       & 131.9$\times\;\uparrow$ \\
-                                                                           &                                                  & MinHash encryption \cite{li2020Info}     & 9.4$\times\;\uparrow$   \\
-                                                                           &                                                  & TED \cite{li2020TED}                     & 3.7$\times\;\uparrow$   \\
-        \cline{2-4}
-                                                                           & \multirow{2}{*}{所有权证明}                      & PoW-MT \cite{halevi11}                   & 8.2$\times\;\uparrow$   \\
-                                                                           &                                                  & PoW-UH \cite{xu2013weak}                 & 2.2$\times\;\uparrow$   \\
-        \cline{2-4}
-                                                                           & \multirow{2}{*}{\shortstack{原型系统}}           & DupLESS \cite{bellare2013DupLESS}        & 8.1$\times\;\uparrow$   \\
-                                                                           &                                                  & PlainDedup                               & 17.5\% $\downarrow$     \\
-        \hline
-        \multicolumn{2}{c}{\multirow{2}{*}{\shortstack{\bf 网络资源节省}}} & Two-stage dedup \cite{li15}                      & 35.3\% $\uparrow$                                                  \\
-        \multicolumn{2}{c}{}                                               & Randomized-threshold dedup \cite{harnik2010side} & 91.4\% $\uparrow$                                                  \\
-        \bottomrule
-    \end{tabular}
-    \caption{主要实验结果汇总}
-    \label{tab:sgxdedup-summary}
+  \centering
+  \small
+  \begin{tabular}{cccc}
+    \toprule
+    \multicolumn{2}{c}{\bf 对比对象}                                   & {\bf 基础方案/系统}                                & {\bf 优势}                                                           \\
+    \midrule
+    \multirow{8}{*}{\bf 性能提升}                                      & \multirow{4}{*}{\shortstack{密钥生成}}             & OPRF-BLS \citing{armknecht2015transparent} & 1,583$\times\;\uparrow$ \\
+                                                                       &                                                    & OPRF-RSA \citing{bellare2013DupLESS}       & 131.9$\times\;\uparrow$ \\
+                                                                       &                                                    & MinHash encryption \citing{li2020Info}     & 9.4$\times\;\uparrow$   \\
+                                                                       &                                                    & TED \citing{li2020TED}                     & 3.7$\times\;\uparrow$   \\
+    \cline{2-4}
+                                                                       & \multirow{2}{*}{所有权证明}                        & PoW-MT \citing{halevi11}                   & 8.2$\times\;\uparrow$   \\
+                                                                       &                                                    & PoW-UH \citing{xu2013weak}                 & 2.2$\times\;\uparrow$   \\
+    \cline{2-4}
+                                                                       & \multirow{2}{*}{\shortstack{原型系统}}             & DupLESS \citing{bellare2013DupLESS}        & 8.1$\times\;\uparrow$   \\
+                                                                       &                                                    & PlainDedup                                 & 17.5\% $\downarrow$     \\
+    \hline
+    \multicolumn{2}{c}{\multirow{2}{*}{\shortstack{\bf 网络资源节省}}} & Two-stage dedup \citing{li15}                      & 35.3\% $\uparrow$                                                    \\
+    \multicolumn{2}{c}{}                                               & Randomized-threshold dedup \citing{harnik2010side} & 91.4\% $\uparrow$                                                    \\
+    \bottomrule
+  \end{tabular}
+  \caption{主要实验结果汇总}
+  \label{tab:sgxdedup-summary}
 \end{table}
 

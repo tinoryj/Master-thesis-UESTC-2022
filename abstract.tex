@@ -5,7 +5,7 @@
 
     针对推测内容攻击的安全性问题，本文提出了\sysnameF，它通过在安全区内主动执行攻击检测来增强加密重复数据删除。它建立在恶意客户端枚举许多相似数据进行攻击的观察的基础上，并通过检测数据之间的相似性来发现推测内容攻击。此外，它还提出了一种新的加密原语来保留加密后的相似性，并根据加密的内容进行相似性检测，从而使恶意客户端无法绕过检测过程。对随机和实际工作负载的评估表明，\sysnameF 不仅可以检测高概率且低误判率的检测到推测内容攻击，而且部署在\sysnameS 中时仅产生有限的性能开销。
 
-    \chinesekeyword{加密后重复数据删除，可信执行环境，密钥生成，所有权证明，推测内容攻击}
+    \chinesekeyword{加密后重复数据删除，可信执行环境，推测内容攻击}
 \end{chineseabstract}
 
 \begin{englishabstract}
@@ -16,5 +16,5 @@
 
     To address the security limitation, this paper presents \sysnameF, which augments encrypted deduplication by proactively performing attack detection. It builds on the insight that a malicious client enumerates many similar data for the attack, and reports the learning-content attack by detecting similarity among the processing contents. Also, it proposes a new primitive to preserve similarity after encryption and performs similarity detection based on the encrypted contents, such that the malicious client cannot bypass the detection procedure. Evaluation on synthetic and real-world workloads shows that \sysnameF not only detects the learning-content attack with high probabilities and low misjudgments, but also incurs limited performance overhead when being deployed in \sysnameS.
 
-    \englishkeyword{Encrypted Deduplication, Trusted Execution Environment(TEE), Key Generation, Proof-of-Ownership, Learning-content Attack}
+    \englishkeyword{Encrypted Deduplication, Trusted Execution Environment(TEE), Learning-content Attack}
 \end{englishabstract}
