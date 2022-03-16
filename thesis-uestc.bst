@@ -160,6 +160,26 @@ INTEGERS { nameptr namesleft numnames }
 
 STRINGS  { bibinfo}
 
+STRINGS {z}
+FUNCTION {remove.dots}
+{ 'z :=
+   ""
+   { z empty$ not }
+   { z #1 #2 substring$
+     duplicate$ "\." =
+       { z #3 global.max$ substring$ 'z :=  * }
+       { pop$
+         z #1 #1 substring$
+         z #2 global.max$ substring$ 'z :=
+         duplicate$ "." = 'pop$
+           { * }
+         if$
+       }
+     if$
+   }
+   while$
+}
+
 FUNCTION {format.names}
 { 'bibinfo :=
   duplicate$ empty$ 'skip$ {
@@ -170,8 +190,9 @@ FUNCTION {format.names}
   numnames 'namesleft :=
     { namesleft #0 > }
     { s nameptr
-      "{f.~}{vv~}{ll}{, jj}"
+      "{vv~}{ll}{ f{~}}{ jj}"
       format.name$
+      remove.dots
       bibinfo bibinfo.check
       't :=
       nameptr #1 >
@@ -588,11 +609,20 @@ FUNCTION {digital}
 FUNCTION {misc}
 {
     bibitem.begin
-    format.authors write$ add.period
+    format.authors missing$
+    'skip$
+    {
+        format.authors write$ add.period
+    } if$
     format.title write$
-    "[J]. CoRR abs/" eprint * write$ add.comma
-    format.year write$
-    add.period
+    "[" format.type * "]" * write$ add.period
+    format.url write$ add.comma
+    format.date missing$
+    'skip$
+    {
+        add.comma
+        format.date write$
+    } if$
     newline$
 }
 
