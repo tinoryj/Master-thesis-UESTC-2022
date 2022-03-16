@@ -5,6 +5,6 @@
 
 一些研究以降低重复数据删除效率\citing{zhou2015secdep,qin17}或削弱其安全性\citing{li2020Info}为代价来减轻基于数据块的消息锁加密密钥生成开销。\sysnameS 在性能上优于这些方法，同时保障了加密后重复数据删除的有效性和安全性(\S\ref{subsec:sgxdedup-synthetic})。其他一些消息锁加密密钥生成方法包括基于阈值的密钥管理\citing{duan2014distributed}和分布式密钥管理\citing{liu2015secure}建立在各类密码原语(例如，门限签名\citing{duan2014distributed}和密码认证密钥交换\citing{liu2015secure})，具有可靠理论证明但难以实现。
 
-\paragraph*{防御侧信道攻击。}源端重复数据删除具有带宽效率优势，但容易受到侧信道攻击\citing{harnik2010side}。先前的研究\citing{harnik2010side, li15}结合了源端重复数据删除和基于存储目标的重复数据删除来防御侧信道攻击，而\sysnameS 仅使用源端重复数据删除(\S\ref{subsec:sgxdedup-real-world})并借助数据所有权证明来防止侧信道攻击。此外，\sysnameS 相较于基于Merkle树的数据所有权证明方案具有显著性能优势(\S\ref{subsec:sgxdedup-synthetic}) 。其他一些研究通过放松安全性要求来提高数据所有权证明的效率(例如，\citing{pietro12,xu2013weak})，而\sysnameS 使用客户端安全区来维护所有权证明的安全性。
+\paragraph*{防御侧信道攻击。}源端重复数据删除具有高网络带宽节省的优势，但容易受到侧信道攻击\citing{harnik2010side}。先前的研究\citing{harnik2010side, li15}结合了源端重复数据删除和基于存储目标的重复数据删除来防御侧信道攻击，而\sysnameS 仅使用源端重复数据删除(\S\ref{subsec:sgxdedup-real-world})并借助数据所有权证明来防止侧信道攻击。此外，\sysnameS 相较于基于Merkle树的数据所有权证明方案具有显著性能优势(\S\ref{subsec:sgxdedup-synthetic}) 。其他一些研究通过放松安全性要求来提高数据所有权证明的效率(例如，\citing{pietro12,xu2013weak})，而\sysnameS 使用客户端安全区来维护所有权证明的安全性。
 
 \paragraph*{基于TEE的重复数据删除。} Intel SGX\citing{sgx}已被广泛用于保护重复数据删除系统。Dang等人\citing{dang2017Privacy}提出了基于代理的协议，实现了具有低带宽开销的加密后重复数据删除，但这些协议没有解决密钥生成的性能开销问题，也没有相关原型系统实现。其他研究使用云服务端安全区进行数据所有权验证\citing{you2020Proofs}和基于文件的加密后重复数据删除\citing{fuhry2020segshare}，而\sysnameS 使用客户端安全区进行有效地数据所有权证明并支持更细粒度的基于数据块的重复数据删除。
