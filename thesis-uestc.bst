@@ -1,5 +1,5 @@
 %
-%  Copyright 2016-2021 Wen Wang <wwzvd@mst.edu>
+%  Copyright 2016-2022 Yanjing Ren <tinoryj@gmail.com>
 % 
 %  This work may be distributed and/or modified under the
 %  conditions of the LaTeX Project Public License, either version 1.3
@@ -11,12 +11,10 @@
 % 
 %  This work has the LPPL maintenance status `maintained'.
 % 
-%  The Current Maintainer of this work is Wen Wang <wwzvd@mst.edu>.
+%  The Current Maintainer of this work is Yanjing Ren <tinoryj@gmail.com>.
 % 
 %  This work consists of the files thesis-uestc.cls, thesis-uestc.bst.
 % 
-
-
 
 ENTRY
 {
@@ -241,7 +239,7 @@ FUNCTION {format.chinese.names}
   numnames 'namesleft :=
     { namesleft #0 > }
     { s nameptr
-      "{f.~}{vv~}{ll}{, jj}"
+      "{vv~}{ll}{, jj}{f{ }}"
       format.name$
       % bibinfo bibinfo.check
       't :=
@@ -428,6 +426,7 @@ FUNCTION {book}
         add.comma
         format.pages write$
     } if$
+    add.period
     newline$
 }
 
@@ -481,7 +480,6 @@ FUNCTION {article}
     format.title "[J]" * write$ add.period
     format.journal write$ add.comma
     format.year write$
-    
     volume missing$ {
       pages missing$ 'skip$
       {
@@ -497,6 +495,7 @@ FUNCTION {article}
       } if$
       pages missing$ 'skip$ { ": " format.pages * write$ } if$
     } if$
+    add.period
     newline$
 }
 
@@ -511,8 +510,13 @@ FUNCTION {thesis}
         format.address write$ ": " write$
     } if$
     format.institution write$ add.comma
-    format.year write$ add.comma
-    format.pages write$
+    format.year write$
+    pages missing$
+    'skip$
+    {
+        add.comma
+        format.pages write$
+    } if$
     add.period
     newline$
 }
@@ -564,10 +568,8 @@ FUNCTION {patent}
 {
     bibitem.begin
     format.authors write$ add.period
-    format.title "[P]" * write$ add.period
-    format.country write$ add.comma
-    format.type write$ add.comma
-    format.id write$ add.comma
+    format.title write$ ": " write$
+    format.id write$ "[P]" * write$ add.period
     format.date write$
     add.period
     newline$
@@ -577,11 +579,17 @@ FUNCTION {standard}
 {
     bibitem.begin
     format.institution write$ add.period
-    format.id write$ add.period
-    format.title "[S]" * write$ add.period
+    format.title write$ ": " write$
+    format.id write$ "[S]" * write$ add.period
     format.address write$ ": " write$
     format.publisher write$ add.comma
-    format.date write$
+    format.year write$
+    pages missing$
+    'skip$
+    {
+        ": " write$
+        format.pages write$
+    } if$
     add.period
     newline$
 }
@@ -623,6 +631,7 @@ FUNCTION {misc}
         add.comma
         format.date write$
     } if$
+    add.period
     newline$
 }
 
