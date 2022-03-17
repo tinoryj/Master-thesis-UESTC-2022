@@ -17,6 +17,7 @@
 \setlength{\cmidrulewidth}{0.5pt}
 
 \RequirePackage{setspace}
+\RequirePackage{adjustbox}
 \RequirePackage{multirow}
 \RequirePackage[tbtags]{amsmath}
 \RequirePackage{amssymb}
@@ -30,6 +31,7 @@
 \RequirePackage{algpseudocode}
 \RequirePackage{makecell}
 \RequirePackage{xcolor}
+\RequirePackage{ifplatform}
 % Listing lstlisting -------
 \definecolor{commentColor}{RGB}{53,129,34}
 \definecolor{keywordColor}{RGB}{172, 62, 158}
@@ -215,6 +217,29 @@ tabsize=4
    	captionpos=b
 }
 % Listing over --------
+
+% \ifwindows
+%   \setCJKmainfont[AutoFakeBold=true]{SimSun}
+%   \newCJKfontfamily{\heiti}{SimHei}
+%   \newfontfamily{\heiti@letter}{SimHei}
+%   \setallmainfonts{Times New Roman}
+% \else
+% \ifmacosx
+%   \setCJKmainfont[AutoFakeBold=true]{Songti SC}
+%   \newCJKfontfamily{\heiti}{STHeiti}
+%   \newfontfamily{\heiti@letter}{STHeiti}
+%   \setallmainfonts{Times New Roman}
+% \else
+%   \setCJKmainfont[AutoFakeBold=true]{fzsong.ttf}
+%   \newCJKfontfamily{\heiti}{fzhei.ttf}
+%   \newfontfamily{\heiti@letter}{fzhei.ttf}
+%   \setallmainfonts[
+%     BoldFont=timesbd.ttf,
+%     ItalicFont=timesi.ttf,
+%     BoldItalicFont=timesbi.ttf,
+%   ]{times.ttf}
+% \fi
+% \fi
 
 \setCJKmainfont[AutoFakeBold=true]{SimSun}
 \newCJKfontfamily{\heiti}{SimHei}
@@ -508,6 +533,9 @@ tabsize=4
 \newcommand{\en@theadvisor}{\chinesespace}
 
 \newcommand{\thestudentnumber}{\chinesespace}
+\newcommand{\theClassificationNumber}{\chinesespace}
+\newcommand{\theClassifiedClass}{\chinesespace}
+\newcommand{\theUDCNumber}{\chinesespace}
 
 \renewcommand{\title}[2]{
   \renewcommand{\zh@thetitle}{#1}
@@ -541,6 +569,18 @@ tabsize=4
 
 \newcommand{\studentnumber}[1]{
   \renewcommand{\thestudentnumber}{#1}
+}
+
+\newcommand{\ClassificationNumber}[1]{
+  \renewcommand{\theClassificationNumber}{#1}
+}
+
+\newcommand{\ClassifiedClass}[1]{
+  \renewcommand{\theClassifiedClass}{#1}
+}
+
+\newcommand{\UDCNumber}[1]{
+  \renewcommand{\theUDCNumber}{#1}
 }
 
 \newcommand{\thedateoral}{}
@@ -833,12 +873,29 @@ tabsize=4
 \setlength{\extrarowheight}{2pt}
 }
 
+\newlength\myheight
+\newcommand\Mysavedprevdepth{}%
+\newcommand\UnderlineCentered[3]{%
+  \begin{adjustbox}{minipage=[t]{\dimexpr#1\relax},gstore totalheight=\myheight,margin=0pt}%
+    \centering\leavevmode#3\par\xdef\Mysavedprevdepth{\the\prevdepth}%
+  \end{adjustbox}%s
+  \hspace*{-\dimexpr#1\relax}%
+  \begin{adjustbox}{minipage=[t][\myheight]{\dimexpr#1\relax},margin=0pt}%
+    \vphantom{Eg}\lower\dimexpr#2\relax\hbox to\hsize{\leaders\hrule\hfill\kern0pt}\par
+    \kern-\dimexpr#2\relax
+    \xleaders\vbox to\baselineskip {\vfill\hbox{\lower\dimexpr#2\relax\hbox to\hsize{\leaders\hrule\hfill\kern0pt}}\kern-\dimexpr#2\relax}\vfill
+    \kern\Mysavedprevdepth
+  \end{adjustbox}%
+}%
+
+
 \newcommand{\thetitlepage}{
   \newpage
   \thispagestyle{empty}
 
-\noindent 分类号 \rule[-3pt]{2.5in}{0.5pt} 密级 \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
-UDC\textsuperscript{ 注1} \rule[-3pt]{2.5in}{0.5pt} \\[12bp]
+
+\noindent 分类号 \hspace{0.5em}\UnderlineCentered{2.5in}{3pt}{\theClassificationNumber} 密级 \UnderlineCentered{2.5in}{3pt}{\theClassifiedClass} \\[12bp]
+UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp]
 
 \begin{center}
   \fontsize{36pt}{36pt}\selectfont{
