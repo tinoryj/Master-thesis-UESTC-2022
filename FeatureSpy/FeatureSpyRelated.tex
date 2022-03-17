@@ -4,7 +4,7 @@
 \paragraph*{安全重复数据删除方法。}
 在\S\ref{sec:background-enc-deduplication}中，本文回顾了针对重复数据删除的两个主要威胁。消息锁加密(及其变体\citing{bellare2013MLE, bellare2013DupLESS, douceur2002reclaiming, li15})保护数据机密性以防止不可信云服务端获得明文数据，并从安全理论\citing{bellare2015interactive, abadi2013message}角度进行了广泛研究，在各类存储系统\citing{cox2002pastiche, adya2002farsite, bellare2013DupLESS, armknecht2015transparent, shah15, li15, li19, qin17, li2020Info, ren21}中广泛运用。\sysnameF 提出了特征保留加密(SPE，参见\S\ref{subsec:featurespy-spe})，它通过相似性保留来增强消息锁加密，从而允许基于密文数据块检测推测内容的侧信道攻击行为。
 
-数据所有权证明可防止恶意客户端在源端重复数据删除中损害数据所有权，但无法应对推测内容攻击(\S\ref{sec:featurespy-attack})。 \sysnameF 通过主动检测推测内容攻击来补充基于TEE的高性能加密后重复数据删除\sysnameS。虽然现有研究可以通过以不同的方式应用重复数据删除来对抗推测内容攻击，但它们需通过传出部分或全部重复内容导致网络流量开销显著增加。\sysnameF 执行纯源端重复数据删除以实现最高的带宽效率(Exp\#10)。
+数据所有权证明可防止恶意客户端在源端重复数据删除中损害数据所有权，但无法应对推测内容攻击(\S\ref{sec:featurespy-attack})。 \sysnameF 通过主动检测推测内容攻击来补充基于TEE的高性能加密重复数据删除\sysnameS。虽然现有研究可以通过以不同的方式应用重复数据删除来对抗推测内容攻击，但它们需通过传出部分或全部重复内容导致网络流量开销显著增加。\sysnameF 执行纯源端重复数据删除以实现最高的带宽效率(Exp\#10)。
 
 \paragraph*{基于TEE的安全应用程序。}
-TEE已被广泛用于加强不同应用系统的安全性，例如比特币\citing{matetic19BITE}、文件系统\citing{ahmad2018OBLIVIATE,shinde20}、外包数据库\citing{eskandarian19,priebe18,sun21}、键值存储\citing{mishra2018Oblix,bailleu2019SPEICHER,kim2019ShieldStore,bailleu2021Avocado}和数据分析平台\citing{schuster15, zheng2017Opaque, bowe2020ZEXE}。本文关注加密后重复数据删除存储系统。S2Dedup\citing{miranda2021S2Dedup}基于云服务端安全区来执行安全的重复数据删除，但依赖于客户端完全受信任的假设。本文扩展了\sysnameS 以防御恶意客户端发起推测内容攻击。
+TEE已被广泛用于加强不同应用系统的安全性，例如比特币\citing{matetic19BITE}、文件系统\citing{ahmad2018OBLIVIATE,shinde20}、外包数据库\citing{eskandarian19,priebe18,sun21}、键值存储\citing{mishra2018Oblix,bailleu2019SPEICHER,kim2019ShieldStore,bailleu2021Avocado}和数据分析平台\citing{schuster15, zheng2017Opaque, bowe2020ZEXE}。本文关注加密重复数据删除存储系统。S2Dedup\citing{miranda2021S2Dedup}基于云服务端安全区来执行安全的重复数据删除，但依赖于客户端完全受信任的假设。本文扩展了\sysnameS 以防御恶意客户端发起推测内容攻击。

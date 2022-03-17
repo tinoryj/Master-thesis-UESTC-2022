@@ -3,13 +3,13 @@
 \label{subsec:featurespy-spe}
 
 本文提出了相似性保留加密\textit{(Similarity-preserving
-  encryption, SPE)}，它同时建立在消息锁加密密钥和基于特征的加密之上，通过消息锁加密密钥减轻密钥泄露导致的安全威胁，同时通过基于特征的加密密文数据块相似性。具体来说(如图~\ref{fig:featurespy-design-spe}所示)，由于相似数据块的内容差异有限，相似性保留加密从每个明文数据块中抽取一小部分(例如，前32个字节，占8\,KiB数据块的0.4\%)，称为相似性指标(\textit{Similarity indicator})，由此产生的相似数据块的相似性指标很可能是相同的。相似性保留加密使用基于特征的加密方案加密相似性指标，而剩余的大部分(占 8\,KiB数据块的99.6\%)数据块内容用消息锁加密。基于此，\sysnameF 可以通过检验密文数据块的相似性指标(例如，每个密文数据块的前32个字节)是否相同来检测密文数据块的相似性。由于相同的数据块共享相同的内容特征(产生相同的特征密钥)和消息锁加密密钥，消息保留加密不会降低跨用户加密后重复数据删除(\S\ref{sec:background-enc-deduplication})的存储效率。
+    encryption, SPE)}，它同时建立在消息锁加密密钥和基于特征的加密之上，通过消息锁加密密钥减轻密钥泄露导致的安全威胁，同时通过基于特征的加密密文数据块相似性。具体来说(如图~\ref{fig:featurespy-design-spe}所示)，由于相似数据块的内容差异有限，相似性保留加密从每个明文数据块中抽取一小部分(例如，前32个字节，占8\,KiB数据块的0.4\%)，称为相似性指标(\textit{Similarity indicator})，由此产生的相似数据块的相似性指标很可能是相同的。相似性保留加密使用基于特征的加密方案加密相似性指标，而剩余的大部分(占 8\,KiB数据块的99.6\%)数据块内容用消息锁加密。基于此，\sysnameF 可以通过检验密文数据块的相似性指标(例如，每个密文数据块的前32个字节)是否相同来检测密文数据块的相似性。由于相同的数据块共享相同的内容特征(产生相同的特征密钥)和消息锁加密密钥，消息保留加密不会降低跨用户加密重复数据删除(\S\ref{sec:background-enc-deduplication})的存储效率。
 
 \begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.9\textwidth]{pic/featurespy/spe.pdf}
-  \caption{相似性保留加密方法}
-  \label{fig:featurespy-design-spe}
+    \centering
+    \includegraphics[width=0.9\textwidth]{pic/featurespy/spe.pdf}
+    \caption{相似性保留加密方法}
+    \label{fig:featurespy-design-spe}
 \end{figure}
 
 本文认为消息保留加密减轻了基于特征的加密在密钥泄露时产生的信息泄露风险。这是由于发生密钥泄露的数据块$M$对应的特征密钥只能用于解密与$M$相似的数据块的相似性指标。同时，由于相似数据块本身很可能与数据块$M$具有相同的相似性指标，因此相似性保留加密不会造成额外的信息泄露。即使是少部分与$M$相似但相似性指标不同的数据块收到该密钥泄露的影响，相较于基于特征的加密其泄露的信息也大大减少。下文将详细介绍相似性保留加密的设计细节。
@@ -24,8 +24,8 @@
 本文还考虑\textit{minFeature}，它建立在Broder定理\citing{broder1997resemblance}的基础上，根据每个数据块所有特征中的最小(\textit{minimum})特征(即数值最小值)生成特征密钥。具体来说，Broder定理指出，如果两个明文数据块具有许多共同特征(即，相似的概率很高)，它们很可能具有相同的最小特征，即：
 
 \begin{eqnarray}
-  \label{eq:featurespy-broder}
-  \Pr[\min(S_1) = \min(S_2)] = \frac{|S_1 \cap S_2|}{|S_1 \cup S_2|},
+    \label{eq:featurespy-broder}
+    \Pr[\min(S_1) = \min(S_2)] = \frac{|S_1 \cap S_2|}{|S_1 \cup S_2|},
 \end{eqnarray}
 
 其中$S_i$是明文数据块$M_i$的特征集合，$\min(S_i)$计算集合 $S_i$($i = 1, 2$)中特征的最小值。因此，\textit{minFeature}倾向于为相似度中等的数据块生成相同的特征密钥。在\S\ref{sec:featurespy-evaluation}中，本文将研究相似性保留加密的不同密钥生成方法的权衡。
