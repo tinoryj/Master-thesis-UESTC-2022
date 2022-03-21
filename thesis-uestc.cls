@@ -442,7 +442,7 @@ tabsize=4
   }{
     \pdfbookmark{Chinese Abstract}{chineseabstract}
   }
-  \setcounter{page}{1}\setcounter{pseudopage}{0}
+  \setcounter{page}{1}
   \chapter*{\heiti 摘\chinesespace 要}
   \fancyhf{}
   \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 摘要}
