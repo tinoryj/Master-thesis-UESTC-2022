@@ -218,28 +218,10 @@ tabsize=4
 }
 % Listing over --------
 
-% \ifwindows
-  \setCJKmainfont[AutoFakeBold=true]{SimSun}
-  \newCJKfontfamily{\heiti}{SimHei}
-  \newfontfamily{\heiti@letter}{SimHei}
-  \setallmainfonts{Times New Roman}
-% \else
-% \ifmacosx
-%   \setCJKmainfont[AutoFakeBold=true]{Songti SC}
-%   \newCJKfontfamily{\heiti}{STHeiti}
-%   \newfontfamily{\heiti@letter}{STHeiti}
-%   \setallmainfonts{Times New Roman}
-% \else
-%   \setCJKmainfont[AutoFakeBold=true]{fzsong.ttf}
-%   \newCJKfontfamily{\heiti}{fzhei.ttf}
-%   \newfontfamily{\heiti@letter}{fzhei.ttf}
-%   \setallmainfonts[
-%     BoldFont=timesbd.ttf,
-%     ItalicFont=timesi.ttf,
-%     BoldItalicFont=timesbi.ttf,
-%   ]{times.ttf}
-% \fi
-% \fi
+\setCJKmainfont[AutoFakeBold=true]{SimSun}
+\newCJKfontfamily{\heiti}{SimHei}
+\newfontfamily{\heiti@letter}{SimHei}
+\setallmainfonts{Times New Roman}
 
 \DeclareMathAlphabet{\mathbf}{\eu@enc}{\eu@mathrm}{\bfdefault}{it}
 \DeclareMathAlphabet{\mathbd}{\eu@enc}{\eu@mathrm}{\bfdefault}{n}
@@ -294,7 +276,7 @@ tabsize=4
 
 % \AtBeginDocument{\pretocmd{\ref}{~}{}{}\apptocmd{\ref}{}{}{}}
 
-\newcommand{\thesislist}{
+\newcommand{\thesistablelist}{
   \listoftables
 }
 
@@ -1197,6 +1179,10 @@ School: & \en@theschool \\
   \includepdf[pages=-]{#1}
   \blankpage
   \newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
+}
+
+\newcommand{\insertPDFPage}[1]{
+  \includepdf[pages=-]{#1}
 }
 
 \setlength{\extrarowheight}{2pt}
