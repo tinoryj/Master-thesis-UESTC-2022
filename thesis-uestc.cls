@@ -219,10 +219,10 @@ tabsize=4
 % Listing over --------
 
 % \ifwindows
-%   \setCJKmainfont[AutoFakeBold=true]{SimSun}
-%   \newCJKfontfamily{\heiti}{SimHei}
-%   \newfontfamily{\heiti@letter}{SimHei}
-%   \setallmainfonts{Times New Roman}
+  \setCJKmainfont[AutoFakeBold=true]{SimSun}
+  \newCJKfontfamily{\heiti}{SimHei}
+  \newfontfamily{\heiti@letter}{SimHei}
+  \setallmainfonts{Times New Roman}
 % \else
 % \ifmacosx
 %   \setCJKmainfont[AutoFakeBold=true]{Songti SC}
@@ -240,11 +240,6 @@ tabsize=4
 %   ]{times.ttf}
 % \fi
 % \fi
-
-\setCJKmainfont[AutoFakeBold=true]{SimSun}
-\newCJKfontfamily{\heiti}{SimHei}
-\newfontfamily{\heiti@letter}{SimHei}
-\setallmainfonts{Times New Roman}
 
 \DeclareMathAlphabet{\mathbf}{\eu@enc}{\eu@mathrm}{\bfdefault}{it}
 \DeclareMathAlphabet{\mathbd}{\eu@enc}{\eu@mathrm}{\bfdefault}{n}
@@ -319,7 +314,7 @@ tabsize=4
 \titlespacing{\subsubsection}{0pt}{12pt}{6pt}
 
 \renewcommand\thechapter{第\zhnumber{\arabic{chapter}}章}
-\renewcommand\thesection{\bfseries\arabic{chapter}.\bfseries\arabic{section}}
+\renewcommand\thesection{\arabic{chapter}.\arabic{section}}
 
 \renewcommand{\theequation}{\arabic{chapter}-\arabic{equation}}
 \renewcommand{\thetable}{\arabic{chapter}-\arabic{table}}
@@ -365,15 +360,15 @@ tabsize=4
 
 \titleformat{\section}[block]
   {\fontsize{14pt}{14pt}\selectfont\strong}
-  {\thesection}{7pt}{}
+  {\bfseries\arabic{chapter}.\bfseries\arabic{section}}{7pt}{}
 
 \titleformat{\subsection}[block]
   {\fontsize{14pt}{14pt}\selectfont\strong}
-  {\thesubsection}{7pt}{}
+  {\bfseries\arabic{chapter}.\bfseries\arabic{section}.\bfseries\arabic{subsection}}{7pt}{}
 
 \titleformat{\subsubsection}[block]
   {\fontsize{12pt}{12pt}\selectfont\strong}
-  {\thesubsubsection}{6pt}{}
+  {\bfseries\arabic{chapter}.\bfseries\arabic{section}.\bfseries\arabic{subsection}.\bfseries\arabic{subsubsection}}{6pt}{}
 
 \RequirePackage[hang, perpage]{footmisc}
 \addtolength{\footnotesep}{0pt}
@@ -436,16 +431,15 @@ tabsize=4
 }
 
 \newenvironment{chineseabstract}{
-  %\pagenumbering{Roman}
+  \pagenumbering{Roman}
   \ifchinesebook{
     \pdfbookmark{中文摘要}{chineseabstract}
   }{
     \pdfbookmark{Chinese Abstract}{chineseabstract}
   }
-  \setcounter{page}{1}
   \chapter*{\fontsize{15pt}{15pt}\heiti 摘\chinesespace 要}
   \fancyhf{}
-  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 摘要}
+  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 摘\hspace{0.5em}要}
   \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
 }{
   \checkoddpage
@@ -896,11 +890,10 @@ tabsize=4
   }
 
 \end{center}
-\blankpage
+
 \ifbachelor{}{
 \ifpromaster{\thetitlepageforpromaster}{\thetitlepage}  
 }
-\blankpage
 \newpage
 \setcounter{page}{0}
 \setlength{\extrarowheight}{2pt}
@@ -1001,7 +994,6 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
 \noindent
 \hspace{12pt}注1：注明《国际十进分类法UDC》的类号。
 
-\blankpage
 \newpage
 \thispagestyle{empty}\null
 \par{\vspace{2.3cm}}
@@ -1121,7 +1113,7 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
 \vspace{0.54in}
 \noindent
 \hspace{12pt}注1：注明《国际十进分类法UDC》的类号。
-\blankpage
+
 \newpage
 \thispagestyle{empty}\null
 \par{\vspace{2.3cm}}
@@ -1203,6 +1195,7 @@ School: & \en@theschool \\
 
 \newcommand{\signatureofdeclaration}[1]{
   \includepdf[pages=-]{#1}
+  \blankpage
   \newpage\setcounter{page}{0}\setcounter{pseudopage}{0}
 }
 
@@ -1230,7 +1223,7 @@ School: & \en@theschool \\
     \fi
   \fancyhf{}
   \ifchinesebook{
-    \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 目录}
+    \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont 目\hspace{0.5em}录}
     \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
     \pdfbookmark{目录}{toc}
   }{
@@ -1315,7 +1308,7 @@ School: & \en@theschool \\
     \renewcommand{\appendixname}{Appendix}
   }
 
-  \renewcommand{\thesection}{\bfseries\Alph{chapter}.\bfseries\arabic{section}}
+  \renewcommand{\thesection}{\Alph{chapter}.\arabic{section}}
   \renewcommand{\theequation}{\alph{chapter}-\arabic{equation}}
   \renewcommand{\thetable}{\alph{chapter}-\arabic{table}}
   \renewcommand{\thelstlisting}{\alph{chapter}-\arabic{lstlisting}}
@@ -1342,7 +1335,7 @@ School: & \en@theschool \\
     \renewcommand{\appendixname}{Appendix}
   }
   
-  \renewcommand{\thesection}{\bfseries A.\bfseries\arabic{section}}
+  \renewcommand{\thesection}{A.\arabic{section}}
   
   \renewcommand{\theequation}{a-\arabic{equation}}
   \renewcommand{\thetable}{a-\arabic{table}}
@@ -1378,7 +1371,7 @@ School: & \en@theschool \\
   \interlinepenalty=0
   \chapter*{\translation@originaltitle}
   \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-  \renewcommand\thesection{\bfseries\arabic{section}}
+  \renewcommand\thesection{\arabic{section}}
     \setcounter{section}{0}
     \addcontentsline{toc}{chapter}{\translation@originaltitle}
     \markboth{\translation@originaltitle}{\translation@originaltitle}
@@ -1397,7 +1390,7 @@ School: & \en@theschool \\
   \interlinepenalty=0
   \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
   \chapter*{\translation@chinesetitle}
-  \renewcommand\thesection{\bfseries\arabic{section}}
+  \renewcommand\thesection{\arabic{section}}
     \setcounter{section}{0}
     \addcontentsline{toc}{chapter}{\translation@chinesetitle}
     \markboth{\translation@chinesetitle}{\translation@chinesetitle}
@@ -1466,7 +1459,7 @@ School: & \en@theschool \\
 
 \newenvironment{thesistheaccomplish}{
   \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-  \renewcommand\thesection{\bfseries\arabic{section}}
+  \renewcommand\thesection{\arabic{section}}
   \setcounter{section}{0}
   \nociteaccomplish{*}
   \renewcommand{\bibname}{\thesisaccomplishtitle}
