@@ -702,22 +702,6 @@ tabsize=4
   \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
 }{}{}
 
-\pretocmd{\listoftables}{
-    \newpage
-  \fancyhf{}
-  \fancyhead[C]{\fontsize{10.5pt}{12.6pt}\selectfont\listtablename}
-  \fancyfoot[CE,CO]{\fontsize{9pt}{10.8pt}\selectfont\Roman{pseudopage}}
-  
-  \ifchinesebook{
-    \addtolength{\cfttabnumwidth}{12pt}
-    \renewcommand{\cfttabpresnum}{\tablename}
-  }{
-    \addtolength{\cfttabnumwidth}{32pt}
-    \renewcommand{\cfttabpresnum}{\tablename~}
-  }
-  \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
-}{}{}
-
 \ifchinesebook{
   \SetAlgorithmName{算法}{算法}{算法列表}
 }{
