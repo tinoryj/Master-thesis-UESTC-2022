@@ -1,0 +1,12 @@
+#ifndef FEATURESPY_SYSTEMSETTINGS_HPP
+#define FEATURESPY_SYSTEMSETTINGS_HPP
+
+#include "privateSettings.hpp"
+/* FBE Key Generation method Settings */
+#define SUPER_FEATURE_GEN_METHOD FIRST_FEATURE // one of FIRST_FEATURE, MIN_FEATURE, ALL_FEATURE
+/* FBE Key Generation method Settings */
+#define PREFIX_LENGTH 32
+#define PREFIX_FREQUENCY_THRESHOLD 3
+#define COUNT_WINDOW_SIZE 1000
+
+#endif //FEATURESPY_SYSTEMSETTINGS_HPP

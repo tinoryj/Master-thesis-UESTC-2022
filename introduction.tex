@@ -55,6 +55,8 @@
 \begin{table}[!htb]
     \small
     \centering
+    \caption{基础原型每个步骤处理1MiB数据的时间开销：括号内为可供备选的服务器辅助密钥生成方案和所有权证明方案，以及相应处理时间}
+    \label{tab:intro-bottleneck}
     \begin{tabular}{@{}ccc@{}}
         \toprule
                                     & 处理阶段/可选方案            & 处理时间(ms/MiB) \\ \midrule
@@ -64,8 +66,6 @@
                                     & 哈希树方案(通用哈希方案)     & 27.0(7.2)        \\
                                     & 重复数据删除                 & 1.7              \\ \bottomrule
     \end{tabular}
-    \caption{基础原型每个步骤处理1MiB数据的时间开销：括号内为可供备选的服务器辅助密钥生成方案和所有权证明方案，以及相应处理时间}
-    \label{tab:intro-bottleneck}
 \end{table}
 
 表~\ref{tab:intro-bottleneck}展示了基础原型每个步骤处理1MiB数据的平均时间开销。服务器辅助密钥生成是最大效率瓶颈。如果采用基于Merkle哈希树的所有权证明方案，RSA盲签名和BLS盲签名分别占系统总开销的53.8\%和93.3\%。同时，所有权证明也是限制系统效率的重要因素，如果采用基于RSA盲签名的服务器辅助密钥生成方案，Merkle哈希树和(较低安全性的)通用哈希方案分别占系统总开销的35.7\%和9.5\%。

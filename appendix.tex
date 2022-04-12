@@ -1,6 +1,8 @@
 \chapter{原型系统开发测试说明}
 
-本文软件包提供了两个工具包：(1)\sysnameF 模拟器，用于模拟针对推测内容攻击的检测效果；(2)\prototype ，即本文提出的基于TEE的高性能强安全加密重复数据删除原型系统。
+本文软件包提供了两个工具包：(1)\sysnameF 模拟器，用于模拟针对推测内容攻击的检测效果；(2)\prototype ，即本文提出的基于TEE的高性能强安全加密重复数据删除原型系统。软件包开源于\url{https://github.com/tinoryj/masterGraduation}中{\em artifacts}目录下。
+
+
 
 \section{\sysnameF 模拟器测试指南}
 该模拟器用于运行本文\S\ref{subsec:featurespy-evaluation-detection}中的实验。为简洁起见，我们只关注整体\sysnameF 的模拟(即Exp\#3和Exp\#4)。
@@ -69,6 +71,8 @@ allFeature: not detected
 \begin{table}[!htb]
   \small
   \centering
+  \caption{数据集中每个窗口的最高频特征频率统计范例}
+  \label{tab:system-detection-window}
   \begin{tabular}{ccc}
     \toprule
     firstFeature实例 & minFeature实例 & allFeature实例 \\
@@ -78,8 +82,6 @@ allFeature: not detected
     0.003            & 0.003          & 0.003          \\
     \bottomrule
   \end{tabular}
-  \caption{数据集中每个窗口的最高频特征频率统计范例}
-  \label{tab:system-detection-window}
 \end{table}
 
 进一步的，使用processResult.sh脚本可以将上述每个快照的逐窗口频率统计结果整合形成merged{Linux/Couch}Result-{windowSize}-{indicatorLength}.csv文件，对各个数据集的检测结果进行总结。该总结文件以每个快照中所有窗口中特征频率的最高值表示，可自行对比期望的阈值$T$以判断是否检测到攻击(或发生误判)。如下所示，文件中每一行代表一个快照中所有窗口中统计到的特征频率的最大值。这里的raw(mixed)分别代表原始快照(混合了推测内容攻击伪造的文件的快照)。
@@ -87,6 +89,8 @@ allFeature: not detected
 \begin{table}[!htb]
   \small
   \centering
+  \caption{综合数据集中每个快照的最高频特征频率统计结果范例}
+  \label{tab:system-detection-snapshot}
   \begin{tabular}{cccccc}
     \toprule
     \makecell[c]{firstFeature                           \\(raw)} & \makecell[c]{minFeature\\(raw)} & \makecell[c]{allFeature\\(raw)} & \makecell[c]{firstFeature\\(mixed)} & \makecell[c]{minFeature\\(mixed)} & \makecell[c]{allFeature\\(mixed)} \\
@@ -97,8 +101,6 @@ allFeature: not detected
     0.0026 & 0.0022 & 0.0022 & 0.0972 & 0.0972 & 0.0972 \\
     \bottomrule
   \end{tabular}
-  \caption{综合数据集中每个快照的最高频特征频率统计结果范例}
-  \label{tab:system-detection-snapshot}
 \end{table}
 
 \section{\prototype 原型系统测试指南}

@@ -14,8 +14,10 @@
 表~\ref{tab:sgxdedup-summary}总结了本文提出的基于TEE的高性能加密重复数据删除系统\sysnameS 中各项关键技术以及整体性能相较于现有方案的优劣。
 
 \begin{table}[!htb]
-  \centering
   \small
+  \centering
+  \caption{主要实验结果汇总}
+  \label{tab:sgxdedup-summary}
   \begin{tabular}{cccc}
     \toprule
     \multicolumn{2}{c}{\bf 对比对象}                                   & {\bf 基础方案/系统}                                & {\bf 优势}                                                           \\
@@ -35,7 +37,5 @@
     \multicolumn{2}{c}{}                                               & Randomized-threshold dedup \citing{harnik2010side} & 91.4\% $\uparrow$                                                    \\
     \bottomrule
   \end{tabular}
-  \caption{主要实验结果汇总}
-  \label{tab:sgxdedup-summary}
 \end{table}
 

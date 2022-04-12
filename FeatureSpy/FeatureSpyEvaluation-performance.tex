@@ -23,6 +23,8 @@
 \begin{table}[!htb]
     \small
     \centering
+    \caption{(Exp\#5)每处理1\,MiB数据时各步骤的时间开销(单位：ms)。除括号中明确指出外，第二轮上传的每一步骤所消耗的时间与第一轮上传的相同。}
+    \label{tab:featurespy-evaluation-syn-system-breakdown}
     \setlength{\tabcolsep}{5pt}
     \renewcommand{\arraystretch}{1.05}
     \setlength{\tabcolsep}{0.006\textwidth}{
@@ -48,8 +50,6 @@
             \multicolumn{2}{c}{数据传输}                     & \multicolumn{3}{c}{$1.16 \pm 0.03$ ($0.04 \pm 0.001$)}                                    \\ \bottomrule
         \end{tabular}
     }
-    \caption{(Exp\#5)每处理1\,MiB数据时各步骤的时间开销(单位：ms)。除括号中明确指出外，第二轮上传的每一步骤所消耗的时间与第一轮上传的相同。}
-    \label{tab:featurespy-evaluation-syn-system-breakdown}
 \end{table}
 
 表~\ref{tab:featurespy-evaluation-syn-system-breakdown}展示每1\,MiB文件数据处理时各个步骤的时间开销。由于\prototype 建立在\sysnameS(\S\ref{sec:sgxdedup-implementation})之上，它继承了在非首次上传时通过推测性加密降低密钥生成开销(\S\ref{sec:featurespy-implementation})以及避免传输重复数据块带来的性能优势。结果表明，针对推测内容攻击的检测步骤是高效的，并且在上传过程中仅占用了总时间开销的0.4\%。由于N-transform的计算开销，特征生成步骤开销很高。例如，\textit{firstFeature}实例中在第一轮上传时占用了总时间开销的31.4\%；\textit{minFeature}和\textit{allFeature}实例中特征提取所消耗的时间占比分别进一步增加到51.1\%和50.9\%，这是因为它们都提取了所有三个特征(与只需要提取第一个特征的\textit{firstFeature}相反)。然而，本文认为可通过并行计算减轻特征生成的性能开销对\prototype 整体性能的影响。
@@ -105,8 +105,10 @@
 本文扩展Exp\#6来研究真实云环境(经由互联网进行数据外包)下单客户端的上传/下载性能。本文将客户端和密钥服务器部署在同一地域的两台虚拟机(具体配置参见\S\ref{subsubsec:featurespy-platform})中，并在不同地域的虚拟机部署云服务端(与Exp\#7不同，其所有实体均部署在同一地域，通过局域网连接)，从而模拟客户端与云服务端经由互联网连接的场景。此外，本文要求客户端从本地磁盘(即，读写速度约为270\,MiB/s的固态硬盘)读取文件并进行上传，云服务端则将接收到的数据存储在附加的NAS中。本文使用最基本的数据传输工具\textit{scp}将2\,GiB文件从客户端上传到云服务端，作为客户端与云服务端之间的互联网数据传输速度的基准。
 
 \begin{table}[!htb]
-    \centering
     \small
+    \centering
+    \captionof{table}{(Exp\#7) 云环境下部署\prototype 的上传/下载性能(单位：MiB/s)}
+    \label{tab:featurespy-expCloudTest}
     \begin{tabular}{ccccc}
         \toprule
         \multicolumn{2}{c}{\bf 方案}  & {\bf 第一轮上传}                    & {\bf 第二轮上传}                  & {\bf 下载}                                                          \\
@@ -118,8 +120,6 @@
         \multicolumn{2}{c}{\sysnameS} & 11.5 $\pm$ 0.009                    & 233.2 $\pm$ 8.4                   & 11.5 $\pm$ 0.004                                                    \\
         \bottomrule
     \end{tabular}
-    \captionof{table}{(Exp\#7) 云环境下部署\prototype 的上传/下载性能(单位：MiB/s)}
-    \label{tab:featurespy-expCloudTest}
 \end{table}
 
 表~\ref{tab:featurespy-expCloudTest}列出了实验结果。在第一轮上传中，所有方法的性能都受到网络带宽的限制(均低于11.9\,MiB/s)。在第二轮上传中，\sysnameS 和\textit{firstFeature}实例的性能受到数据分块(表~\ref{tab:featurespy-evaluation-syn-system-breakdown})的限制，而\textit{firstFeature}实例相较于\sysnameS 产生了12.3\%的额外性能开销，这是因为它额外提取了每个数据块的第一个特征来生成特征密钥。\textit{minFeature}实例和\textit{allFeature}实例(在第二轮上传中)的性能受特征提取的限制。这里，所有方法的第二轮上传速度都比LAN测试平台中的(Exp\#6)结果慢。原因有三个：首先，本实验包含了磁盘I/O开销；此外，云测试平台中的虚拟机是从物理机虚拟化得到的，在处理计算密集型操作时由于资源隔离等要求可能会导致性能下降；最后，互联网的高延迟减慢了重复数据删除中数据块指纹的传输速度。在下载中，所有方法的性能都受到网络带宽的限制，与\sysnameS 相比，\prototype 会产生约0.6\%的额外性能开销。

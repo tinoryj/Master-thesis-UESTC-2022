@@ -139,6 +139,8 @@
 \begin{table}[!htb]
     \small
     \centering
+    \caption{(Exp\#8)云环境部署下\sysnameS 的上传/下载性能(单位：MiB/s)}
+    \label{tab:sgxdedup-real-cloud}
     \renewcommand{\arraystretch}{1.05}
     \begin{tabular}{cccc}
         \toprule
@@ -150,8 +152,6 @@
         DupLESS             & \multicolumn{2}{c}{10.8 $\pm$ 0.2}  & 10.1 $\pm$ 0.1                              \\
         \bottomrule
     \end{tabular}
-    \caption{(Exp\#8)云环境部署下\sysnameS 的上传/下载性能(单位：MiB/s)}
-    \label{tab:sgxdedup-real-cloud}
 \end{table}
 
 表~\ref{tab:sgxdedup-real-cloud}显示了测试结果。在第一轮上传中，所有系统的性能(\sysnameS 为11.4\,MiB/s，PlainDedup为11.6\,MiB/s，DupLESS为10.8\,MiB/s)均受限于互联网网络带宽(11.9\,MiB/s)。在第二轮上传中，\sysnameS 实现了104.3\,MiB/s的上传速度，与DupLESS相比提升了9.7倍，与PlainDedup相比下降了13.2\%。这里的性能差异比Exp\#7中得到的结果要小，是因为\sysnameS 和PlainDedup受客户端磁盘I/O性能的限制。在下载中，这三个系统的性能再次受到互联网网络带宽的限制。此外，由于\sysnameS 和DupLESS先下载并处理文件元数据后再下载数据块并解密(参见Exp\#7)，它们的下载性能相较于PlainDedup降低了10.6\%。
@@ -165,6 +165,8 @@
 \begin{table}[!htb]
     \small
     \centering
+    \caption{(Exp\#10)每处理1\,MiB数据时各步骤的时间开销}
+    \label{tab:sgxdedup-system-breakdown}
     % \setlength{\tabcolsep}{5pt}
     % \renewcommand{\arraystretch}{1.05}
     \begin{tabular}{cccc}
@@ -190,8 +192,6 @@
         \multicolumn{2}{c}{重复数据删除}            & \multicolumn{1}{c}{0.38 $\pm$ 0.03\,ms }                         & 0.48 $\pm$ 0.03\,ms                          \\ 
         \multicolumn{2}{c}{数据传输}                & \multicolumn{1}{c}{1.29 $\pm$ 0.09\,ms }                         & 0.05 $\pm$ 0.01\,ms                          \\ \bottomrule
     \end{tabular}
-    \caption{(Exp\#10)每处理1\,MiB数据时各步骤的时间开销}
-    \label{tab:sgxdedup-system-breakdown}
 \end{table}
 
 表~\ref{tab:sgxdedup-system-breakdown}显示了在处理结1\,MiB文件数据时各个步骤的时间开销结果。初始化过程在第一轮上传时非常耗时，这是因为它需要联系Intel认证服务以检查所有权证明安全区的完整性。当客户端再次重启时，由于不再需要执行远程认证(\S\ref{subsec:sgxdedup-enclave-management})，初始化时间减少91.5\%。

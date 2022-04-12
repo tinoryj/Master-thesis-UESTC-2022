@@ -31,8 +31,10 @@
 \end{enumerate}
 
 \begin{table}[!htb]
-  \centering
   \small
+  \centering
+  \caption{真实世界数据集的特征(重复数据删除系数定义为重复数据删除前数据大小与重复数据删除后数据大小之比，更高的重复数据删除系数意味着相应的数据集包含更多的冗余)}
+  \label{tab:featurespy-datasets}
   \begin{tabular}{cccc}
     \toprule
     {\bf 数据集} & {\bf 快照} & {\bf 去重前总数据量} & {\bf 重复数据删除系数} \\
@@ -43,6 +45,4 @@
     CouchDB      & 83         & 22.9\,GiB            & 1.5                    \\
     \bottomrule
   \end{tabular}
-  \caption{真实世界数据集的特征(重复数据删除系数定义为重复数据删除前数据大小与重复数据删除后数据大小之比，更高的重复数据删除系数意味着相应的数据集包含更多的冗余)}
-  \label{tab:featurespy-datasets}
 \end{table}

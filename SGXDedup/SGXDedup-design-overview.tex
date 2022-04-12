@@ -40,6 +40,8 @@
 \begin{table}[!htb]
     \small
     \centering
+    \caption{\sysnameS 中的安全区内部调用(Ecalls)}
+    \label{tab:sgxdedup-ecall}
     \begin{tabular}{ccc}
         \toprule
         {\bf 所属安全区} & {\bf ECall名称}            & {\bf 描述}                                                           \\ 
@@ -61,8 +63,6 @@
         (\S\ref{sec:sgxdedup-implementation})                                                                                \\
         \bottomrule
     \end{tabular}
-    \caption{\sysnameS 中的安全区内部调用(Ecalls)}
-    \label{tab:sgxdedup-ecall}
 \end{table}
 
 \paragraph*{部署安全区存在的问题。}有效地实现基于TEE的加密重复数据删除并非易事，因为本文需要减轻安全区的潜在性能开销，否则会抵消引入安全区带来的整体性能优势。本文提出了以下三个关键科学问题，并基于一套用于密钥安全区和所有权证明安全区(Table~\ref{tab:sgxdedup-ecall})的安全区内部调用来解决这些问题。
