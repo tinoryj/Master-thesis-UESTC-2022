@@ -25,7 +25,7 @@ if(T){
     # geom_point(size=2, stroke=0.75, fill="white") +
     scale_colour_brewer(palette = "Set1") +
     scale_linetype_manual(values=c(my_line)) +
-    # coord_cartesian(ylim=c(0, 5)) +
+    coord_cartesian(ylim=c(1.03, 22)) +
     # coord_cartesian(ylim=c(0.048, 1.01),xlim=c(1,83)) +
     # scale_y_continuous(breaks = breaks_y(1:25),labels=labels_y(breaks_y(1:25)) ,trans = 'log10') +
     # scale_y_continuous(breaks = trans_breaks("log10", function(x) 10^x)(c(1,8000)), labels = trans_format("log10", math_format(10^.x)),trans = 'log10') +

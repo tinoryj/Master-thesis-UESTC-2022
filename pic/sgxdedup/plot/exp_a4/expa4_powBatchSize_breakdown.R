@@ -24,7 +24,7 @@ if(T){
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c("dashed","solid"))+ 
-    coord_cartesian(ylim=c(0, 6)) +
+    coord_cartesian(ylim=c(0.284, 6)) +
     scale_y_continuous(breaks=seq(0, 6, 2), labels=format(seq(0, 6, 2), scientific=FALSE)) +
     scale_x_discrete(labels=abbrev_x, breaks=c("0", "3", "6", "9", "12", "15")) + 
     ylab('时间 (ms)') +

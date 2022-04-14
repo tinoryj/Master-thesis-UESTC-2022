@@ -19,7 +19,7 @@ if(T){
     scale_linetype_manual(values=c(2, 1, 3, 5, 4, 6)) +              
     geom_line(size=1)  + 
     geom_point(size=2, stroke=0.75, fill="white") +
-        coord_cartesian(ylim=c(0, 12)) +
+    coord_cartesian(ylim=c(0.57, 12)) +
     scale_y_continuous(breaks=seq(0, 12, 4), labels=format(seq(0, 12, 4), scientific=FALSE)) +
     scale_x_discrete(labels = abbrev_x, breaks=c("0", "3", "6", "9"))+
     # scale_x_continuous(breaks=seq(0, 9, 1), labels=format(seq(2^16,2^25,2), scientific=TRUE)) + 

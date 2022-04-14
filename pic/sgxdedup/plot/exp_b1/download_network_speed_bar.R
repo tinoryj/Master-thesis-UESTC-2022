@@ -54,7 +54,7 @@ if(T){
     geom_errorbar(aes(x=Netspeed,ymin=throughput-fraction, ymax=throughput+fraction), width=0.4, colour="black", position=position_dodge(0.85)) + 
     # geom_text(aes(label = round(throughput,0)), position = position_dodge(0.8), hjust=0.5, vjust=-0.1,size=7,angle=0, color="black",family="Times New Roman") +
     scale_color_manual(values=c(my_color)) + 
-    coord_cartesian(ylim=c(31, 660)) +
+    coord_cartesian(ylim=c(31.3, 660)) +
     scale_y_continuous(breaks=seq(0, 600, 200), labels=format(seq(0, 600, 200), scientific=FALSE)) +
     # scale_x_discrete(breaks=type_name, labels=x_name) +
     scale_fill_manual(values=my_color) +
@@ -67,8 +67,8 @@ if(T){
 	    panel.background=element_blank(), 
 	    panel.border = element_blank(),
 		  # panel.border=element_rect(size=0.5),
-		  axis.line=element_line(colour="black", size=0.15),
-		  axis.ticks=element_line(size=0.15),
+		  axis.line=element_line(colour="black", size=0.3),
+		  axis.ticks=element_line(size=0.3),
 	    axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.5, colour="black", size=20,family="Times New Roman"),
 	    axis.title.y=element_text(size=20, hjust=0.5,family="Times New Roman"),
 	    axis.text.y=element_text(margin=margin(0,2,0,0),colour="black",size=20,family="Times New Roman"),

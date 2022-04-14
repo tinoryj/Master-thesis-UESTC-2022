@@ -26,7 +26,7 @@ if(T){
     # scale_shape_manual(values=c(my_value)) +
     scale_colour_brewer(palette = "Set1") +
     scale_linetype_manual(values=c(my_line)) +
-    # coord_cartesian(ylim=c(0, 5)) +
+    coord_cartesian(ylim=c(2.01, 43)) +
     # coord_cartesian(ylim=c(0.048, 1.01),xlim=c(1,84)) +
     # scale_y_continuous(breaks = breaks_y(1:1e5),labels=labels_y(breaks_y(1:1e5)) ,trans = 'log10') +
     # scale_y_continuous(breaks = trans_breaks("log10", function(x) 10^x)(c(1,8000)), labels = trans_format("log10", math_format(10^.x)),trans = 'log10') +
@@ -50,7 +50,7 @@ if(T){
         legend.title = element_blank(),
         legend.key.size=unit(0.3, "cm"),
         legend.text=element_text(size=11),
-        legend.position=c(0.35,1.1),
+        legend.position="none",
         legend.direction="horizontal",
         legend.margin = margin(t = 0, unit='cm'),
         plot.margin=unit(c(0.1,0.1,0.1,0.1), "cm")

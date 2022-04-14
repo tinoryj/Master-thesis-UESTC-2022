@@ -54,7 +54,7 @@ if(T){
     ggplot(data=x1, aes(x=type, y=(interval), fill=type)) +
     geom_bar(stat="identity", position=position_dodge(0.9), colour="black", width=0.7, size=0.3) +
     geom_errorbar(aes(x=type,ymin=interval-fraction, ymax=interval+fraction), width=0.35, colour="black", position=position_dodge(0.9)) + 
-    coord_cartesian(ylim=c(16, 350),xlim=c(1,3)) +
+    coord_cartesian(ylim=c(16.5, 350),xlim=c(1,3)) +
     scale_y_continuous(breaks=seq(0, 300, 100), labels=format(seq(0, 300, 100), scientific=FALSE)) +
     scale_x_discrete(breaks=type_name, labels=x_name) +
     scale_fill_manual(values=my_color, name="", breaks=type_name, labels=type_name) +
@@ -67,8 +67,8 @@ if(T){
 	    panel.background=element_blank(), 
 	    panel.border = element_blank(),
 		  # panel.border=element_rect(size=0.5),
-		  axis.line=element_line(colour="black", size=0.15),
-		  axis.ticks=element_line(size=0.15),
+		  axis.line=element_line(colour="black", size=0.3),
+		  axis.ticks=element_line(size=0.3),
 	    # axis.text.x=element_text(margin=margin(5,0,0,0), angle=0, hjust=0.5, colour="black", size=rel(0)),
       axis.text.x=element_text(margin=margin(5,0,0,0), angle=0,vjust=0.6, hjust=0.5, colour="black", size=11,family="Times New Roman"),
 	    axis.title.y=element_text(size=11, hjust=0.5,family="Times New Roman"),

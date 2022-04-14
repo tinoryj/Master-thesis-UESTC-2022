@@ -22,7 +22,7 @@ if(T){
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(2, 1, 3, 5, 4, 6)) +              
-    coord_cartesian(ylim=c(0, 0.4)) +
+    coord_cartesian(ylim=c(0.019, 0.4)) +
     scale_y_continuous(breaks=seq(0,0.4,0.1), labels=c("0","0.1","0.2","0.3","0.4")) +
     scale_x_discrete(labels = abbrev_x, breaks=c("0", "2", "4", "6", "8", "10"))+
     # scale_x_continuous(breaks=seq(0, 10, 1), labels=format(seq(0,20,2), scientific=FALSE)) + 

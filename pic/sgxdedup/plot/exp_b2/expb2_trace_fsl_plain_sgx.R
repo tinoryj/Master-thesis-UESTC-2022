@@ -23,7 +23,7 @@ if(T){
     scale_shape_manual(values=c(my_value)) +
     scale_color_manual(values=c(my_color)) + 
     scale_linetype_manual(values=c(my_line)) +
-    coord_cartesian(ylim=c(10.9, 250)) +
+    coord_cartesian(ylim=c(11.9, 250)) +
     scale_y_continuous(breaks=seq(0, 250, 50), labels=format(seq(0, 250, 50), scientific=FALSE)) +
     scale_x_discrete(labels=seq(1,10,1), breaks=seq(1,10,1)) + 
     ylab('速度 (MiB/s)') +
