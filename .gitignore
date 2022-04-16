@@ -20,6 +20,7 @@ bf.pdf
 *.cb
 *.cb2
 *.ptp
+*.slo
 
 ## Intermediate documents:
 *.dvi

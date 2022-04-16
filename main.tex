@@ -21,7 +21,10 @@
 \usepackage{enumitem}
 \setenumerate{listparindent=\parindent, fullwidth,itemindent=2em,label=(\arabic*)}
 \setitemize{listparindent=\parindent, fullwidth, itemindent=2em}
+
 % \makeglossaries
+
+% \newacronym[description=逻辑卷管理器]{lvm}{LVM}{Logical Volume Manager}
 
 \begin{document}
 \makecover
@@ -34,10 +37,13 @@
 % \thesistablelist
 % \glsaddall
 % \thesisglossarylist
-
+% \thesissymbollist
 
 % Main body
 \input{introduction}
+
+% First use: \gls{lvm}. Second use: \gls{lvm}.
+
 \input{background}
 \input{SGXDedup}
 \input{FeatureSpy}
