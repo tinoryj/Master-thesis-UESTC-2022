@@ -1,6 +1,6 @@
 \section{\prototype 实现}
 \label{sec:featurespy-implementation}
-本文基于OpenSSL 1.1.1l\citing{openssl}、SGX SDK 2.15\citing{sgxsdk}和Intel SGX SSL\citing{sgxssl}实现了\sysnameF，并将其部署到本文提出的基于TEE的加密重复数据删除系统\sysnameS (参见\S\ref{sec:sgxdedup-implementation})中(新原型系统称为\prototype)以提高其针对推测内容攻击的安全性。\prototype(包括底层的\sysnameS )共计包含16,600行C++代码。
+本文基于OpenSSL 1.1.1l\citing{openssl}、SGX SDK 2.15\citing{sgxsdk}和Intel SGX SSL\citing{sgxssl}实现了\sysnameF，并将其部署到本文提出的基于TEE的加密重复数据删除系统\sysnameS (参见\S\ref{sec:sgxdedup-implementation})中(新原型系统称为\prototype)以提高其针对推测内容攻击的安全性。\prototype(包括底层的\sysnameS )共计包含16,600行C++代码。原型系统、相关测试源码开源信息及操作指南等见\S\ref{chapter:appendix}。
 
 \paragraph*{原型系统启动。}
 安全区启动并完成初始化后，\prototype 遵循\sysnameS，对每个客户端持有的所有权证明安全区与云服务端基于NIST P-256椭圆曲线\citing{nist}实现密钥交换协议，协商产生用于数据所有权证明的PoW密钥。

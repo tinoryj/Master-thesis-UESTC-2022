@@ -1,7 +1,7 @@
 \section{\sysnameS 实现}
 \label{sec:sgxdedup-implementation}
 
-本文基于OpenSSL 1.1.1l\citing{openssl}、SGX SDK 2.15\citing{sgxsdk} 、和Intel SGX SSL\citing{sgxssl}使用C++实现了一个\sysnameS 原型系统。本文的原型系统通过SHA-256哈希函数实现明文和密文数据块的指纹计算和识别等操作，并通过AES-256加密算法实现基于数据块的加密机制。原型系统约包含14,200行代码。
+本文基于OpenSSL 1.1.1l\citing{openssl}、SGX SDK 2.15\citing{sgxsdk} 、和Intel SGX SSL\citing{sgxssl}使用C++实现了一个\sysnameS 原型系统。本文的原型系统通过SHA-256哈希函数实现明文和密文数据块的指纹计算和识别等操作，并通过AES-256加密算法实现基于数据块的加密机制。原型系统约包含14,200行代码。原型系统源码及操作指南开源于：\href{https://github.com/tinoryj/SGXDedup}{https://github.com/tinoryj/SGXDedup}。
 
 \paragraph*{原型系统启动。}
 为了启动密钥安全区，云服务端将对其用于全局秘密生成的子秘密(\S\ref{subsec:sgxdedup-enclave-management})和会话密钥种子(\S\ref{subsec:sgxdedup-key-management})硬编码到密钥安全区动态运行库中。\sysnameS 中云服务端也可以在验证密钥安全区后再通过安全信道向密钥安全区装载子秘密和会话密钥种子(使用SGX\citing{sgx}的秘密提供(Secret provisioning)功能)，但会产生额外的启动开销。密钥安全区使用SHA-256哈希算法生成全局秘密并在密钥回归中进行密钥状态更新和会话密钥导出。所有权证明安全区在NIST P-256椭圆曲线\citing{nist}上实现DHKE，以与云服务端共享PoW密钥。
