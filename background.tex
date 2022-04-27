@@ -52,7 +52,7 @@
 \subsection{数据块加密技术}
 \label{subsec:background-encrypted-deduplication-key}
 
-消息锁加密\textit{(Message-Locked Encryption, MLE)}\citing{bellare2013MLE}将基于内容的密钥生成方案等加密原语形式化用于加密重复数据删除。它指出了如何从明文数据块的内容导出相应的对称加密密钥(称为消息锁加密密钥(MLE密钥))。以最广泛使用的消息锁加密技术：收敛加密\textit{(Convergent Encryption, CE)}\citing{douceur2002reclaiming}为例，CE使用明文数据块的安全哈希作为MLE密钥，使得相同的明文数据块可被加密为相同的密文数据块，从而令重复数据删除技术在密文数据块之上仍然可行。除此之外，基于CE的消息锁加密方案还包括：
+消息锁加密\textit{(Message-Locked Encryption, MLE)}\citing{bellare2013MLE}将基于内容的密钥生成方案等加密原语形式化用于加密重复数据删除。它指出了如何从明文数据块的内容导出相应的对称加密密钥(称为消息锁加密密钥，简称为MLE密钥)。以最广泛使用的消息锁加密技术：收敛加密\textit{(Convergent Encryption, CE)}\citing{douceur2002reclaiming}为例，CE使用明文数据块的安全哈希作为MLE密钥，使得相同的明文数据块可被加密为相同的密文数据块，从而令重复数据删除技术在密文数据块之上仍然可行。除此之外，基于CE的消息锁加密方案还包括：
 
 \begin{enumerate}[leftmargin=0em]
     \item \textbf{哈希收敛加密(Hash Convergent Encryption, HCE)}\citing{douceur2002reclaiming}与CE具有相同的MLE密钥产生规则，但基于明文哈希值计算指纹用于重复数据删除。作为对比的，CE使用密文的指纹进行重复数据删除检查。
