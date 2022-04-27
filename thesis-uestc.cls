@@ -223,6 +223,8 @@ tabsize=4
 \newfontfamily{\heiti@letter}{SimHei}
 \setallmainfonts{Times New Roman}
 
+\setlength{\baselineskip}{20pt}
+
 \DeclareMathAlphabet{\mathbf}{\eu@enc}{\eu@mathrm}{\bfdefault}{it}
 \DeclareMathAlphabet{\mathbd}{\eu@enc}{\eu@mathrm}{\bfdefault}{n}
 \newcommand{\bm}{\mathbf}
@@ -1246,7 +1248,7 @@ School: & \en@theschool \\
 }{}{}
 
 \newcommand{\thesistableofcontents}{
-  \tableofcontents
+    \tableofcontents
 }
 
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter\hspace{5.25pt}#1}{}}
@@ -1471,7 +1473,10 @@ School: & \en@theschool \\
 
 \newenvironment{thesistheaccomplish}{
   \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
-  \renewcommand\thesection{\arabic{section}}
+  \renewcommand\thesection{\zhnumber{\arabic{section}}}
+  \titleformat{\section}[block]
+  {\fontsize{14pt}{14pt}\selectfont\strong}
+  {\hspace{-24pt}\bfseries\thesection、}{0pt}{}
   \setcounter{section}{0}
   \nociteaccomplish{*}
   \renewcommand{\bibname}{\thesisaccomplishtitle}
