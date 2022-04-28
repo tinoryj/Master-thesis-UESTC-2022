@@ -28,7 +28,7 @@
     \label{fig:Cloud-based-deduplication-storage-logic}
 \end{figure}
 %TODO
-近年来，研究者提出加密重复数据删除\citing{bellare2013MLE}以保护重复数据删除过程中的数据安全。图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}描述了加密重复数据删除系统框架，其包括客户端和云服务端两个主要组成部分。为了防止云服务商获取外包数据内容，加密重复数据删除系统在客户端部署消息锁加密\textit{(Message-locked encryption, MLE)}\citing{bellare2013MLE}以加密明文数据块(简称为明文数据块)，同时确保重复数据删除仍然能够作用于密文数据块(简称为密文数据块)以节约存储空间。传统对称加密算法为每个客户端或每个数据块分配不同加密密钥，使得相同的明文数据块被加密为不同的密文数据块，无法通过重复数据删除进行冗余消除。消息锁加密的核心思路是基于数据块内容产生密钥(称为MLE密钥，例如基于明文数据块的哈希值\citing{douceur2002reclaiming}产生)，从而实现明文数据块和密文数据块的一一映射。最终，实现具有等同冗余缩减能力的直接针对密文数据块的重复数据删除。现有消息锁加密采用服务器辅助密钥生成方式(称为服务器辅助消息锁加密\textit{(Server-aided MLE)}\citing{bellare2013DupLESS})，即部署第三方密钥服务器管理全局秘密，同时基于明文数据块哈希值和密钥服务器的全局秘密共同生成消息锁加密密钥，以防止攻击者针对MLE密钥实施离线暴力破解攻击。
+近年来，研究者提出加密重复数据删除\citing{bellare2013MLE}以保护重复数据删除过程中的数据安全。图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}描述了加密重复数据删除系统框架，其包括客户端和云服务端两个主要组成部分。为了防止云服务商获取外包数据内容，加密重复数据删除系统在客户端部署\gls{mle}\citing{bellare2013MLE}以加密明文数据块(简称为明文数据块)，同时确保重复数据删除仍然能够作用于密文数据块(简称为密文数据块)以节约存储空间。传统对称加密算法为每个客户端或每个数据块分配不同加密密钥，使得相同的明文数据块被加密为不同的密文数据块，无法通过重复数据删除进行冗余消除。消息锁加密的核心思路是基于数据块内容产生密钥(称为MLE密钥，例如基于明文数据块的哈希值\citing{douceur2002reclaiming}产生)，从而实现明文数据块和密文数据块的一一映射。最终，实现具有等同冗余缩减能力的直接针对密文数据块的重复数据删除。现有消息锁加密采用服务器辅助密钥生成方式(称为服务器辅助消息锁加密\textit{(Server-aided MLE)}\citing{bellare2013DupLESS})，即部署第三方密钥服务器管理全局秘密，同时基于明文数据块哈希值和密钥服务器的全局秘密共同生成消息锁加密密钥，以防止攻击者针对MLE密钥实施离线暴力破解攻击。
 
 \begin{figure}[!htb]
     \small
@@ -38,7 +38,7 @@
     \label{fig:Cloud-based-encrypted-deduplication-storage-logic}
 \end{figure}
 
-另一方面，重复数据删除受到伪造数据所有权的攻击威胁\citing{harnik2010side,mulazzani11}。由于云服务商仅基于收到的数据块哈希值判断客户端是否拥有相应数据块，恶意用户/客户端可以伪造任意密文数据块的哈希值，如果该密文数据块已在云服务端存储(即已发生重复数据删除)，则恶意客户端无需传输密文数据块内容便可获得相应密文数据块的访问权限。为了防止伪造所有权攻击，加密重复数据删除增加了所有权证明\textit{(Proof-of-Ownership)}技术\citing{halevi11}：除了密文数据块的哈希值以外，云服务商要求客户端额外提交目标密文数据块的所有权证明\textit{(Proof)}；云服务商首先基于证明验证该客户端是否真实且完整拥有相应密文数据块，然后再执行如前所述的重复数据删除过程。所有权证明技术的合理性在于，只针对客户端真实拥有(即具有完整访问权限)的密文数据块执行重复数据删除，从而避免非法访问其他客户端已在云服务端存储的内容。
+另一方面，重复数据删除受到伪造数据所有权的攻击威胁\citing{harnik2010side,mulazzani11}。由于云服务商仅基于收到的数据块哈希值判断客户端是否拥有相应数据块，恶意用户/客户端可以伪造任意密文数据块的哈希值，如果该密文数据块已在云服务端存储(即已发生重复数据删除)，则恶意客户端无需传输密文数据块内容便可获得相应密文数据块的访问权限。为了防止伪造所有权攻击，加密重复数据删除增加了\gls{pow}技术\citing{halevi11}：除了密文数据块的哈希值以外，云服务商要求客户端额外提交目标密文数据块的所有权证明\textit{(Proof)}；云服务商首先基于证明验证该客户端是否真实且完整拥有相应密文数据块，然后再执行如前所述的重复数据删除过程。所有权证明技术的合理性在于，只针对客户端真实拥有(即具有完整访问权限)的密文数据块执行重复数据删除，从而避免非法访问其他客户端已在云服务端存储的内容。
 
 \subsection{问题和动机}
 \label{subsec:intro-problem}
@@ -48,7 +48,7 @@
 \subsubsection{系统效率}
 \label{subsubsec:intro-problem-performance}
 
-在服务器辅助密钥生成过程中，现有加密重复数据删除系统(图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic})须使用基于盲签名\citing{armknecht2015transparent,bellare2013DupLESS}的无记忆伪随机函数\textit{(Oblivious pseudorandom function, OPRF)}生成密钥\citing{bellare2013DupLESS}，以防止密钥服务器获得明文数据块的哈希值。同时，为了实现所有权证明，系统须在云服务端维护Merkle哈希树，并基于哈希树验证客户端提交的证明信息\citing{halevi2011proofs}。本文指出，服务器辅助密钥生成和所有权证明的密码操作是加密重复数据删除系统的主要效率瓶颈。
+在服务器辅助密钥生成过程中，现有加密重复数据删除系统(图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic})须使用基于盲签名\citing{armknecht2015transparent,bellare2013DupLESS}的\gls{oprf}生成密钥\citing{bellare2013DupLESS}，以防止密钥服务器获得明文数据块的哈希值。同时，为了实现所有权证明，系统须在云服务端维护Merkle哈希树，并基于哈希树验证客户端提交的证明信息\citing{halevi2011proofs}。本文指出，服务器辅助密钥生成和所有权证明的密码操作是加密重复数据删除系统的主要效率瓶颈。
 
 为了验证以上论断，本文基于图~\ref{fig:Cloud-based-encrypted-deduplication-storage-logic}框架和现有技术方案实现了加密重复数据删除系统的基础原型。基础原型支持基于RSA\citing{bellare2013DupLESS}或BLS\citing{armknecht2015transparent}盲签名生成密钥，以及基于Merkle哈希树\citing{halevi2011proofs}或通用哈希\textit{(Universal hash)}\citing{xu2013weak}证明所有权(注：基于通用哈希的所有权证明方法\citing{xu2013weak}只能达到较低安全性)。
 
@@ -78,7 +78,7 @@
 \subsection{研究内容概述}
 \label{subsec:intro-content}
 
-本文指出，现有加密重复数据删除使用纯软件实现的密码算法保障数据安全，但是，由于密码算法计算开销大、安全防护不完整，导致当前的重复数据删除系统存在效率和安全方面的不足。因此，本文拟开展基于硬件可信执行环境的安全重复数据删除研究，意图通过硬件实现的可信执行环境\textit{(Trusted execution environment, TEE)}优化/改变现有基于纯软件的重复数据删除方法思路，进而克服现有研究的不足。具体的，TEE是一组软硬件结合的系统组件，可为应用程序提供必要的基础设施和运行资源，同时为内部代码的安全执行提供机密性和完整性保证\citing{OMTP}。各大软硬件厂商均推出了各自的TEE实现方案，包括TrustZone\citing{trustzone}、Intel SGX\citing{sgx,sgx2}、AMD SEV\citing{AMDSEV}、Apple Secure Enclave\citing{AppleSecureEnclave}、Google Titan\citing{GoogleTitan}等。为了避免硬件依赖，本文的系统设计并不基于某一具体的TEE解决方案，统一使用“安全区”指代TEE实现的具有隔离条件和安全保障的程序执行环境。本文的核心方法是，在安全区内执行面向明文数据的敏感操作，以基于硬件的保护方式替代传统基于纯软件实现的复杂密码算法，从而保持安全性并提高系统效率。
+本文指出，现有加密重复数据删除使用纯软件实现的密码算法保障数据安全，但是，由于密码算法计算开销大、安全防护不完整，导致当前的重复数据删除系统存在效率和安全方面的不足。因此，本文拟开展基于硬件\gls{tee}的安全重复数据删除研究，意图通过硬件实现的可信执行环境优化/改变现有基于纯软件的重复数据删除方法思路，进而克服现有研究的不足。具体的，TEE是一组软硬件结合的系统组件，可为应用程序提供必要的基础设施和运行资源，同时为内部代码的安全执行提供机密性和完整性保证\citing{OMTP}。各大软硬件厂商均推出了各自的TEE实现方案，包括TrustZone\citing{trustzone}、Intel SGX\citing{sgx,sgx2}、AMD SEV\citing{AMDSEV}、Apple Secure Enclave\citing{AppleSecureEnclave}、Google Titan\citing{GoogleTitan}等。为了避免硬件依赖，本文的系统设计并不基于某一具体的TEE解决方案，统一使用“安全区”指代TEE实现的具有隔离条件和安全保障的程序执行环境。本文的核心方法是，在安全区内执行面向明文数据的敏感操作，以基于硬件的保护方式替代传统基于纯软件实现的复杂密码算法，从而保持安全性并提高系统效率。
 
 针对现有面向云环境的加密重复数据删除存在密钥生成效率低、所有权证明计算复杂、易于遭受推测内容攻击等不足。本文拟改进现有的加密重复数据删除方法，提出：
 
@@ -123,7 +123,7 @@
 
 以上方法均须传输全部(目标端重复数据删除)或部分(随机阈值重复数据删除，两阶段重复数据删除和随机冗余数据块传输方案)重复数据，增加网络资源和服务端处理开销。本文研究的基于TEE的扩展所有权证明技术兼容源端重复数据删除而无需传输任意重复数据块。
 
-\subsection{基于TEE的安全应用}
+\subsection{基于可信执行环境的安全应用}
 \label{subsec:compare-tee}
 
 TrustZone和SGX是目前应用最广泛的TEE解决方案\citing{pinto19}。TrustZone是ARM CPU指令集的安全扩展，主要应用于低功耗移动平台以保护敏感应用程序的执行逻辑\citing{rubinov2016automated}、用户输入口令\citing{ying2018truz}，以及监控安全区以外的程序执行\citing{azab2014hypervision}。SGX是Intel CPU指令集的安全监控扩展，已被广泛用于加强不同应用系统的安全性，包括比特币\citing{matetic19BITE}、文件系统\citing{ahmad2018OBLIVIATE,shinde20}、外包数据库\citing{eskandarian19,priebe18,sun21}、键值存储\citing{mishra2018Oblix,bailleu2019SPEICHER,kim2019ShieldStore,bailleu2021Avocado}和数据分析平台\citing{schuster15, zheng2017Opaque, bowe2020ZEXE}等。
@@ -146,7 +146,7 @@ Dang等人\citing{dang2017Privacy}提出了基于代理的加密重复数据删�
 
 第一章：绪论。本章首先介绍了加密重复数据删除的相关研究背景及尚存的问题，以此为基础提出了本文的研究内容并分析了本文研究工作的意义与价值。随后，总结了加密重复数据删除中性能提升及安全性保障相关的研究工作以及可信执行环境给加密重复数据删除中关键问题的解决提供的新思路；接着，阐述了本文针对安全重复数据删除的性能和安全性做出的 主要贡献及相关的创新之处。最后，给出了本文的章节安排。
 
-第二章：相关基础研究。本章首先介绍了安全重复数据删除技术及其底层的重复数据删除逻辑。详细解读了安全性保障中最关键的数据块加密技术及数据所有权证明技术。随后，介绍了可信执行环境(TEE)及其两种普及的可信执行环境Intel SGX和ARM TrustZone。
+第二章：相关基础研究。本章首先介绍了安全重复数据删除技术及其底层的重复数据删除逻辑。详细解读了安全性保障中最关键的数据块加密技术及数据所有权证明技术。随后，介绍了可信执行环境及其两种普及的可信执行环境Intel SGX和ARM TrustZone。
 
 第三章：基于可信执行环境加速加密重复数据删除。本章重点分析介绍了加密重复数据删除中由于数据块加密及数据所有权证明导致的严重性能开销问题，并提出了基于TEE的数据块加密密钥生成方法和数据所有权证明方案。通过三项关键设计将TEE与加密重复数据删除进行有机结合，实现了\sysnameS 的原型系统。最终，通过实验分析证明本文提出的方案相较与现有方案可实现显著性能提升(例如，131.9倍密钥生成速率及9.6倍系统吞吐量)。
 

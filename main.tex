@@ -19,9 +19,9 @@
 % \hyphenpenalty=10000
 % \hbadness=10000
 
-\newcommand{\sysnameS}{\textrm{TEEDedup}\xspace}
-\newcommand{\sysnameF}{\textrm{FeatureSpy}\xspace}
-\newcommand{\prototype}{\textrm{TEEDedup+}\xspace}
+\newcommand{\sysnameS}{TEEDedup\xspace}
+\newcommand{\sysnameF}{FeatureSpy\xspace}
+\newcommand{\prototype}{TEEDedup+\xspace}
 \usepackage{hyperref}[colorlinks,linkcolor=blue]
 % non-hanging indent 
 \usepackage{enumitem}
@@ -30,11 +30,24 @@
 
 \makeglossaries
 
-\newacronym[description=可信执行环境]{tee}{TEE}{Trusted Execution Environment}
-\newacronym[description=消息锁加密]{mle}{MLE}{Message-locked Encryption}
-\newacronym[description=无记忆伪随机函数]{oprf}{OPRF}{Oblivious pseudorandom function}
-\newacronym[description=数据所有权证明]{pow}{PoW}{Proof of Ownership}
-
+\newacronym[description=可信执行环境]{tee}{TEE}{\underline{T}rusted \underline{E}xecution \underline{E}nvironment}
+\newacronym[description=消息锁加密]{mle}{MLE}{\underline{M}essage-\underline{L}ocked \underline{E}ncryption}
+\newacronym[description=无记忆伪随机函数]{oprf}{OPRF}{\underline{O}blivious \underline{P}seudo\underline{R}andom \underline{F}unction}
+\newacronym[description=数据所有权证明]{pow}{PoW}{\underline{P}roofs \underline{o}f \underline{O}wnership}
+\newacronym[description=收敛加密]{ce}{CE}{\underline{C}onvergent \underline{E}ncryption}
+\newacronym[description=哈希收敛加密]{hce}{HCE}{\underline{H}ash \underline{C}onvergent \underline{E}ncryption}
+\newacronym[description=随机收敛加密]{rce}{RCE}{\underline{R}andom \underline{C}onvergent \underline{E}ncryption}
+\newacronym[description=收敛扩散]{cd}{CD}{\underline{C}onvergent \underline{D}ispersa}
+\newacronym[description=通用哈希]{uh}{UH}{\underline{U}niversal \underline{H}ash}
+\newacronym[description=推测内容攻击]{lca}{LCA}{\underline{L}earning Content \underline{A}ttack}
+\newacronym[description=基于特征的加密]{fbe}{FBE}{\underline{F}eature-\underline{B}ased \underline{E}ncryption}
+\newacronym[description=相似性保留加密]{spe}{SPE}{\underline{S}imilarity-\underline{P}reserving
+\underline{E}ncryption}
+\newacronym[description=内容定义数据分块]{cdc}{CDC}{\underline{C}ontent-\underline{D}efined \underline{C}hunking}
+\newacronym[description=可信计算基]{tcb}{TCB}{\underline{T}rusted \underline{C}omputing \underline{B}ase}
+\newacronym[description=安全监视器调用]{smc}{SMC}{\underline{S}ecure \underline{M}onitor \underline{C}all}
+\newacronym[description=数据持有证明]{pdp}{PDP}{\underline{P}roofs of \underline{D}ata \underline{P}ossession}
+\newacronym[description=可取回性证明]{por}{PoR}{\underline{P}roofs \underline{o}f \underline{R}etrievability}
 
 \begin{document}
 \makecover
@@ -45,15 +58,12 @@
 \thesistableofcontents
 % \thesisfigurelist
 % \thesistablelist
-\glsaddall
+% \glsaddall
 \thesisglossarylist
 % \thesissymbollist
 
 % Main body
 \input{introduction}
-
-% First use: \gls{lvm}. Second use: \gls{lvm}.
-
 \input{background}
 \input{SGXDedup}
 \input{FeatureSpy}

@@ -733,7 +733,7 @@ tabsize=4
 
 \newglossarystyle{uestc-chinese}{
   \renewenvironment{theglossary}%
-  {\begin{longtable}{p{20mm}p{90mm}p{6.5em}}}%
+  {\begin{longtable}{p{20mm}p{85mm}p{8em}}}%
     {\end{longtable}}%
   \renewcommand*{\glossaryheader}{%
     \heiti 英文缩写 &\heiti 英文全称 &
@@ -1248,7 +1248,9 @@ School: & \en@theschool \\
 }{}{}
 
 \newcommand{\thesistableofcontents}{
+  % \begin{spacing}{1.667}
     \tableofcontents
+  % \end{spacing}
 }
 
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter\hspace{5.25pt}#1}{}}

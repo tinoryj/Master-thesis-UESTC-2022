@@ -5,8 +5,9 @@
 
 
 
-\section{\sysnameF 模拟器测试指南}
-该模拟器用于运行本文\S\ref{subsec:featurespy-evaluation-detection}中的实验。为简洁起见，我们只关注整体\sysnameF 的模拟(即\S\ref{sec:featurespy-evaluation}中的Exp\#3和Exp\#4)。
+\section{\sysnameF 模拟器}
+\label{sec:appendix-simulator}
+该模拟器用于运行本文\S\ref{subsec:featurespy-evaluation-detection}中的实验。为简洁起见，我们只关注整体\sysnameF 的模拟(即Exp\#3和Exp\#4)。
 
 \subsection*{软件包依赖}
 
@@ -104,8 +105,9 @@ allFeature: not detected
   \end{tabular}
 \end{table}
 
-\section{\prototype 原型系统测试指南}
 
+\section{\prototype 原型系统}
+\label{sec:appendix-prototype}
 \prototype 综合了\sysnameS 和\sysnameF 的所有相关设计，同时实现了高性能、高网络带宽节省、强安全三个加密重复数据删除的主要目标。
 
 \subsection*{配置运行前置条件}
@@ -149,41 +151,47 @@ chmod +x Scripts/environmentInstall.sh
     ...
 \end{lstlisting}
 
+\subsection*{原型系统程序结构}
+
+\prototype 及其底层的\sysnameS 原型系统均基于CMake构建，将客户端、密钥服务器、云服务端和安全区代码分离，各个部分可单独编译。
+
+在客户端中，设计并实现了Chunker(数据读取与分块)、Fingerprinter(明文数据块特征提取)、KeyClient(服务器辅助密钥生成)、Encoder(明文数据块加密)、powClient(密文数据块所有权证明，攻击检测和重复数据删除查询)、Sender(非重复数据块及文件元数据传输)和RecvDecode(密文数据块接收与解密)、Retriever(明文数据块重组并写文件)共计8个模块(类)用于完成原型系统中上传及下载操作中的各个步骤。以上各个模块均设计了专用线程体负责从消息队列读取数据进行处理并发送至指定消息队列。在上传部分的6个模块中，除Chunker、Sender以外，均可自由改变线程数以在多核心CPU平台上实现更高的系统性能。
+
+在密钥服务器中，设计并实现了独立的线程用于密钥安全区的周期性会话密钥更新和远程认证，其通过计时休眠在规定时间到达后执行相关操作，并在其余时间挂起以节省密钥服务器资源。此外，密钥服务器采用独立线程为每个连接的客户端提供密钥生成服务，并为其配套单独的密钥安全区线程(即密钥服务器为每个客户端分配两个线程用于服务)。
+
+在云服务端，设计并实现了powServer、dedupCore、storageCore分别处理数据所有权检验、重复数据删除查询和非重复数据块及文件元数据存储任务。其中dedupCore和storageCore调用封装了LevelDB键值对数据库的查询、插入、删除操作用于记录所有已存储数据块的指纹(key)及存储位置(value)。
+
+
 \subsection*{原型系统编译}
 本文提供一键脚本完成原型系统编译及清除等操作，如下所示：
+\vspace{1pt}
 
 \begin{lstlisting}[style=shell]
 chmod +x ./Scripts/*.sh
-# Build \prototype in release mode
+# 在发布模式下编译原型系统
 ./Scripts/buildReleaseMode.sh
-# Build \prototype in debug mode
+# 在调试模式下编译原型系统
 ./Scripts/buildDebugMode.sh
-# Clean up build result
+# 清空编译状态及结果
 ./Scripts/cleanBuild.sh
 \end{lstlisting}
 
 编译生成的可执行文件及其所需的安全区动态运行库及相关密钥都存放在bin目录下。
 
-\subsection*{Usage}
+\subsection*{原型系统测试}
 \prototype 可以在单机上进行测试(及通过本地网络回环连接客户端、密钥服务器和云服务端)。由于密钥安全区在使用前需要经过云服务端的远程认证，所以需要先启动云服务端(server-sgx)，然后再启动密钥服务器(keymanager-sgx)，等待消息"KeyServer : keyServer session key update done"在密钥服务器端弹出(即密钥安全区验证完成)后方可启动客户端。
 \begin{lstlisting}[style=shell]
-# start cloud
-cd bin
-./server-sgx
-
-# start key server
-cd bin
-./keymanager-sgx
+# 启动云服务端
+cd bin && ./server-sgx
+# 启动密钥服务器
+cd bin && ./keymanager-sgx
 \end{lstlisting}
 
 \prototype 在客户端提供了数据存储(上传)和取回(下载)接口，可参照如下所示方式进行测试。
 
 \begin{lstlisting}[style=shell]
 # 存储文件
-cd bin
-./client-sgx -s file
-
+cd bin && ./client-sgx -s file
 # 取回文件
-cd bin
-./client-sgx -r file
+cd bin && ./client-sgx -r file
 \end{lstlisting}
