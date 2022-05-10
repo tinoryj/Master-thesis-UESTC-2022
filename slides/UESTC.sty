@@ -12,6 +12,13 @@
 \newcommand{\setframeofframes}[1]{\renewcommand{\frameofframes}{#1}}
 
 \setbeamersize{text margin left=6mm,text margin right=6mm} 
+\usepackage{fontspec}
+
+\newfontfamily\chalkd{Times New Roman}
+
+\setbeamerfont{normal text}{family=\chalkd,series=\mdseries}
+\setbeamerfont{alerted text}{family=\chalkd,series=\bfseries}
+\setbeamerfont{frametitle}{family=\chalkd,series=\bfseries}
 
 \setbeamertemplate{title page}
 {
