@@ -64,75 +64,120 @@
 
 \begin{frame}{外包数据存储}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
+        \item 外包数据存储管理的数据规模快速增长
               \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
+                  \item 根据IDC发布于2020年的预测，2025年时单年新创建数据量将超过175.8\,ZB，且其中超过70\%的数据将集中存储于云端
               \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
+    \end{itemize}
+    \vspace{-1em}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=0.8\linewidth]{./pic/dataStore.png}
+        \vspace{-5pt}
+        \caption{数据产生与存储关系的统计与预测}
+        \label{fig:dataCreateAndStore}
+    \end{figure}
+    \vspace{-1.5em}
+    \begin{itemize}
+        \item  外包数据存储需同时满足安全性和存储经济性需求
               \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
+                  \item 安全性：保护外包数据免受未授权访问
+                  \item 存储经济性：尽可能减少存储设备需求
               \end{itemize}
     \end{itemize}
 \end{frame}
 
 \begin{frame}{重复数据删除}
+    \begin{figure}[!htb]
+        \small
+        \centering
+        \includegraphics[width=\linewidth]{../pic/background/chunk-based-dedup-arch.pdf}
+        \caption{基于数据块的重复数据删除的工作流程概览}
+        \label{fig:chunk-based-dedup-flow}
+    \end{figure}
+    \vspace{-1em}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
+        \item 重复数据删除是一种粗粒度的数据压缩技术
               \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
+                  \item 作用单位为数据块（可变大小或固定大小）
               \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+        \item  其进保存具有相同内容的数据块的一个副本，并将其他数据块通过索引指向该副本
     \end{itemize}
 \end{frame}
 
 \begin{frame}{加密重复数据删除}
+    \begin{figure}[!htb]
+        \small
+        \centering
+        \includegraphics[width=\textwidth]{../pic/background/chunk-based-enc-dedup-arch.pdf}
+        \caption{基于数据块的加密重复数据删除的工作流程概览}
+        \label{fig:chunk-based-enc-dedup-flow}
+    \end{figure}
+    \vspace{-1em}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
+        \item 加密重复数据删除基于密文数据块执行重复数据删除
               \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
+                  \item 传统加密方案无法兼容跨用户的重复数据删除
+                  \item 消息锁加密基于明文数据块导出加密密钥(例如数据块哈希)
               \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{加密重复数据删除的安全性保障}
+    \begin{figure}[!htb]
+        \small
+        \centering
+        \includegraphics[width=\textwidth]{../pic/background/Cloud-encrypted-deduplication-logic.pdf}
+        \caption{面向云环境的加密重复数据删除系统框架}
+        \label{fig:Cloud-based-encrypted-deduplication-storage-logic}
+    \end{figure}
+    \vspace{-1em}
+    \begin{itemize}
+        \item 依赖基于盲签名的服务器辅助密钥生成抵御离线暴力破解攻击
+        \item 依赖数据所有权证明保护源端重复数据删除（即仅传输非重复数据块）
               \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
+                  \item 目标端重复数据删除需传输所有数据块，产生高额网络资源开销
               \end{itemize}
     \end{itemize}
 \end{frame}
 
 \begin{frame}{性能瓶颈}
+    \begin{table}[!htb]
+        \small
+        \centering
+        \caption{基础原型每个步骤处理1MiB数据的时间开销：括号内为可供备选的服务器辅助密钥生成方案和所有权证明方案，以及相应处理时间}
+        \label{tab:intro-bottleneck}
+        \begin{tabular}{@{}ccc@{}}
+            \toprule
+                                        & 处理阶段/可选方案            & 处理时间(ms/MiB) \\ \midrule
+                                        & 数据分块                     & 3.8              \\
+            服务器辅助密钥生成          & RSA(BLS)盲签名方案 & 40.7(488.3)      \\
+            \multirow{3}{*}{所有权证明} & 数据加密                     & 2.5              \\
+                                        & Merkel树(通用哈希)方案     & 27.0(7.2)        \\
+                                        & 重复数据删除                 & 1.7              \\ \bottomrule
+        \end{tabular}
+    \end{table}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+        \item 盲签名(OPRF)算法成为加密重复数据删除的系统性能瓶颈
+        \item 基于Merkel树的所有权证明方案安全但计算开销极大
+        \item 基于通用哈希的方案以降低安全性为代价且仍为性能瓶颈之一
     \end{itemize}
 \end{frame}
 
 \begin{frame}{推测内容攻击}
+    \begin{figure}[!htb]
+        \small
+        \centering
+        \includegraphics[width=\textwidth]{./pic/LRI.pdf}
+        \caption{推测内容攻击模式}
+        \label{fig:LRI-mode}
+    \end{figure}
+    \vspace{-1em}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
+        \item 依赖基于盲签名的服务器辅助密钥生成抵御离线暴力破解攻击
+        \item 依赖数据所有权证明保护源端重复数据删除（即仅传输非重复数据块）
               \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
+                  \item 目标端重复数据删除需传输所有数据块，产生高额网络资源开销
               \end{itemize}
     \end{itemize}
 \end{frame}
@@ -307,56 +352,20 @@
 %     \end{proof}
 % \end{frame}
 
-\begin{frame}[fragile]
-    \begin{columns}
-        \column{.6\textwidth}
-        \begin{lstlisting}[language=TeX]
-    \begin{table}[htbp]
-      \caption{编号与含义}
-      \label{tab:number}
-      \centering
-      \begin{tabular}{cl}
-        \toprule
-        编号 & 含义 \\
-        \midrule
-        1 & 4.0 \\
-        2 & 3.7 \\
-        \bottomrule
-      \end{tabular}
-    \end{table}
-    公式~(\ref{eq:vsphere}) 的
-    编号与含义请参见
-    表~\ref{tab:number}。
-\end{lstlisting}
-        \column{.4\textwidth}
-        \begin{table}[htpb]
-            \centering
-            \caption{编号与含义}
-            \label{tab:number}
-            \begin{tabular}{cl}\toprule
-                编号 & 含义 \\\midrule
-                1    & 4.0  \\
-                2    & 3.7  \\\bottomrule
-            \end{tabular}
-        \end{table}
-        \normalsize 公式~(\ref{eq:vsphere})的编号与含义请参见表~\ref{tab:number}。
-    \end{columns}
-\end{frame}
-
 \section{原型系统实现}
 
 \begin{frame}{原型系统实现}
-    \begin{textbox}{\sysnameS}
+    \begin{textbox}{基于Intel SGX}
         \begin{itemize}
-            \item A
-            \item B
+            \item \prototype 及其底层\sysnameS 基于Intel SGX SDK 2.15以及OpenSSL、LevelDB等开发，包含16.5K行C++代码
+            \item 开源链接：\href{https://github.com/tinoryj/masterGraduation/artifactsSGX}{https://github.com/tinoryj/masterGraduation/artifactsSGX}
         \end{itemize}
     \end{textbox}
 
-    \begin{textbox}{\prototype}
+    \begin{textbox}{基于ARM TrustZone}
         \begin{itemize}
-            \item A
-            \item B
+            \item \prototype 及其底层\sysnameS 基于OP-TEE 3.16以及OpenSSL、LevelDB等开发，包含13.5K行C++代码
+            \item 开源链接：\href{https://github.com/tinoryj/masterGraduation/artifactsARM}{https://github.com/tinoryj/masterGraduation/artifactsARM}
         \end{itemize}
     \end{textbox}
 \end{frame}
@@ -403,25 +412,25 @@
         \caption{\sysnameS 原型系统主要实验结果汇总}
         \label{tab:sgxdedup-summary}
         \begin{tabular}{cccc}
-          \toprule
-          \multicolumn{2}{c}{\bf 对比对象}                                   & {\bf 基础方案/系统}                                & {\bf 优势}                                                           \\
-          \midrule
-          \multirow{8}{*}{\bf 性能提升}                                      & \multirow{4}{*}{\shortstack{密钥生成}}             & OPRF-BLS  & 1,583$\times\;\uparrow$ \\
-                                                                             &                                                    & OPRF-RSA        & 131.9$\times\;\uparrow$ \\
-                                                                             &                                                    & MinHash encryption      & 9.4$\times\;\uparrow$   \\
-                                                                             &                                                    & TED                      & 3.7$\times\;\uparrow$   \\
-          \cline{2-4}
-                                                                             & \multirow{2}{*}{所有权证明}                        & PoW-MT                    & 8.2$\times\;\uparrow$   \\
-                                                                             &                                                    & PoW-UH                  & 2.2$\times\;\uparrow$   \\
-          \cline{2-4}
-  & \multirow{2}{*}{\shortstack{原型系统}}             & DupLESS        & 8.1$\times\;\uparrow$   \\
-                                                                             &                                                    & PlainDedup                                 & 17.5\% $\downarrow$     \\
-          \hline
-          \multicolumn{2}{c}{\multirow{2}{*}{\shortstack{\bf 网络资源节省}}} & Two-stage dedup                       & 35.3\% $\uparrow$                                                    \\
-          \multicolumn{2}{c}{}                                               & Randomized-threshold dedup  & 91.4\% $\uparrow$                                                    \\
-          \bottomrule
+            \toprule
+            \multicolumn{2}{c}{\bf 对比对象}                                   & {\bf 基础方案/系统}                    & {\bf 优势}                                   \\
+            \midrule
+            \multirow{8}{*}{\bf 性能提升}                                      & \multirow{4}{*}{\shortstack{密钥生成}} & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
+                                                                               &                                        & OPRF-RSA           & 131.9$\times\;\uparrow$ \\
+                                                                               &                                        & MinHash encryption & 9.4$\times\;\uparrow$   \\
+                                                                               &                                        & TED                & 3.7$\times\;\uparrow$   \\
+            \cline{2-4}
+                                                                               & \multirow{2}{*}{所有权证明}            & PoW-MT             & 8.2$\times\;\uparrow$   \\
+                                                                               &                                        & PoW-UH             & 2.2$\times\;\uparrow$   \\
+            \cline{2-4}
+                                                                               & \multirow{2}{*}{\shortstack{原型系统}} & DupLESS            & 8.1$\times\;\uparrow$   \\
+                                                                               &                                        & PlainDedup         & 17.5\% $\downarrow$     \\
+            \hline
+            \multicolumn{2}{c}{\multirow{2}{*}{\shortstack{\bf 网络资源节省}}} & Two-stage dedup                        & 35.3\% $\uparrow$                            \\
+            \multicolumn{2}{c}{}                                               & Randomized-threshold dedup             & 91.4\% $\uparrow$                            \\
+            \bottomrule
         \end{tabular}
-      \end{table}
+    \end{table}
 \end{frame}
 
 \begin{frame}{密钥生成效率}
@@ -596,9 +605,9 @@
         \includegraphics[height=16pt]{../pic/featurespy/plot/bandwidth/upload_traffic_legend.pdf}
         \vspace{5pt} \\
         \begin{tabular}{@{\ }c@{\ }c@{\ }c@{\ }c}
-            \includegraphics[width=0.45\linewidth]{../pic/featurespy/plot/bandwidth/upload_traffic_fsl.pdf}   &
-            \includegraphics[width=0.45\linewidth]{../pic/featurespy/plot/bandwidth/upload_traffic_ms.pdf}                                    \\
-            {\small (a) FSL数据集}                                                                         & {\small (b) MS数据集}      
+            \includegraphics[width=0.45\linewidth]{../pic/featurespy/plot/bandwidth/upload_traffic_fsl.pdf} &
+            \includegraphics[width=0.45\linewidth]{../pic/featurespy/plot/bandwidth/upload_traffic_ms.pdf}                          \\
+            {\small (a) FSL数据集}                                                                          & {\small (b) MS数据集}
         \end{tabular}
         \caption{上传每个快照后累积的网络流量。}
         \label{fig:featurespy-expNetworkTraffic}
