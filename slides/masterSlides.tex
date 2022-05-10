@@ -141,7 +141,7 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{性能瓶颈}
+\begin{frame}{性能瓶颈问题}
     \begin{table}[!htb]
         \small
         \centering
@@ -164,7 +164,10 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{推测内容攻击}
+\begin{frame}{安全性问题—推测内容攻击}
+    \begin{itemize}
+        \item 通过枚举可能的目标内容进行重复数据删除查询，基于重复数据删除结果判断攻击成功与否
+    \end{itemize}
     \begin{figure}[!htb]
         \small
         \centering
@@ -174,25 +177,32 @@
     \end{figure}
     \vspace{-1em}
     \begin{itemize}
-        \item 依赖基于盲签名的服务器辅助密钥生成抵御离线暴力破解攻击
-        \item 依赖数据所有权证明保护源端重复数据删除（即仅传输非重复数据块）
-              \begin{itemize}
-                  \item 目标端重复数据删除需传输所有数据块，产生高额网络资源开销
-              \end{itemize}
+        \item 现有防御机制存在高额网络资源开销或安全性不足等问题
+        \begin{itemize}
+            \item 目标端重复数据删除(Target-based deduplication)
+            \item 随机阈值重复数据删除(Randomized-threshold deduplication)
+            \item 两阶段重复数据删除(Two-stage deduplication)
+            \item 随机冗余数据块传输方案(Randomized Redundant Chunk Scheme)
+    \end{itemize}
     \end{itemize}
 \end{frame}
 
 \begin{frame}{可信执行环境}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
+        \item 可信执行环境(TEE)是一种在计算平台上由软硬件协同构建的安全区域，可确保其中的程序按照预期执行，保证程序初始状态和运行时的机密性、完整性
+        \begin{itemize}
+            \item \textbf{隔离性}：
+                  TEE将其中的目标程序、数据等与外部环境隔离，使得TEE外软硬件均无法获得其内部的机密信息。
+            \item \textbf{软硬协同性}：
+                  TEE产品包含物理隔离的专用硬件或运行权限以及相应的软件SDK。
+            \item \textbf{富表达性}：
+                  与传统安全芯片或纯软件的密码学隐私保护机制相比，TEE支持更丰富的上层应用。
+        \end{itemize}
+        \item  主流可信执行环境
               %   \vspace{-1em}
               \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
+                  \item  Intel SGX：拥有隔离、密封、远程认证能力，已被广泛运用于安全虚拟机等场景
+                  \item  ARM TrustZone：通过CPU状态切换实现隔离，并支持专用安全外设，已被广泛运用于移动设备生物识别、安全存储等场景
               \end{itemize}
     \end{itemize}
 \end{frame}
@@ -201,15 +211,18 @@
 
 \begin{frame}{研究内容概述}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
+        \item 针对现有面向云环境的加密重复数据删除存在密钥生成效率低、所有权证明计算复杂、易于遭受推测内容攻击等不足，提出：
               \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
+                \item 基于TEE的轻量级密钥生成技术，相较基于RSA盲签名的方案实现{\color{red}131倍}性能提升
+                \item 基于TEE的高效所有权证明技术，相较基于Merkel树的方案实现{\color{red}8.2倍}性能提升
+                \item 基于TEE的扩展所有权证明技术，在测试数据集中实现{\color{red}99\%}以上的检测成功率
               \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
+    \end{itemize}
+    \begin{itemize}
+        \item 设计并分别实现基于Intel SGX和ARM TrustZone的\prototype 原型系统：
               \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
+                \item 相较于基于密码学方案的DupLESS实现{\color{red}8.1$\sim$9.6倍}的性能提升
+                \item 相较于不采用任何安全措施的明文重复数据删除系统仅产生{\color{red}17.5\%}的额外开销
               \end{itemize}
     \end{itemize}
 \end{frame}
@@ -217,79 +230,72 @@
 \subsection{\sysnameS: 基于TEE加速加密重复数据删除}
 
 \begin{frame}{\sysnameS: 基于TEE加速加密重复数据删除}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\linewidth]{../pic/sgxdedup/sgxdedup-arch.pdf}
+        \caption{\sysnameS 系统框架，在密钥服务器和每个客户端中分别部署了密钥安全区和所有权证明安全区}
+        \label{fig:sgxdedup-overview}
+    \end{figure}
+    \vspace{-1em}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+        \item  核心思想：使用TEE取代加密重复数据删除中计算开销高昂的基于密码学算法
     \end{itemize}
 \end{frame}
 
 \begin{frame}{基于TEE的数据所有权证明}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{../pic/sgxdedup/pow.pdf}
+        \caption{\sysnameS 所有权证明安全区}
+        \label{fig:sgxdedup-overview-pow}
+    \end{figure}
+    \vspace{-1em}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+        \item  基于安全区与云服务端共享的PoW密钥对数据块进行指纹计算并签名，取代昂贵的Merkel树构建和验证
     \end{itemize}
 \end{frame}
 
 \begin{frame}{基于TEE的推测性加密}
-    \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{../pic/sgxdedup/key-enclave-arch.pdf}
+        \caption{基于TEE的推测性加密概述}
+        \label{fig:sgxdedup-SpecEnc}
+      \end{figure}
+      \vspace{-1em}
+      \begin{itemize}
+        \item  基于密钥安全区和客户端共享的会话密钥保护密钥生成过程
+        \item 基于AES CTR模式进行会话内容加解密，密钥安全区离线生成CTR模式所需的加解密掩码以提升在线服务效率
     \end{itemize}
 \end{frame}
 
 \begin{frame}{基于TEE的自更新会话密钥管理}
-    \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{../pic/sgxdedup/keyRegression.pdf}
+        \caption{自更新的会话密钥管理}
+        \label{fig:sgxdedup-keymanage}
+      \end{figure}
+      \vspace{-1em}
+      \begin{itemize}
+        \item 云服务端和密钥安全区可以根据其会话密钥状态导出新的会话密钥，而客户端只能从云服务端下载当前密钥状态，并产生最新的会话密钥
+        \item 仅有通过认证的客户端可获取最新的会话密钥状态，实现云服务端对云存储服务订阅的动态管理
     \end{itemize}
 \end{frame}
 
 \subsection{\sysnameF: 基于TEE在线检测推测内容攻击}
 
 \begin{frame}{\sysnameF: 基于TEE在线检测推测内容攻击}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=\textwidth]{../pic/featurespy/architecture.pdf}
+        \caption{基于密文的攻击检测方案工作流程。\sysnameF 将攻击检测程序与安全区中的所有权证明（\sysnameS ）结合起来，以恶意客户端防止绕过检测}
+        \label{fig:featurespy-architecture-secure}
+    \end{figure}
+    \vspace{-1em}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+        \item 检测原理：执行推测内容攻击的客户端需枚举伪造文件，产生大量相似数据块
+        \item 核心思想：在安全区中对采用相似性保留加密的数据块特征进行统计，以判断攻击是否发生
     \end{itemize}
 \end{frame}
 
