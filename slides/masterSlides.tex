@@ -149,12 +149,12 @@
         \label{tab:intro-bottleneck}
         \begin{tabular}{@{}ccc@{}}
             \toprule
-                                        & 处理阶段/可选方案            & 处理时间(ms/MiB) \\ \midrule
-                                        & 数据分块                     & 3.8              \\
-            服务器辅助密钥生成          & RSA(BLS)盲签名方案 & 40.7(488.3)      \\
-            \multirow{3}{*}{所有权证明} & 数据加密                     & 2.5              \\
-                                        & Merkel树(通用哈希)方案     & 27.0(7.2)        \\
-                                        & 重复数据删除                 & 1.7              \\ \bottomrule
+                                        & 处理阶段/可选方案      & 处理时间(ms/MiB) \\ \midrule
+                                        & 数据分块               & 3.8              \\
+            服务器辅助密钥生成          & RSA(BLS)盲签名方案     & 40.7(488.3)      \\
+            \multirow{3}{*}{所有权证明} & 数据加密               & 2.5              \\
+                                        & Merkel树(通用哈希)方案 & 27.0(7.2)        \\
+                                        & 重复数据删除           & 1.7              \\ \bottomrule
         \end{tabular}
     \end{table}
     \begin{itemize}
@@ -178,26 +178,26 @@
     \vspace{-1em}
     \begin{itemize}
         \item 现有防御机制存在高额网络资源开销或安全性不足等问题
-        \begin{itemize}
-            \item 目标端重复数据删除(Target-based deduplication)
-            \item 随机阈值重复数据删除(Randomized-threshold deduplication)
-            \item 两阶段重复数据删除(Two-stage deduplication)
-            \item 随机冗余数据块传输方案(Randomized Redundant Chunk Scheme)
-    \end{itemize}
+              \begin{itemize}
+                  \item 目标端重复数据删除(Target-based deduplication)
+                  \item 随机阈值重复数据删除(Randomized-threshold deduplication)
+                  \item 两阶段重复数据删除(Two-stage deduplication)
+                  \item 随机冗余数据块传输方案(Randomized Redundant Chunk Scheme)
+              \end{itemize}
     \end{itemize}
 \end{frame}
 
 \begin{frame}{可信执行环境}
     \begin{itemize}
         \item 可信执行环境(TEE)是一种在计算平台上由软硬件协同构建的安全区域，可确保其中的程序按照预期执行，保证程序初始状态和运行时的机密性、完整性
-        \begin{itemize}
-            \item \textbf{隔离性}：
-                  TEE将其中的目标程序、数据等与外部环境隔离，使得TEE外软硬件均无法获得其内部的机密信息。
-            \item \textbf{软硬协同性}：
-                  TEE产品包含物理隔离的专用硬件或运行权限以及相应的软件SDK。
-            \item \textbf{富表达性}：
-                  与传统安全芯片或纯软件的密码学隐私保护机制相比，TEE支持更丰富的上层应用。
-        \end{itemize}
+              \begin{itemize}
+                  \item \textbf{隔离性}：
+                        TEE将其中的目标程序、数据等与外部环境隔离，使得TEE外软硬件均无法获得其内部的机密信息。
+                  \item \textbf{软硬协同性}：
+                        TEE产品包含物理隔离的专用硬件或运行权限以及相应的软件SDK。
+                  \item \textbf{富表达性}：
+                        与传统安全芯片或纯软件的密码学隐私保护机制相比，TEE支持更丰富的上层应用。
+              \end{itemize}
         \item  主流可信执行环境
               %   \vspace{-1em}
               \begin{itemize}
@@ -213,16 +213,16 @@
     \begin{itemize}
         \item 针对现有面向云环境的加密重复数据删除存在密钥生成效率低、所有权证明计算复杂、易于遭受推测内容攻击等不足，提出：
               \begin{itemize}
-                \item 基于TEE的轻量级密钥生成技术，相较基于RSA盲签名的方案实现{\color{red}131倍}性能提升
-                \item 基于TEE的高效所有权证明技术，相较基于Merkel树的方案实现{\color{red}8.2倍}性能提升
-                \item 基于TEE的扩展所有权证明技术，在测试数据集中实现{\color{red}99\%}以上的检测成功率
+                  \item 基于TEE的轻量级密钥生成技术，相较基于RSA盲签名的方案实现{\color{red}131倍}性能提升
+                  \item 基于TEE的高效所有权证明技术，相较基于Merkel树的方案实现{\color{red}8.2倍}性能提升
+                  \item 基于TEE的扩展所有权证明技术，在测试数据集中实现{\color{red}99\%}以上的检测成功率
               \end{itemize}
     \end{itemize}
     \begin{itemize}
         \item 设计并分别实现基于Intel SGX和ARM TrustZone的\prototype 原型系统：
               \begin{itemize}
-                \item 相较于基于密码学方案的DupLESS实现{\color{red}8.1$\sim$9.6倍}的性能提升
-                \item 相较于不采用任何安全措施的明文重复数据删除系统仅产生{\color{red}17.5\%}的额外开销
+                  \item 相较于基于密码学方案的DupLESS实现{\color{red}8.1$\sim$9.6倍}的性能提升
+                  \item 相较于不采用任何安全措施的明文重复数据删除系统仅产生{\color{red}17.5\%}的额外开销
               \end{itemize}
     \end{itemize}
 \end{frame}
@@ -261,9 +261,9 @@
         \includegraphics[width=\textwidth]{../pic/sgxdedup/key-enclave-arch.pdf}
         \caption{基于TEE的推测性加密概述}
         \label{fig:sgxdedup-SpecEnc}
-      \end{figure}
-      \vspace{-1em}
-      \begin{itemize}
+    \end{figure}
+    \vspace{-1em}
+    \begin{itemize}
         \item  基于密钥安全区和客户端共享的会话密钥保护密钥生成过程
         \item 基于AES CTR模式进行会话内容加解密，密钥安全区离线生成CTR模式所需的加解密掩码以提升在线服务效率
     \end{itemize}
@@ -275,9 +275,9 @@
         \includegraphics[width=\textwidth]{../pic/sgxdedup/keyRegression.pdf}
         \caption{自更新的会话密钥管理}
         \label{fig:sgxdedup-keymanage}
-      \end{figure}
-      \vspace{-1em}
-      \begin{itemize}
+    \end{figure}
+    \vspace{-1em}
+    \begin{itemize}
         \item 云服务端和密钥安全区可以根据其会话密钥状态导出新的会话密钥，而客户端只能从云服务端下载当前密钥状态，并产生最新的会话密钥
         \item 仅有通过认证的客户端可获取最新的会话密钥状态，实现云服务端对云存储服务订阅的动态管理
     \end{itemize}
@@ -299,33 +299,21 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{数据块特征提取}
-    \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
-              \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
-              \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
-    \end{itemize}
-\end{frame}
-
 \begin{frame}{相似性保留加密}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[width=0.7\textwidth]{../pic/featurespy/spe.pdf}
+        \caption{相似性保留加密方法}
+        \label{fig:featurespy-design-spe}
+    \end{figure}
+    \vspace{-1.5em}
     \begin{itemize}
-        \item Outsourcing data management to cloud is common in practice
+        \item 
+        基于N-Transform方案提取多个数据块特征（默认为3个）
               \begin{itemize}
-                  \item 22\% business data are stored in the cloud[*]
+                  \item 采用allFeature作为数据块特征或从3个特征中选取代表特征（minFeature、firstFeature方案）
               \end{itemize}
-        \item  Outsourcing storage should fulfill security and storage efficiency
-              %   \vspace{-1em}
-              \begin{itemize}
-                  \item  Security: protect outsourced data against unauthorized access
-                  \item  Storage efficiency: reduce storage footprints
-              \end{itemize}
+        \item  密文数据块前缀（约占0.4\%）相同则认为两数据块相似
     \end{itemize}
 \end{frame}
 
