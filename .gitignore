@@ -3,7 +3,8 @@ node_modules/
 sub_modules/
 thesis.pdf
 main.pdf
-slides/masterSlides.pdf
+slides/masterThesisSlides.pdf
+slides/masterThesisSlides-short.pdf
 main.synctex(busy)
 bf.pdf
 *.tmp

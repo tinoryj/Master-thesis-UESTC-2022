@@ -308,8 +308,8 @@
     \end{figure}
     \vspace{-1.5em}
     \begin{itemize}
-        \item 
-        基于N-Transform方案提取多个数据块特征（默认为3个）
+        \item
+              基于N-Transform方案提取多个数据块特征（默认为3个）
               \begin{itemize}
                   \item 采用allFeature作为数据块特征或从3个特征中选取代表特征（minFeature、firstFeature方案）
               \end{itemize}
@@ -407,21 +407,21 @@
         \label{tab:sgxdedup-summary}
         \begin{tabular}{cccc}
             \toprule
-            \multicolumn{2}{c}{\bf 对比对象}                                   & {\bf 基础方案/系统}                    & {\bf 优势}                                   \\
+            \multicolumn{2}{c}{\bf 对比对象}               & {\bf 基础方案/系统}                        & {\bf 优势}                                   \\
             \midrule
-            \multirow{8}{*}{\bf 性能提升}                                      & \multirow{4}{*}{\shortstack{密钥生成}} & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
-                                                                               &                                        & OPRF-RSA           & 131.9$\times\;\uparrow$ \\
-                                                                               &                                        & MinHash encryption & 9.4$\times\;\uparrow$   \\
-                                                                               &                                        & TED                & 3.7$\times\;\uparrow$   \\
+            \multirow{8}{*}{\bf 性能提升}                  & \multirow{4}{*}{\shortstack{密钥生成}}     & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
+                                                           &                                            & OPRF-RSA           & 131.9$\times\;\uparrow$ \\
+                                                           &                                            & MinHash encryption & 9.4$\times\;\uparrow$   \\
+                                                           &                                            & TED                & 3.7$\times\;\uparrow$   \\
             \cline{2-4}
-                                                                               & \multirow{2}{*}{所有权证明}            & PoW-MT             & 8.2$\times\;\uparrow$   \\
-                                                                               &                                        & PoW-UH             & 2.2$\times\;\uparrow$   \\
+                                                           & \multirow{2}{*}{所有权证明}                & PoW-MT             & 8.2$\times\;\uparrow$   \\
+                                                           &                                            & PoW-UH             & 2.2$\times\;\uparrow$   \\
             \cline{2-4}
-                                                                               & \multirow{2}{*}{\shortstack{原型系统}} & DupLESS            & 8.1$\times\;\uparrow$   \\
-                                                                               &                                        & PlainDedup         & 17.5\% $\downarrow$     \\
+                                                           & \multirow{2}{*}{\shortstack{原型系统}}     & DupLESS            & 8.1$\times\;\uparrow$   \\
+                                                           &                                            & PlainDedup         & 17.5\% $\downarrow$     \\
             \hline
-            \multicolumn{2}{c}{\multirow{2}{*}{\shortstack{\bf 网络资源节省}}} & Two-stage dedup                        & 35.3\% $\uparrow$                            \\
-            \multicolumn{2}{c}{}                                               & Randomized-threshold dedup             & 91.4\% $\uparrow$                            \\
+            \multirow{2}{*}{\shortstack{\bf 网络资源节省}} & \multirow{2}{*}{\shortstack{重复数据删除}} & Two-stage dedup    & 35.3\% $\uparrow$       \\
+            \multicolumn{2}{c}{}                           & Randomized-threshold dedup                 & 91.4\% $\uparrow$                            \\
             \bottomrule
         \end{tabular}
     \end{table}
