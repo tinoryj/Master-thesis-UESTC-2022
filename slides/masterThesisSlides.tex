@@ -101,7 +101,7 @@
               \begin{itemize}
                   \item 作用单位为数据块（可变大小或固定大小）
               \end{itemize}
-        \item  其进保存具有相同内容的数据块的一个副本，并将其他数据块通过索引指向该副本
+        \item  其仅保存具有相同内容的数据块的一个副本，并将其他数据块通过索引指向该副本
     \end{itemize}
 \end{frame}
 
@@ -151,15 +151,15 @@
             \toprule
                                         & 处理阶段/可选方案      & 处理时间(ms/MiB) \\ \midrule
                                         & 数据分块               & 3.8              \\
-            服务器辅助密钥生成          & RSA(BLS)盲签名方案     & 40.7(488.3)      \\
+            服务器辅助密钥生成          & {\color{red} RSA(BLS)盲签名方案}     & {\color{red} 40.7(488.3)}      \\
             \multirow{3}{*}{所有权证明} & 数据加密               & 2.5              \\
-                                        & Merkel树(通用哈希)方案 & 27.0(7.2)        \\
+                                        & {\color{red} Merkel树(通用哈希)方案} & {\color{red} 27.0(7.2)}        \\
                                         & 重复数据删除           & 1.7              \\ \bottomrule
         \end{tabular}
     \end{table}
     \begin{itemize}
         \item 盲签名(OPRF)算法成为加密重复数据删除的系统性能瓶颈
-        \item 基于Merkel树的所有权证明方案安全但计算开销极大
+        \item 基于Merkel树的所有权证明方案安全性高但计算开销极大
         \item 基于通用哈希的方案以降低安全性为代价且仍为性能瓶颈之一
     \end{itemize}
 \end{frame}
@@ -191,11 +191,11 @@
     \begin{itemize}
         \item 可信执行环境(TEE)是一种在计算平台上由软硬件协同构建的安全区域，可确保其中的程序按照预期执行，保证程序初始状态和运行时的机密性、完整性
               \begin{itemize}
-                  \item \textbf{隔离性}：
+                  \item {\bf 隔离性}：
                         TEE将其中的目标程序、数据等与外部环境隔离，使得TEE外软硬件均无法获得其内部的机密信息。
-                  \item \textbf{软硬协同性}：
+                  \item {\bf 软硬协同性}：
                         TEE产品包含物理隔离的专用硬件或运行权限以及相应的软件SDK。
-                  \item \textbf{富表达性}：
+                  \item {\bf 富表达性}：
                         与传统安全芯片或纯软件的密码学隐私保护机制相比，TEE支持更丰富的上层应用。
               \end{itemize}
         \item  主流可信执行环境
@@ -238,7 +238,24 @@
     \end{figure}
     \vspace{-1em}
     \begin{itemize}
-        \item  核心思想：使用TEE取代加密重复数据删除中计算开销高昂的基于密码学算法
+        \item  {\bf 核心思想：使用TEE取代加密重复数据删除中计算开销高昂的密码学算法}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{\sysnameS：设计目标与关键问题}
+    \begin{itemize}
+        \item 设计目标：
+              \begin{itemize}
+                  \item 数据机密性保障：即使密钥服务器或任何客户端受到攻击，\sysnameS 仍可避免外包数据块和密钥受到未授权访问。
+                  \item 低带宽开销/高存储效率：与源端重复数据删除一致，\sysnameS 在上传前将进行跨客户端的重复数据删除，并仅上传非重复的密文数据块到云服务提供商。
+                  \item 高计算效率: 相较于现有基于软件的加密重复数据删除方案，\sysnameS 可显著降低数据块加密、所有权证明等密码学操开销。
+              \end{itemize}
+        \item 部署安全区存在的关键问题：
+              \begin{itemize}
+                  \item 如何安全有效的引导安全区？
+                  \item 密钥安全区与每个客户端如何建立安全信道？
+                  \item 密钥安全区如何减少安全信道的在线开销？
+              \end{itemize}
     \end{itemize}
 \end{frame}
 
@@ -289,13 +306,14 @@
     \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{../pic/featurespy/architecture.pdf}
-        \caption{基于密文的攻击检测方案工作流程。\sysnameF 将攻击检测程序与安全区中的所有权证明（\sysnameS ）结合起来，以恶意客户端防止绕过检测}
+        \caption{基于密文的攻击检测方案工作流程。\sysnameF 将攻击检测程序与安全区中的所有权证明（\sysnameS ）结合起来，以防止恶意客户端绕过检测}
         \label{fig:featurespy-architecture-secure}
     \end{figure}
     \vspace{-1em}
     \begin{itemize}
         \item 检测原理：执行推测内容攻击的客户端需枚举伪造文件，产生大量相似数据块
-        \item 核心思想：在安全区中对采用相似性保留加密的数据块特征进行统计，以判断攻击是否发生
+        \item {\bf 关键问题：无法基于密文检测明文数据块相似性}
+        \item 核心思想：在安全区中对采用相似性保留加密的数据块进行统计，以判断攻击是否发生
     \end{itemize}
 \end{frame}
 
@@ -311,40 +329,11 @@
         \item
               基于N-Transform方案提取多个数据块特征（默认为3个）
               \begin{itemize}
-                  \item 采用allFeature作为数据块特征或从3个特征中选取代表特征（minFeature、firstFeature方案）
+                \item 采用所有特征的哈希作为数据块特征（allFeature方案）或从3个特征中选取代表特征（minFeature、firstFeature方案）
               \end{itemize}
         \item  密文数据块前缀（约占0.4\%）相同则认为两数据块相似
     \end{itemize}
 \end{frame}
-
-% \begin{frame}{如何使用块}
-%     \begin{block}{块的名称}
-%         \begin{itemize}
-%             \item A
-%             \item B
-%         \end{itemize}
-%     \end{block}
-% \end{frame}
-
-% \begin{frame}{如何使用定义、定理、引理、证明}
-
-%     \kaishu
-%     \begin{define}[定义名称]
-%         定义内容
-%     \end{define}
-
-%     \begin{lem}[引理名称]
-%         引理内容
-%     \end{lem}
-
-%     \begin{thm}[定理名称]
-%         定理内容（这里的定义、引理、定理分章节自动标号）
-%     \end{thm}
-
-%     \begin{proof}
-%         证明内容
-%     \end{proof}
-% \end{frame}
 
 \section{原型系统实现}
 
@@ -399,33 +388,33 @@
 
 \subsection{\sysnameS 原型系统}
 
-\begin{frame}{\sysnameS 原型系统实验结果概览}
-    \begin{table}[!htb]
-        \small
-        \centering
-        \caption{\sysnameS 原型系统主要实验结果汇总}
-        \label{tab:sgxdedup-summary}
-        \begin{tabular}{cccc}
-            \toprule
-            \multicolumn{2}{c}{\bf 对比对象}               & {\bf 基础方案/系统}                        & {\bf 优势}                                   \\
-            \midrule
-            \multirow{8}{*}{\bf 性能提升}                  & \multirow{4}{*}{\shortstack{密钥生成}}     & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
-                                                           &                                            & OPRF-RSA           & 131.9$\times\;\uparrow$ \\
-                                                           &                                            & MinHash encryption & 9.4$\times\;\uparrow$   \\
-                                                           &                                            & TED                & 3.7$\times\;\uparrow$   \\
-            \cline{2-4}
-                                                           & \multirow{2}{*}{所有权证明}                & PoW-MT             & 8.2$\times\;\uparrow$   \\
-                                                           &                                            & PoW-UH             & 2.2$\times\;\uparrow$   \\
-            \cline{2-4}
-                                                           & \multirow{2}{*}{\shortstack{原型系统}}     & DupLESS            & 8.1$\times\;\uparrow$   \\
-                                                           &                                            & PlainDedup         & 17.5\% $\downarrow$     \\
-            \hline
-            \multirow{2}{*}{\shortstack{\bf 网络资源节省}} & \multirow{2}{*}{\shortstack{重复数据删除}} & Two-stage dedup    & 35.3\% $\uparrow$       \\
-            \multicolumn{2}{c}{}                           & Randomized-threshold dedup                 & 91.4\% $\uparrow$                            \\
-            \bottomrule
-        \end{tabular}
-    \end{table}
-\end{frame}
+% \begin{frame}{\sysnameS 原型系统实验结果概览}
+%     \begin{table}[!htb]
+%         \small
+%         \centering
+%         \caption{\sysnameS 原型系统主要实验结果汇总}
+%         \label{tab:sgxdedup-summary}
+%         \begin{tabular}{cccc}
+%             \toprule
+%             \multicolumn{2}{c}{\bf 对比对象}               & {\bf 基础方案/系统}                        & {\bf 优势}                                   \\
+%             \midrule
+%             \multirow{8}{*}{\bf 性能提升}                  & \multirow{4}{*}{\shortstack{密钥生成}}     & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
+%                                                            &                                            & OPRF-RSA           & 131.9$\times\;\uparrow$ \\
+%                                                            &                                            & MinHash encryption & 9.4$\times\;\uparrow$   \\
+%                                                            &                                            & TED                & 3.7$\times\;\uparrow$   \\
+%             \cline{2-4}
+%                                                            & \multirow{2}{*}{所有权证明}                & PoW-MT             & 8.2$\times\;\uparrow$   \\
+%                                                            &                                            & PoW-UH             & 2.2$\times\;\uparrow$   \\
+%             \cline{2-4}
+%                                                            & \multirow{2}{*}{\shortstack{原型系统}}     & DupLESS            & 8.1$\times\;\uparrow$   \\
+%                                                            &                                            & PlainDedup         & 17.5\% $\downarrow$     \\
+%             \hline
+%             \multirow{2}{*}{\shortstack{\bf 网络资源节省}} & \multirow{2}{*}{\shortstack{重复数据删除}} & Two-stage dedup    & 35.3\% $\uparrow$       \\
+%             \multicolumn{2}{c}{}                           & Randomized-threshold dedup                 & 91.4\% $\uparrow$                            \\
+%             \bottomrule
+%         \end{tabular}
+%     \end{table}
+% \end{frame}
 
 \begin{frame}{密钥生成效率}
     \begin{figure}[htpb]
@@ -640,6 +629,38 @@
     \nocite{*}
     \bibliographystyle{thesis-uestc}
     \bibliography{publication}
+    \begin{textbox}{其他成果及荣誉}
+        \begin{itemize}
+            \item 2022年四川省优秀毕业生
+            \item 2021年中国电子科技集团-电子科技大学奖学金
+            \item 2019$\sim$2021年研究生学业奖学金一等奖（三次）
+            \item 2020年全国大学生集成电路创新创业大赛总决赛三等奖
+        \end{itemize}
+    \end{textbox}
+\end{frame}
+
+\section{总结}
+
+\begin{frame}{}
+    \begin{textbox}{针对性能瓶颈问题：}
+        \begin{itemize}
+            \item \sysnameS ：基于可信执行环境替代昂贵的密码学计算显著降低了加密重复数据删除中的性能瓶颈
+            \begin{itemize}
+                \item 安全高效的安全区管理机制
+                \item 自更新的会话密钥管理
+                \item 基于TEE的轻量级推测性加密
+            \end{itemize}
+        \end{itemize}
+    \end{textbox}
+    \begin{textbox}{针对推测内容攻击问题：}
+        \begin{itemize}
+            \item \prototype ：基于\sysnameS 以较低额外性能开销主动防御推测内容攻击
+            \begin{itemize}
+                \item 相似性保留加密
+                \item 安全区内基于密文的相似性检查
+            \end{itemize}
+        \end{itemize}
+    \end{textbox}
 \end{frame}
 
 \begin{frame}

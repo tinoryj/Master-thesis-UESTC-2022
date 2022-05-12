@@ -101,7 +101,7 @@
               \begin{itemize}
                   \item 作用单位为数据块（可变大小或固定大小）
               \end{itemize}
-        \item  其进保存具有相同内容的数据块的一个副本，并将其他数据块通过索引指向该副本
+        \item  其仅保存具有相同内容的数据块的一个副本，并将其他数据块通过索引指向该副本
     \end{itemize}
 \end{frame}
 
@@ -151,15 +151,15 @@
             \toprule
                                         & 处理阶段/可选方案      & 处理时间(ms/MiB) \\ \midrule
                                         & 数据分块               & 3.8              \\
-            服务器辅助密钥生成          & RSA(BLS)盲签名方案     & 40.7(488.3)      \\
+            服务器辅助密钥生成          & {\color{red} RSA(BLS)盲签名方案}     & {\color{red} 40.7(488.3)}      \\
             \multirow{3}{*}{所有权证明} & 数据加密               & 2.5              \\
-                                        & Merkel树(通用哈希)方案 & 27.0(7.2)        \\
+                                        & {\color{red} Merkel树(通用哈希)方案} & {\color{red} 27.0(7.2)}        \\
                                         & 重复数据删除           & 1.7              \\ \bottomrule
         \end{tabular}
     \end{table}
     \begin{itemize}
         \item 盲签名(OPRF)算法成为加密重复数据删除的系统性能瓶颈
-        \item 基于Merkel树的所有权证明方案安全但计算开销极大
+        \item 基于Merkel树的所有权证明方案安全性高但计算开销极大
         \item 基于通用哈希的方案以降低安全性为代价且仍为性能瓶颈之一
     \end{itemize}
 \end{frame}
@@ -191,11 +191,11 @@
     \begin{itemize}
         \item 可信执行环境(TEE)是一种在计算平台上由软硬件协同构建的安全区域，可确保其中的程序按照预期执行，保证程序初始状态和运行时的机密性、完整性
               \begin{itemize}
-                  \item \textbf{隔离性}：
+                  \item {\bf 隔离性}：
                         TEE将其中的目标程序、数据等与外部环境隔离，使得TEE外软硬件均无法获得其内部的机密信息。
-                  \item \textbf{软硬协同性}：
+                  \item {\bf 软硬协同性}：
                         TEE产品包含物理隔离的专用硬件或运行权限以及相应的软件SDK。
-                  \item \textbf{富表达性}：
+                  \item {\bf 富表达性}：
                         与传统安全芯片或纯软件的密码学隐私保护机制相比，TEE支持更丰富的上层应用。
               \end{itemize}
         \item  主流可信执行环境
@@ -215,7 +215,7 @@
               \begin{itemize}
                   \item 基于TEE的轻量级密钥生成技术，相较基于RSA盲签名的方案实现{\color{red}131倍}性能提升
                   \item 基于TEE的高效所有权证明技术，相较基于Merkel树的方案实现{\color{red}8.2倍}性能提升
-                  \item 基于TEE的扩展所有权证明技术，在测试数据集中实现{\color{red}99\%}以上的检测成功率
+                  \item 基于TEE的扩展所有权证明技术，在测试数据集中实现{\color{red}98\%}以上的检测成功率
               \end{itemize}
     \end{itemize}
     \begin{itemize}
@@ -238,9 +238,26 @@
     \end{figure}
     \vspace{-1em}
     \begin{itemize}
-        \item  核心思想：使用TEE取代加密重复数据删除中计算开销高昂的基于密码学算法
+        \item  {\bf 核心思想：使用TEE取代加密重复数据删除中计算开销高昂的密码学算法}
     \end{itemize}
 \end{frame}
+
+% \begin{frame}{\sysnameS：设计目标与关键问题}
+%     \begin{itemize}
+%         \item 设计目标：
+%               \begin{itemize}
+%                   \item 数据机密性保障：即使密钥服务器或任何客户端受到攻击，\sysnameS 仍可避免外包数据块和密钥受到未授权访问。
+%                   \item 低带宽开销/高存储效率：与源端重复数据删除一致，\sysnameS 在上传前将进行跨客户端的重复数据删除，并仅上传非重复的密文数据块到云服务提供商。
+%                   \item 高计算效率: 相较于现有基于软件的加密重复数据删除方案，\sysnameS 可显著降低数据块加密、所有权证明等密码学操开销。
+%               \end{itemize}
+%         \item 部署安全区存在的关键问题：
+%               \begin{itemize}
+%                   \item 如何安全有效的引导安全区？
+%                   \item 密钥安全区与每个客户端如何建立安全信道？
+%                   \item 密钥安全区如何减少安全信道的在线开销？
+%               \end{itemize}
+%     \end{itemize}
+% \end{frame}
 
 \begin{frame}{基于TEE的数据所有权证明}
     \begin{figure}[!htb]
@@ -255,11 +272,11 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{基于TEE的推测性加密}
+\begin{frame}{基于TEE的密钥生成（含推测性加密）}
     \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{../pic/sgxdedup/key-enclave-arch.pdf}
-        \caption{基于TEE的推测性加密概述}
+        \caption{基于TEE的密钥生成（含推测性加密）概述}
         \label{fig:sgxdedup-SpecEnc}
     \end{figure}
     \vspace{-1em}
@@ -269,33 +286,20 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{基于TEE的自更新会话密钥管理}
-    \begin{figure}[!htb]
-        \centering
-        \includegraphics[width=\textwidth]{../pic/sgxdedup/keyRegression.pdf}
-        \caption{自更新的会话密钥管理}
-        \label{fig:sgxdedup-keymanage}
-    \end{figure}
-    \vspace{-1em}
-    \begin{itemize}
-        \item 云服务端和密钥安全区可以根据其会话密钥状态导出新的会话密钥，而客户端只能从云服务端下载当前密钥状态，并产生最新的会话密钥
-        \item 仅有通过认证的客户端可获取最新的会话密钥状态，实现云服务端对云存储服务订阅的动态管理
-    \end{itemize}
-\end{frame}
-
 \subsection{\sysnameF: 基于TEE在线检测推测内容攻击}
 
 \begin{frame}{\sysnameF: 基于TEE在线检测推测内容攻击}
     \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{../pic/featurespy/architecture.pdf}
-        \caption{基于密文的攻击检测方案工作流程。\sysnameF 将攻击检测程序与安全区中的所有权证明（\sysnameS ）结合起来，以恶意客户端防止绕过检测}
+        \caption{基于密文的攻击检测方案工作流程。\sysnameF 将攻击检测程序与安全区中的所有权证明（\sysnameS ）结合起来，以防止恶意客户端绕过检测}
         \label{fig:featurespy-architecture-secure}
     \end{figure}
     \vspace{-1em}
     \begin{itemize}
         \item 检测原理：执行推测内容攻击的客户端需枚举伪造文件，产生大量相似数据块
-        \item 核心思想：在安全区中对采用相似性保留加密的数据块特征进行统计，以判断攻击是否发生
+        \item {\bf 关键问题：无法基于密文检测明文数据块相似性}
+        \item {\bf 核心思想：在安全区中对采用相似性保留加密的数据块进行统计，以判断攻击是否发生}
     \end{itemize}
 \end{frame}
 
@@ -311,7 +315,7 @@
         \item
               基于N-Transform方案提取多个数据块特征（默认为3个）
               \begin{itemize}
-                  \item 采用allFeature作为数据块特征或从3个特征中选取代表特征（minFeature、firstFeature方案）
+                  \item 采用所有特征的哈希作为数据块特征（allFeature方案）或从3个特征中选取代表特征（minFeature、firstFeature方案）
               \end{itemize}
         \item  密文数据块前缀（约占0.4\%）相同则认为两数据块相似
     \end{itemize}
@@ -371,6 +375,7 @@
 \subsection{\sysnameS 原型系统}
 
 \begin{frame}{\sysnameS 原型系统实验结果概览}
+    \vspace{-1em}
     \begin{table}[!htb]
         \small
         \centering
@@ -380,7 +385,7 @@
             \toprule
             \multicolumn{2}{c}{\bf 对比对象}               & {\bf 基础方案/系统}                        & {\bf 优势}                                   \\
             \midrule
-            \multirow{8}{*}{\bf 性能提升}                  & \multirow{4}{*}{\shortstack{密钥生成}}     & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
+            \multirow{9}{*}{\bf 性能提升}                  & \multirow{4}{*}{\shortstack{密钥生成}}     & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
                                                            &                                            & OPRF-RSA           & 131.9$\times\;\uparrow$ \\
                                                            &                                            & MinHash encryption & 9.4$\times\;\uparrow$   \\
                                                            &                                            & TED                & 3.7$\times\;\uparrow$   \\
@@ -388,75 +393,18 @@
                                                            & \multirow{2}{*}{所有权证明}                & PoW-MT             & 8.2$\times\;\uparrow$   \\
                                                            &                                            & PoW-UH             & 2.2$\times\;\uparrow$   \\
             \cline{2-4}
-                                                           & \multirow{2}{*}{\shortstack{原型系统}}     & DupLESS            & 8.1$\times\;\uparrow$   \\
+                                                           & \multirow{3}{*}{\shortstack{原型系统}}     & DupLESS            & 8.1$\times\;\uparrow$   \\
                                                            &                                            & PlainDedup         & 17.5\% $\downarrow$     \\
+                                                           &                                            & {\color{blue}\prototype}         & {\color{blue}11.9\% $\uparrow$}     \\
             \hline
             \multirow{2}{*}{\shortstack{\bf 网络资源节省}} & \multirow{2}{*}{\shortstack{重复数据删除}} & Two-stage dedup    & 35.3\% $\uparrow$       \\
             \multicolumn{2}{c}{}                           & Randomized-threshold dedup                 & 91.4\% $\uparrow$                            \\
+            \hline
+            \multirow{2}{*}{\shortstack{\bf {\color{blue} 攻击检测效果}}} & \multirow{2}{*}{\shortstack{{\color{blue} \prototype}}} & {\color{blue}检测率}    & {\color{blue} >98.8\%}        \\
+            & & {\color{blue}误报率}    & {\color{blue}<2.4\%}       \\
             \bottomrule
         \end{tabular}
     \end{table}
-\end{frame}
-
-\subsection{\sysnameF 检测方案}
-
-\begin{frame}{\sysnameF 检测效果案例分析}
-    \begin{columns}
-        \begin{column}{.6\textwidth}
-            \vspace{-1em}
-            \begin{figure}[!htb]
-                \centering
-                \includegraphics[width=\linewidth]{../pic/featurespy/plot/detection/overall/prefixDistribution_legend.pdf}\\
-                \includegraphics[width=\linewidth]{../pic/featurespy/plot/detection/overall/prefixDistribution-1000-Linux-min.pdf}\\
-                \caption{Linux最新快照在包含/不包含攻击行为时每个窗口(W=1\,K)的相似性指标的频率特征。}
-                \label{fig:featurespy-expDetectionOverall}
-            \end{figure}
-            \vspace{-2em}
-            \begin{figure}[!htb]
-                \centering
-                \includegraphics[width=0.66\linewidth]{../pic/featurespy/plot/detection/overall/effectiveness-falsePositive_legend.pdf}
-                \vspace{5pt}\\
-                \begin{tabular}{@{\ }c@{\ }c}
-                    \includegraphics[width=0.66\linewidth]{../pic/featurespy/plot/detection/overall/effectivenessLinux.pdf} &
-                    \includegraphics[width=0.33\linewidth]{../pic/featurespy/plot/detection/overall/falsePositiveLinux.pdf}   \\
-                    \mbox{\small (a) 检测率}                                                                                &
-                    \mbox{\small (b) 误判率}                                                                                  \\
-                \end{tabular}
-                \caption{Linux数据集中总体检测率和误判率}
-                \label{fig:featurespy-expDetectionOverallFalsePositive}
-            \end{figure}
-        \end{column}
-        \begin{column}{.4\textwidth}
-            \begin{itemize}
-                \item 在对所有窗口大小使用相同检测阈值T时，随窗口大小增大误报率降低（W=5,10\,K时为0）。
-                \item {\tt minFeature}方案检测到更多相似数据块，相较于其他两种方案产生更高误报率。
-            \end{itemize}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-\subsection{\prototype 原型系统}
-
-\begin{frame}{\prototype 原型系统性能}
-    \begin{figure}[!htb]
-        \centering
-        \includegraphics[width=0.7\textwidth]{../pic/featurespy/plot/performance/multiClient/legend.pdf}
-        \vspace{5pt}\\
-        \begin{tabular}{@{\ }c@{\ }c@{\ }c}
-            \includegraphics[width=0.32\textwidth]{../pic/featurespy/plot/performance/multiClient/upload_1st_line.pdf} &
-            \includegraphics[width=0.32\textwidth]{../pic/featurespy/plot/performance/multiClient/upload_2nd_line.pdf} &
-            \includegraphics[width=0.32\textwidth]{../pic/featurespy/plot/performance/multiClient/download_line.pdf}     \\
-            {\small (a)第一轮上传}                                                                                     &
-            {\small (b)第二轮上传}                                                                                     &
-            {\small (c)下载}
-        \end{tabular}
-        \caption{多客户端上传/下载性能。所有\prototype 实例的下载速度均相同的，本文将它们(橙色)与 \sysnameS(绿色)进行比较。}
-        \label{fig:featurespy-expMultiClientThroughput}
-    \end{figure}
-
-    \begin{itemize}
-        \item \sysnameS (4客户端聚合上传速度924.9\,MiB/s)比\prototype 更早达到峰值性能(6客户端聚合上传速度882.2\,MiB/s)
-    \end{itemize}
 \end{frame}
 
 \section{个人成果}
@@ -466,6 +414,38 @@
     \nocite{*}
     \bibliographystyle{thesis-uestc}
     \bibliography{publication}
+    \begin{textbox}{其他成果及荣誉}
+        \begin{itemize}
+            \item 2022年四川省优秀毕业生
+            \item 2021年中国电子科技集团-电子科技大学奖学金
+            \item 2019$\sim$2021年研究生学业奖学金一等奖（三次）
+            \item 2020年全国大学生集成电路创新创业大赛总决赛三等奖
+        \end{itemize}
+    \end{textbox}
+\end{frame}
+
+\section{总结}
+
+\begin{frame}{}
+    \begin{textbox}{针对性能瓶颈问题：}
+        \begin{itemize}
+            \item \sysnameS ：基于可信执行环境替代昂贵的密码学计算显著降低了加密重复数据删除中的性能瓶颈
+            \begin{itemize}
+                \item 安全高效的安全区管理机制
+                \item 自更新的会话密钥管理
+                \item 基于TEE的轻量级推测性加密
+            \end{itemize}
+        \end{itemize}
+    \end{textbox}
+    \begin{textbox}{针对推测内容攻击问题：}
+        \begin{itemize}
+            \item \prototype ：基于\sysnameS 以较低额外性能开销主动防御推测内容攻击
+            \begin{itemize}
+                \item 相似性保留加密
+                \item 安全区内基于密文的相似性检查
+            \end{itemize}
+        \end{itemize}
+    \end{textbox}
 \end{frame}
 
 \begin{frame}
