@@ -149,12 +149,12 @@
         \label{tab:intro-bottleneck}
         \begin{tabular}{@{}ccc@{}}
             \toprule
-                                        & 处理阶段/可选方案      & 处理时间(ms/MiB) \\ \midrule
-                                        & 数据分块               & 3.8              \\
-            服务器辅助密钥生成          & {\color{red} RSA(BLS)盲签名方案}     & {\color{red} 40.7(488.3)}      \\
-            \multirow{3}{*}{所有权证明} & 数据加密               & 2.5              \\
-                                        & {\color{red} Merkel树(通用哈希)方案} & {\color{red} 27.0(7.2)}        \\
-                                        & 重复数据删除           & 1.7              \\ \bottomrule
+                                        & 处理阶段/可选方案                    & 处理时间(ms/MiB)          \\ \midrule
+                                        & 数据分块                             & 3.8                       \\
+            服务器辅助密钥生成          & {\color{red} RSA(BLS)盲签名方案}     & {\color{red} 40.7(488.3)} \\
+            \multirow{3}{*}{所有权证明} & 数据加密                             & 2.5                       \\
+                                        & {\color{red} Merkel树(通用哈希)方案} & {\color{red} 27.0(7.2)}   \\
+                                        & 重复数据删除                         & 1.7                       \\ \bottomrule
         \end{tabular}
     \end{table}
     \begin{itemize}
@@ -329,7 +329,7 @@
         \item
               基于N-Transform方案提取多个数据块特征（默认为3个）
               \begin{itemize}
-                \item 采用所有特征的哈希作为数据块特征（allFeature方案）或从3个特征中选取代表特征（minFeature、firstFeature方案）
+                  \item 采用所有特征的哈希作为数据块特征（allFeature方案）或从3个特征中选取代表特征（minFeature、firstFeature方案）
               \end{itemize}
         \item  密文数据块前缀（约占0.4\%）相同则认为两数据块相似
     \end{itemize}
@@ -645,20 +645,20 @@
     \begin{textbox}{针对性能瓶颈问题：}
         \begin{itemize}
             \item \sysnameS ：基于可信执行环境替代昂贵的密码学计算显著降低了加密重复数据删除中的性能瓶颈
-            \begin{itemize}
-                \item 安全高效的安全区管理机制
-                \item 自更新的会话密钥管理
-                \item 基于TEE的轻量级推测性加密
-            \end{itemize}
+                  \begin{itemize}
+                      \item 安全高效的安全区管理机制
+                      \item 自更新的会话密钥管理
+                      \item 基于TEE的轻量级推测性加密
+                  \end{itemize}
         \end{itemize}
     \end{textbox}
     \begin{textbox}{针对推测内容攻击问题：}
         \begin{itemize}
             \item \prototype ：基于\sysnameS 以较低额外性能开销主动防御推测内容攻击
-            \begin{itemize}
-                \item 相似性保留加密
-                \item 安全区内基于密文的相似性检查
-            \end{itemize}
+                  \begin{itemize}
+                      \item 相似性保留加密
+                      \item 安全区内基于密文的相似性检查
+                  \end{itemize}
         \end{itemize}
     \end{textbox}
 \end{frame}

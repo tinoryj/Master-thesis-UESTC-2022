@@ -149,12 +149,12 @@
         \label{tab:intro-bottleneck}
         \begin{tabular}{@{}ccc@{}}
             \toprule
-                                        & 处理阶段/可选方案      & 处理时间(ms/MiB) \\ \midrule
-                                        & 数据分块               & 3.8              \\
-            服务器辅助密钥生成          & {\color{red} RSA(BLS)盲签名方案}     & {\color{red} 40.7(488.3)}      \\
-            \multirow{3}{*}{所有权证明} & 数据加密               & 2.5              \\
-                                        & {\color{red} Merkel树(通用哈希)方案} & {\color{red} 27.0(7.2)}        \\
-                                        & 重复数据删除           & 1.7              \\ \bottomrule
+                                        & 处理阶段/可选方案                    & 处理时间(ms/MiB)          \\ \midrule
+                                        & 数据分块                             & 3.8                       \\
+            服务器辅助密钥生成          & {\color{red} RSA(BLS)盲签名方案}     & {\color{red} 40.7(488.3)} \\
+            \multirow{3}{*}{所有权证明} & 数据加密                             & 2.5                       \\
+                                        & {\color{red} Merkel树(通用哈希)方案} & {\color{red} 27.0(7.2)}   \\
+                                        & 重复数据删除                         & 1.7                       \\ \bottomrule
         \end{tabular}
     \end{table}
     \begin{itemize}
@@ -383,25 +383,25 @@
         \label{tab:sgxdedup-summary}
         \begin{tabular}{cccc}
             \toprule
-            \multicolumn{2}{c}{\bf 对比对象}               & {\bf 基础方案/系统}                        & {\bf 优势}                                   \\
+            \multicolumn{2}{c}{\bf 对比对象}                              & {\bf 基础方案/系统}                                     & {\bf 优势}                                                 \\
             \midrule
-            \multirow{9}{*}{\bf 性能提升}                  & \multirow{4}{*}{\shortstack{密钥生成}}     & OPRF-BLS           & 1,583$\times\;\uparrow$ \\
-                                                           &                                            & OPRF-RSA           & 131.9$\times\;\uparrow$ \\
-                                                           &                                            & MinHash encryption & 9.4$\times\;\uparrow$   \\
-                                                           &                                            & TED                & 3.7$\times\;\uparrow$   \\
+            \multirow{9}{*}{\bf 性能提升}                                 & \multirow{4}{*}{\shortstack{密钥生成}}                  & OPRF-BLS                 & 1,583$\times\;\uparrow$         \\
+                                                                          &                                                         & OPRF-RSA                 & 131.9$\times\;\uparrow$         \\
+                                                                          &                                                         & MinHash encryption       & 9.4$\times\;\uparrow$           \\
+                                                                          &                                                         & TED                      & 3.7$\times\;\uparrow$           \\
             \cline{2-4}
-                                                           & \multirow{2}{*}{所有权证明}                & PoW-MT             & 8.2$\times\;\uparrow$   \\
-                                                           &                                            & PoW-UH             & 2.2$\times\;\uparrow$   \\
+                                                                          & \multirow{2}{*}{所有权证明}                             & PoW-MT                   & 8.2$\times\;\uparrow$           \\
+                                                                          &                                                         & PoW-UH                   & 2.2$\times\;\uparrow$           \\
             \cline{2-4}
-                                                           & \multirow{3}{*}{\shortstack{原型系统}}     & DupLESS            & 8.1$\times\;\uparrow$   \\
-                                                           &                                            & PlainDedup         & 17.5\% $\downarrow$     \\
-                                                           &                                            & {\color{blue}\prototype}         & {\color{blue}11.9\% $\uparrow$}     \\
+                                                                          & \multirow{3}{*}{\shortstack{原型系统}}                  & DupLESS                  & 8.1$\times\;\uparrow$           \\
+                                                                          &                                                         & PlainDedup               & 17.5\% $\downarrow$             \\
+                                                                          &                                                         & {\color{blue}\prototype} & {\color{blue}11.9\% $\uparrow$} \\
             \hline
-            \multirow{2}{*}{\shortstack{\bf 网络资源节省}} & \multirow{2}{*}{\shortstack{重复数据删除}} & Two-stage dedup    & 35.3\% $\uparrow$       \\
-            \multicolumn{2}{c}{}                           & Randomized-threshold dedup                 & 91.4\% $\uparrow$                            \\
+            \multirow{2}{*}{\shortstack{\bf 网络资源节省}}                & \multirow{2}{*}{\shortstack{重复数据删除}}              & Two-stage dedup          & 35.3\% $\uparrow$               \\
+            \multicolumn{2}{c}{}                                          & Randomized-threshold dedup                              & 91.4\% $\uparrow$                                          \\
             \hline
-            \multirow{2}{*}{\shortstack{\bf {\color{blue} 攻击检测效果}}} & \multirow{2}{*}{\shortstack{{\color{blue} \prototype}}} & {\color{blue}检测率}    & {\color{blue} >98.8\%}        \\
-            & & {\color{blue}误报率}    & {\color{blue}<2.4\%}       \\
+            \multirow{2}{*}{\shortstack{\bf {\color{blue} 攻击检测效果}}} & \multirow{2}{*}{\shortstack{{\color{blue} \prototype}}} & {\color{blue}检测率}     & {\color{blue} >98.8\%}          \\
+                                                                          &                                                         & {\color{blue}误报率}     & {\color{blue}<2.4\%}            \\
             \bottomrule
         \end{tabular}
     \end{table}
@@ -430,20 +430,20 @@
     \begin{textbox}{针对性能瓶颈问题：}
         \begin{itemize}
             \item \sysnameS ：基于可信执行环境替代昂贵的密码学计算显著降低了加密重复数据删除中的性能瓶颈
-            \begin{itemize}
-                \item 安全高效的安全区管理机制
-                \item 自更新的会话密钥管理
-                \item 基于TEE的轻量级推测性加密
-            \end{itemize}
+                  \begin{itemize}
+                      \item 安全高效的安全区管理机制
+                      \item 自更新的会话密钥管理
+                      \item 基于TEE的轻量级推测性加密
+                  \end{itemize}
         \end{itemize}
     \end{textbox}
     \begin{textbox}{针对推测内容攻击问题：}
         \begin{itemize}
             \item \prototype ：基于\sysnameS 以较低额外性能开销主动防御推测内容攻击
-            \begin{itemize}
-                \item 相似性保留加密
-                \item 安全区内基于密文的相似性检查
-            \end{itemize}
+                  \begin{itemize}
+                      \item 相似性保留加密
+                      \item 安全区内基于密文的相似性检查
+                  \end{itemize}
         \end{itemize}
     \end{textbox}
 \end{frame}
