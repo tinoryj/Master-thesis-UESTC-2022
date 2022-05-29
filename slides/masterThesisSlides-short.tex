@@ -272,17 +272,17 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{基于TEE的密钥生成（含推测性加密）}
+\begin{frame}{基于TEE的密钥生成（基于推测性加密）}
     \begin{figure}[!htb]
         \centering
         \includegraphics[width=\textwidth]{../pic/sgxdedup/key-enclave-arch.pdf}
-        \caption{基于TEE的密钥生成（含推测性加密）概述}
+        \caption{基于TEE的密钥生成（基于推测性加密）概述}
         \label{fig:sgxdedup-SpecEnc}
     \end{figure}
     \vspace{-1em}
     \begin{itemize}
-        \item  基于密钥安全区和客户端共享的会话密钥保护密钥生成过程
-        \item 基于AES CTR模式进行会话内容加解密，密钥安全区离线生成CTR模式所需的加解密掩码以提升在线服务效率
+        \item 基于密钥安全区和客户端共享的会话密钥保护密钥生成过程
+        \item 推测性加密：基于AES CTR模式进行会话内容加解密，密钥安全区离线生成CTR模式所需的加解密掩码以提升在线服务效率
     \end{itemize}
 \end{frame}
 
