@@ -876,7 +876,7 @@ tabsize=4
     \cline{2-2}
     作\hspace{0.66em}者\hspace{0.66em}姓\hspace{0.67em}名 & \zh@theauthor &\\
     \cline{2-2}
-    指\hspace{0.66em}导\hspace{0.66em}老\hspace{0.67em}师 & \zh@theadvisor &\\
+    指\hspace{0.66em}导\hspace{0.66em}教\hspace{0.67em}师 & \zh@theadvisor &\\
     \cline{2-2}
     学\chinesespace\chinesespace\chinesespace\chinesespace 院 & \zh@theschool &\\
     \cline{2-2}
@@ -892,7 +892,7 @@ tabsize=4
     \cline{2-2}
     作者姓名 & \zh@theauthor &\\
     \cline{2-2}
-    指导老师 & \zh@theadvisor &\\
+    指导教师 & \zh@theadvisor &\\
     \cline{2-2}
     学\chinesespace\chinesespace 院 & \zh@theschool &\\
     \cline{2-2}
@@ -950,7 +950,7 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
       p{4.45in}}
-      指导老师 & {\bfseries\zh@theadvisor} \\
+      指导教师 & {\bfseries\zh@theadvisor} \\
     \cline{2-2}
       & {\bfseries 电子科技大学\chinesespace 成都} \\
     \cline{2-2}
@@ -1064,7 +1064,7 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{16pt}{16pt}\selectfont}
       p{4.45in}}
-      指导老师 & {\bfseries\zh@theadvisor} \\
+      指导教师 & {\bfseries\zh@theadvisor} \\
     \cline{2-2}
       & {\bfseries 电子科技大学\chinesespace 成都} \\
     \cline{2-2}
