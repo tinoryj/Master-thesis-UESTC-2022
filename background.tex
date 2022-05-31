@@ -122,8 +122,6 @@ Intel Software Guard Extensions (Intel SGX)\citing{sgx,sgx2}，是一组内置�
 
 ARM TrustZone\citing{trustzone}是ARM公司为Cortex-A微架构\citing{cortex-a}设计的一种TEE解决方案，并在最新的指令集架构中扩展至Cortex-M微架构\citing{cortex-m}。TrustZone技术通过对原有ARM处理器硬件架构进行修改，将处理器划分为两个具有不同安全权限的运行环境(两运行环境通过时分复用共享处理器资源)：安全世界(Secure World)和非安全世界(Normal World)，并防止运行于非安全世界的软件直接访问安全世界资源。
 
-如图~\ref{fig:ARM-TZ-base}(a)所示，ARM引入了一种称为监视模式的处理器模式，该模式负责在世界过渡时保留处理器状态，两个世界可以通过称为\gls{smc}的特权指令进入监视模式并实现彼此切换。
-
 \begin{figure}[!htb]
     \small
     \centering
@@ -137,6 +135,8 @@ ARM TrustZone\citing{trustzone}是ARM公司为Cortex-A微架构\citing{cortex-a}
     \caption{ARM TrustZone技术}
     \label{fig:ARM-TZ-base}
 \end{figure}
+
+如图~\ref{fig:ARM-TZ-base}(a)所示，ARM引入了一种称为监视模式的处理器模式，该模式负责在世界过渡时保留处理器状态，两个世界可以通过称为\gls{smc}的特权指令进入监视模式并实现彼此切换。
 
 与Cortex-A相同的是，Cortex-M依旧将处理器运行状态划分为安全世界和非安全世界，并阻止运行于非安全世界的软件直接访问安全资源。不同的是，Cortex-M针对更快的上下文切换和低功耗应用进行了优化。具体来说，Cortex-M中世界之间的划分是基于内存映射的，并且转换是在异常处理代码中自动发生的(如图~\ref{fig:ARM-TZ-base}(b)所示)。这意味着，当从安全内存运行代码时，处理器处于安全世界，而当从非安全内存运行代码时，处理器处于非安全世界。Cortex-M中的TrustZone技术排除了监视模式，也不需要任何安全的监视软件，这大大减少了安全世界与非安全世界的切换延迟，使得世界之间的转换为更高效。总体而言，基于TrustZone技术，处理器厂商、开发者可以搭建一个可信执行环境，并在TEE内运行可信操作系统\textit{TEE OS}(例如，高通QSEE\citing{qsee}、OP-TEE\citing{op-tee})。
 

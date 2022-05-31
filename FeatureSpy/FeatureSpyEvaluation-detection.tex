@@ -105,6 +105,6 @@
   \label{fig:featurespy-expDetectionTradeOff}
 \end{figure}
 
-图~\ref{fig:featurespy-expDetectionTradeOff}(a)展示了当改变窗口大小$W$时检测到对SYNFile$(6,2048)$目标文件的攻击的检测率结果。\textit{firstFeature}和\textit{minFeature}的检测率基本不受到窗口大小$W$的影响(例如，始终保持在93\%以上)，但\textit{allFeature}的检测率随着窗口大小增大而下降到34\%。其原因是\textit{allFeature}只能检测到少量相似度较高的数据块(Exp\#2)，当窗口大小$W$很大时，这些数据块在窗口内的占比很低。图~\ref{fig:featurespy-expDetectionTradeOff}(b)展示了改变目标文件中未知变量$x$的数量时的检测结果。本文观察到，当$x$=9时，\textit{allFeature}的检测率再次急剧下降到21\%，这是因为它无法检测到具有更多差异区域的相似数据块。
+图~\ref{fig:featurespy-expDetectionTradeOff}(a)展示了当改变窗口大小$W$时检测到对SYNFile$(6,2048)$目标文件的攻击的检测率结果。\textit{firstFeature}和\textit{minFeature}的检测率基本不受到窗口大小$W$的影响(例如，始终保持在93\%以上)，但\textit{allFeature}的检测率随着窗口大小增大而下降到34\%。其原因是\textit{allFeature}只能检测到少量相似度较高的数据块(Exp\#2)，当窗口大小$W$很大时，这些数据块在窗口内的占比很低。图~\ref{fig:featurespy-expDetectionTradeOff}(b)展示了改变目标文件中未知变量$x$的数量时的检测结果。可观察到，当$x$=9时，由于\textit{allFeature}无法检测到具有更多差异区域的相似数据块，其检测率再次急剧下降到21\%。
 
 图~\ref{fig:featurespy-expDetectionTradeOff}(c)展示了当改变目标文件中每个变量的可能值的数量$y$时的结果。当$y$为512时，所有三个实例的检测率都较低(例如，仅为13\%)。其原因是目标文件的信息熵较低，攻击者只需要构建少量相似的内容，导致\sysnameF 难以在混在的数据块流中找到相似数据块。一种可能的解决方案是配置一个较小的阈值$T$或窗口大小$W$以在检测到少数几个相似数据块时报告攻击行为，但这会增加在不同工作负载中误判的可能性。对此，本文提出了一项未来的研究方向，即如何自动平衡检测对低信息熵文件的攻击和在处理不同工作负载时最大限度地减少误判之间的权衡。
