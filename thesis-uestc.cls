@@ -938,7 +938,7 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
     学\chinesespace 位\chinesespace 论\chinesespace 文
   } \\[48bp]
 
-  \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@thetitle} \\
+  \fontsize{18pt}{18pt}\selectfont{\bfseries\zh@thetitle} \\
   \vspace{-15pt}
   \rule{5.9in}{.5pt} \\
   \fontsize{12pt}{12pt}\selectfont（题名和副题名）\\[36bp]
@@ -988,15 +988,15 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
     \cline{2-2}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{14pt}{14pt}\heiti\selectfont}
+      >{\arraybackslash\fontsize{14pt}{14pt}\bfseries\selectfont}
       p{4.35in}}
-      答辩委员会主席 & \\
+      答辩委员会主席 &  杨国武\\
     \cline{2-2}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
-      >{\centering\arraybackslash\fontsize{14pt}{14pt}\heiti\selectfont}
+      >{\arraybackslash\fontsize{14pt}{14pt}\bfseries\selectfont}
       p{5.01in}}
-      评阅人 & \\
+      评阅人 &  \\
     \cline{2-2}
   \end{tabular}
 
@@ -1052,7 +1052,7 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
     学\chinesespace 位\chinesespace 论\chinesespace 文
   } \\[48bp]
 
-  \fontsize{16pt}{16pt}\selectfont{\bfseries\zh@thetitle} \\
+  \fontsize{18pt}{18pt}\selectfont{\bfseries\zh@thetitle} \\
   \vspace{-15pt}
   \rule{5.9in}{.5pt} \\
   \fontsize{12pt}{12pt}\selectfont（题名和副题名）\\[34bp]
@@ -1110,7 +1110,7 @@ UDC\textsuperscript{ 注1} \UnderlineCentered{2.5in}{3pt}{\theUDCNumber} \\[12bp
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
       >{\centering\arraybackslash\fontsize{14pt}{14pt}\heiti\selectfont}
       p{4.35in}}
-      答辩委员会主席 & \\
+      答辩委员会主席 &\\
     \cline{2-2}
   \end{tabular} \\
   \begin{tabular}{>{\fontsize{12pt}{12pt}\selectfont}l
